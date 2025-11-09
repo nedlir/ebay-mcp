@@ -8,6 +8,7 @@ import type {
 } from '../../types/ebay/sell/order-management/get-orders-response.js';
 import type {
   Refund,
+  ShippingFulfillment,
   ShippingFulfillmentPagedCollection,
 } from '../../types/ebay/sell/order-management/shipping-fulfillment-response.js';
 import { EbayApiClient } from '../client.js';
@@ -57,6 +58,17 @@ export class FulfillmentApi {
    */
   async getShippingFulfillments(orderId: string): Promise<ShippingFulfillmentPagedCollection> {
     return this.client.get<ShippingFulfillmentPagedCollection>(`${this.basePath}/order/${orderId}/shipping_fulfillment`);
+  }
+
+  /**
+   * Get a specific shipping fulfillment
+   * @param orderId The unique identifier of the order.
+   * @param fulfillmentId The unique identifier of the fulfillment.
+   */
+  async getShippingFulfillment(orderId: string, fulfillmentId: string): Promise<ShippingFulfillment> {
+    return this.client.get<ShippingFulfillment>(
+      `${this.basePath}/order/${orderId}/shipping_fulfillment/${fulfillmentId}`
+    );
   }
 
   /**
