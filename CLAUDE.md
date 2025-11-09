@@ -77,3 +77,8 @@ When working with the specifications, note the logical groupings:
 ## eBay API Context
 
 All APIs use the base URL `https://api.ebay.com/sell/{api_name}/{version}` and require OAuth 2.0 authentication with appropriate scopes for seller operations.
+
+## Rules to follow
+- never assume any information for the ebay api
+- always check the relevant reference in the docs folder for relevant endpoint building, testing, improving, and refactoring.
+- for following best practices for MCP server and client Claude Code, use the MCP server to get relevant information.
