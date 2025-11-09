@@ -1,3 +1,7 @@
+import type {
+  IssueRefundRequest,
+  ShippingFulfillmentDetails,
+} from '../../types/ebay/sell/order-management/fulfillment-api-types.js';
 import { EbayApiClient } from '../client.js';
 
 /**
@@ -13,7 +17,7 @@ export class FulfillmentApi {
    * Get orders for the seller
    */
   async getOrders(filter?: string, limit?: number, offset?: number) {
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (filter) params.filter = filter;
     if (limit) params.limit = limit;
     if (offset) params.offset = offset;
@@ -30,7 +34,10 @@ export class FulfillmentApi {
   /**
    * Create a shipping fulfillment
    */
-  async createShippingFulfillment(orderId: string, fulfillment: any) {
+  async createShippingFulfillment(
+    orderId: string,
+    fulfillment: ShippingFulfillmentDetails
+  ) {
     return this.client.post(
       `${this.basePath}/order/${orderId}/shipping_fulfillment`,
       fulfillment
@@ -47,7 +54,7 @@ export class FulfillmentApi {
   /**
    * Issue a refund
    */
-  async issueRefund(orderId: string, refund: any) {
+  async issueRefund(orderId: string, refund: IssueRefundRequest) {
     return this.client.post(`${this.basePath}/order/${orderId}/issue_refund`, refund);
   }
 }

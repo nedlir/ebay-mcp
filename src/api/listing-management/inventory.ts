@@ -1,3 +1,7 @@
+import type {
+  EbayOfferDetailsWithKeys,
+  InventoryItem,
+} from '../../types/ebay/sell/listingManagement/inventoryAPI/inventory-api-global-types.js';
 import { EbayApiClient } from '../client.js';
 
 /**
@@ -13,7 +17,7 @@ export class InventoryApi {
    * Get all inventory items
    */
   async getInventoryItems(limit?: number, offset?: number) {
-    const params: any = {};
+    const params: Record<string, number> = {};
     if (limit) params.limit = limit;
     if (offset) params.offset = offset;
     return this.client.get(`${this.basePath}/inventory_item`, params);
@@ -29,7 +33,7 @@ export class InventoryApi {
   /**
    * Create or replace an inventory item
    */
-  async createOrReplaceInventoryItem(sku: string, inventoryItem: any) {
+  async createOrReplaceInventoryItem(sku: string, inventoryItem: InventoryItem) {
     return this.client.put(`${this.basePath}/inventory_item/${sku}`, inventoryItem);
   }
 
@@ -44,7 +48,7 @@ export class InventoryApi {
    * Get all offers
    */
   async getOffers(sku?: string, marketplaceId?: string, limit?: number) {
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (sku) params.sku = sku;
     if (marketplaceId) params.marketplace_id = marketplaceId;
     if (limit) params.limit = limit;
@@ -54,7 +58,7 @@ export class InventoryApi {
   /**
    * Create an offer
    */
-  async createOffer(offer: any) {
+  async createOffer(offer: EbayOfferDetailsWithKeys) {
     return this.client.post(`${this.basePath}/offer`, offer);
   }
 

@@ -1,3 +1,7 @@
+import type {
+  CreateCampaignRequest,
+  ItemPromotion,
+} from '../../types/ebay/sell/marketing-and-promotions/marketing-api-types.js';
 import { EbayApiClient } from '../client.js';
 
 /**
@@ -17,7 +21,7 @@ export class MarketingApi {
     marketplaceId?: string,
     limit?: number
   ) {
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (campaignStatus) params.campaign_status = campaignStatus;
     if (marketplaceId) params.marketplace_id = marketplaceId;
     if (limit) params.limit = limit;
@@ -34,7 +38,7 @@ export class MarketingApi {
   /**
    * Create a campaign
    */
-  async createCampaign(campaign: any) {
+  async createCampaign(campaign: CreateCampaignRequest) {
     return this.client.post(`${this.basePath}/ad_campaign`, campaign);
   }
 
@@ -42,16 +46,16 @@ export class MarketingApi {
    * Get promotions
    */
   async getPromotions(marketplaceId?: string, limit?: number) {
-    const params: any = {};
+    const params: Record<string, string | number> = {};
     if (marketplaceId) params.marketplace_id = marketplaceId;
     if (limit) params.limit = limit;
     return this.client.get(`${this.basePath}/promotion`, params);
   }
 
   /**
-   * Create a promotion
+   * Create a promotion (item promotion)
    */
-  async createPromotion(promotion: any) {
-    return this.client.post(`${this.basePath}/promotion`, promotion);
+  async createPromotion(promotion: ItemPromotion) {
+    return this.client.post(`${this.basePath}/item_promotion`, promotion);
   }
 }
