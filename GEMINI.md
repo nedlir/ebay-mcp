@@ -184,7 +184,6 @@ Contributions are welcome! Please ensure:
 MIT
 
 # Support
-
 *   **This MCP server**: Open an issue in this repository.
 *   **eBay APIs**: Visit [eBay Developer Forums](https://community.ebay.com/t5/Developer-Forums/ct-p/devforums).
 *   **MCP Protocol**: Visit [MCP Documentation](https://modelcontextprotocol.io/docs).
