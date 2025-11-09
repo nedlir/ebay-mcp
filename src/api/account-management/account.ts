@@ -1,4 +1,5 @@
 import type { CustomPolicyResponse } from "../../types/ebay/sell/accountManagement/accountV1/custom-policy/get-custom-policies.js";
+import type { CustomPolicy } from "../../types/ebay/sell/accountManagement/accountV1/custom-policy/get-custom-policy.js";
 import type { FulfillmentPolicyResponse } from "../../types/ebay/sell/accountManagement/accountV1/fulfillment-policy/get-fulfillment-policies.js";
 import type { GetPaymentPoliciesResponse } from "../../types/ebay/sell/accountManagement/accountV1/payment-policy/get-payment-policies.js";
 import type { SellingPrivileges } from "../../types/ebay/sell/accountManagement/accountV1/privilege/get-privileges.js";
@@ -28,8 +29,8 @@ export class AccountApi {
   /**
    * Get a specific custom policy
    */
-  async getCustomPolicy(customPolicyId: string): Promise<unknown> {
-    return this.client.get(`${this.basePath}/custom_policy/${customPolicyId}`);
+  async getCustomPolicy(customPolicyId: string): Promise<CustomPolicy> {
+    return this.client.get<CustomPolicy>(`${this.basePath}/custom_policy/${customPolicyId}`);
   }
 
   /**
