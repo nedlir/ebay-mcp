@@ -1,0 +1,1022 @@
+================================================================================
+EBAY SELL ACCOUNT API v1 - ENDPOINT SPECIFICATIONS
+================================================================================
+
+
+================================================================================
+PATH: /custom_policy/
+================================================================================
+
+GET /custom_policy/
+Operation ID: getCustomPolicies
+Summary: No summary
+Description: This method retrieves the list of custom policies defined for a seller's account. To limit the returned custom policies, specify the <b>policy_types</b> query parameter.
+
+PARAMETERS:
+  - policy_types (query)
+    Type: string
+    Required: False
+    Description: This query parameter specifies the type of custom policies to be returned.<br><br>Multiple policy ty...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: CustomPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+
+POST /custom_policy/
+Operation ID: createCustomPolicy
+Summary: No summary
+Description: This method creates a new custom policy that specifies the seller's terms for complying with local governmental regulations. Each Custom Policy targets a <b>policyType</b>. Multiple policies may be cr...
+
+PARAMETERS:
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: CustomPolicyCreateRequest
+
+RESPONSES:
+  201: Created
+    Content-Type: application/json
+    Schema Type: object
+  400: Bad Request
+  409: Policy Name already used/ Maximum no of policies per site reached
+  500: Internal Server Error
+
+================================================================================
+PATH: /custom_policy/{custom_policy_id}
+================================================================================
+
+GET /custom_policy/{custom_policy_id}
+Operation ID: getCustomPolicy
+Summary: No summary
+Description: This method retrieves the custom policy specified by the <b>custom_policy_id</b> path parameter.
+
+PARAMETERS:
+  - custom_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter is the unique identifier of the custom policy to retrieve.<br><br> This ID can b...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: CustomPolicy
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+PUT /custom_policy/{custom_policy_id}
+Operation ID: updateCustomPolicy
+Summary: No summary
+Description: This method updates an existing custom policy specified by the <b>custom_policy_id</b> path parameter. Since this method overwrites the policy's <b>name</b>, <b>label</b>, and <b>description</b> field...
+
+PARAMETERS:
+  - custom_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter is the unique identifier of the custom policy to update.<br><br><span class="tab...
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: CustomPolicyRequest
+
+RESPONSES:
+  204: No Content
+  400: Bad Request
+  404: Not Found
+  409: Policy Name already used/ Maximum no of policies per site reached
+  500: Internal Server Error
+  WARNING: Method DELETE not found for /custom_policy/{custom_policy_id}
+
+================================================================================
+PATH: /fulfillment_policy
+================================================================================
+
+GET /fulfillment_policy
+Operation ID: getFulfillmentPolicies
+Summary: No summary
+Description: This method retrieves all the fulfillment policies configured for the marketplace you specify using the <code>marketplace_id</code> query parameter.
+
+PARAMETERS:
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policies for a marketplace that supports multiple locales using the <code>Content-La...
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the eBay marketplace of the policies you want to retrieve. For implem...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: FulfillmentPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+  WARNING: Method POST not found for /fulfillment_policy
+
+================================================================================
+PATH: /fulfillment_policy/{fulfillmentPolicyId}
+================================================================================
+
+GET /fulfillment_policy/{fulfillmentPolicyId}
+Operation ID: getFulfillmentPolicy
+Summary: No summary
+Description: This method retrieves the complete details of a fulfillment policy. Supply the ID of the policy you want to retrieve using the <b>fulfillmentPolicyId</b> path parameter.
+
+PARAMETERS:
+  - fulfillmentPolicyId (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the fulfillment policy you want to retrieve.<br><br> This ID...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: FulfillmentPolicy
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+PUT /fulfillment_policy/{fulfillmentPolicyId}
+Operation ID: updateFulfillmentPolicy
+Summary: No summary
+Description: This method updates an existing fulfillment policy. Specify the policy you want to update using the <b>fulfillment_policy_id</b> path parameter. Supply a complete policy payload with the updates you w...
+
+PARAMETERS:
+  - fulfillmentPolicyId (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the fulfillment policy you want to update.<br><br>This ID ca...
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: FulfillmentPolicyRequest
+
+RESPONSES:
+  200: OK
+    Content-Type: application/json
+    Schema: SetFulfillmentPolicyResponse
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+DELETE /fulfillment_policy/{fulfillmentPolicyId}
+Operation ID: deleteFulfillmentPolicy
+Summary: No summary
+Description: This method deletes a fulfillment policy. Supply the ID of the policy you want to delete in the <b>fulfillmentPolicyId</b> path parameter.
+
+PARAMETERS:
+  - fulfillmentPolicyId (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the fulfillment policy to delete.<br><br> This ID can be ret...
+
+RESPONSES:
+  204: No Content
+  400: Bad Request
+  404: Not Found
+  409: Conflict
+  500: Internal Server Error
+
+================================================================================
+PATH: /fulfillment_policy/get_by_policy_name
+================================================================================
+
+GET /fulfillment_policy/get_by_policy_name
+Operation ID: getFulfillmentPolicyByName
+Summary: No summary
+Description: This method retrieves the details for a specific fulfillment policy. In the request, supply both the policy <code>name</code> and its associated <code>marketplace_id</code> as query parameters.
+
+PARAMETERS:
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policies for a marketplace that supports multiple locales using the <code>Content-La...
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the eBay marketplace of the policy you want to retrieve. For implemen...
+  - name (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the seller-defined name of the fulfillment policy you want to retriev...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: FulfillmentPolicy
+  400: Bad Request
+  500: Internal Server Error
+
+================================================================================
+PATH: /payment_policy
+================================================================================
+
+GET /payment_policy
+Operation ID: getPaymentPolicies
+Summary: No summary
+Description: This method retrieves all the payment business policies configured for the marketplace you specify using the <code>marketplace_id</code> query parameter.
+
+PARAMETERS:
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the eBay marketplace of the policies you want to retrieve. For implem...
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policies for a marketplace that supports multiple locales using the <code>Content-La...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: PaymentPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+
+POST /payment_policy
+Operation ID: createPaymentPolicy
+Summary: No summary
+Description: This method creates a new payment policy where the policy encapsulates seller's terms for order payments. <br><br>A successful request returns the <b>getPaymentPolicy</b> URI to the new policy in the ...
+
+PARAMETERS:
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: PaymentPolicyRequest
+
+RESPONSES:
+  201: Created
+    Content-Type: application/json
+    Schema: SetPaymentPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+
+================================================================================
+PATH: /payment_policy/{payment_policy_id}
+================================================================================
+
+GET /payment_policy/{payment_policy_id}
+Operation ID: getPaymentPolicy
+Summary: No summary
+Description: This method retrieves the complete details of a payment policy. Supply the ID of the policy you want to retrieve using the <b>paymentPolicyId</b> path parameter.
+
+PARAMETERS:
+  - payment_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the payment policy you want to retrieve. <br><br> This ID ca...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: PaymentPolicy
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+PUT /payment_policy/{payment_policy_id}
+Operation ID: updatePaymentPolicy
+Summary: No summary
+Description: This method updates an existing payment policy. Specify the policy you want to update using the <b>payment_policy_id</b> path parameter. Supply a complete policy payload with the updates you want to m...
+
+PARAMETERS:
+  - payment_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the payment policy you want to update. <br><br> This ID can ...
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: PaymentPolicyRequest
+
+RESPONSES:
+  200: OK
+    Content-Type: application/json
+    Schema: SetPaymentPolicyResponse
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+DELETE /payment_policy/{payment_policy_id}
+Operation ID: deletePaymentPolicy
+Summary: No summary
+Description: This method deletes a payment policy. Supply the ID of the policy you want to delete in the <b>paymentPolicyId</b> path parameter. 
+
+PARAMETERS:
+  - payment_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the unique identifier of the payment policy you want to delete.<br><br...
+
+RESPONSES:
+  204: No Content
+  400: Bad Request
+  404: Not Found
+  409: Conflict
+  500: Internal Server Error
+
+================================================================================
+PATH: /payment_policy/get_by_policy_name
+================================================================================
+
+GET /payment_policy/get_by_policy_name
+Operation ID: getPaymentPolicyByName
+Summary: No summary
+Description: This method retrieves the details of a specific payment policy. Supply both the policy <code>name</code> and its associated <code>marketplace_id</code> in the request query parameters.
+
+PARAMETERS:
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policy for a marketplace that supports multiple locales using the <code>Content-Lang...
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the eBay marketplace of the policy you want to retrieve. For implemen...
+  - name (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the seller-defined name of the payment policy you want to retrieve.<b...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: PaymentPolicy
+  400: Bad Request
+  500: Internal Server Error
+
+================================================================================
+PATH: /return_policy
+================================================================================
+
+GET /return_policy
+Operation ID: getReturnPolicies
+Summary: No summary
+Description: This method retrieves all the return policies configured for the marketplace you specify using the <code>marketplace_id</code> query parameter.
+
+PARAMETERS:
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policies for a marketplace that supports multiple locales using the <code>Content-La...
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the ID of the eBay marketplace of the policies you want to retrieve. ...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: ReturnPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+
+POST /return_policy
+Operation ID: createReturnPolicy
+Summary: No summary
+Description: This method creates a new return policy where the policy encapsulates seller's terms for returning items.  <br><br>Each policy targets a specific marketplace, and you can create multiple policies for ...
+
+PARAMETERS:
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: ReturnPolicyRequest
+
+RESPONSES:
+  201: Created
+    Content-Type: application/json
+    Schema: SetReturnPolicyResponse
+  400: Bad Request
+  500: Internal Server Error
+
+================================================================================
+PATH: /return_policy/{return_policy_id}
+================================================================================
+
+GET /return_policy/{return_policy_id}
+Operation ID: getReturnPolicy
+Summary: No summary
+Description: This method retrieves the complete details of the return policy specified by the <b>returnPolicyId</b> path parameter.
+
+PARAMETERS:
+  - return_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the unique identifier of the return policy you want to retrieve. <br><...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: ReturnPolicy
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+PUT /return_policy/{return_policy_id}
+Operation ID: updateReturnPolicy
+Summary: No summary
+Description: This method updates an existing return policy. Specify the policy you want to update using the <b>return_policy_id</b> path parameter. Supply a complete policy payload with the updates you want to mak...
+
+PARAMETERS:
+  - return_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the ID of the return policy you want to update. <br><br> This ID can b...
+  - Content-Type (header)
+    Type: string
+    Required: True
+    Description: This header indicates the format of the request body provided by the client. Its value should be set...
+
+REQUEST BODY:
+  Content-Type: application/json
+  Schema: ReturnPolicyRequest
+
+RESPONSES:
+  200: OK
+    Content-Type: application/json
+    Schema: SetReturnPolicyResponse
+  400: Bad Request
+  404: Not Found
+  500: Internal Server Error
+
+DELETE /return_policy/{return_policy_id}
+Operation ID: deleteReturnPolicy
+Summary: No summary
+Description: This method deletes a return policy. Supply the ID of the policy you want to delete in the <b>returnPolicyId</b> path parameter.
+
+PARAMETERS:
+  - return_policy_id (path)
+    Type: string
+    Required: True
+    Description: This path parameter specifies the unique identifier of the return policy you want to delete.<br><br>...
+
+RESPONSES:
+  204: No Content
+  400: Bad Request
+  404: Not Found
+  409: Conflict
+  500: Internal Server Error
+
+================================================================================
+PATH: /return_policy/get_by_policy_name
+================================================================================
+
+GET /return_policy/get_by_policy_name
+Operation ID: getReturnPolicyByName
+Summary: No summary
+Description: This method retrieves the details of a specific return policy. Supply both the policy <code>name</code> and its associated <code>marketplace_id</code> in the request query parameters.
+
+PARAMETERS:
+  - Content-Language (header)
+    Type: string
+    Required: False
+    Description: Get the correct policy for a marketplace that supports multiple locales using the <code>Content-Lang...
+  - marketplace_id (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the ID of the eBay marketplace of the policy you want to retrieve. Fo...
+  - name (query)
+    Type: string
+    Required: True
+    Description: This query parameter specifies the seller-defined name of the return policy you want to retrieve.<br...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: ReturnPolicy
+  400: Bad Request
+  500: Internal Server Error
+
+================================================================================
+PATH: /privilege
+================================================================================
+
+GET /privilege
+Operation ID: getPrivileges
+Summary: No summary
+Description: This method retrieves the seller's current set of privileges, including whether or not the seller's eBay registration has been completed, as well as the details of their site-wide <b>sellingLimit</b> ...
+
+RESPONSES:
+  200: Success
+    Content-Type: application/json
+    Schema: SellingPrivileges
+  400: Bad Request
+  500: Internal Server Error
+
+
+================================================================================
+COMPONENT SCHEMAS
+================================================================================
+
+Total schemas referenced: 17
+
+Schema names:
+  - CustomPolicy
+  - CustomPolicyCreateRequest
+  - CustomPolicyRequest
+  - CustomPolicyResponse
+  - FulfillmentPolicy
+  - FulfillmentPolicyRequest
+  - FulfillmentPolicyResponse
+  - PaymentPolicy
+  - PaymentPolicyRequest
+  - PaymentPolicyResponse
+  - ReturnPolicy
+  - ReturnPolicyRequest
+  - ReturnPolicyResponse
+  - SellingPrivileges
+  - SetFulfillmentPolicyResponse
+  - SetPaymentPolicyResponse
+  - SetReturnPolicyResponse
+
+
+Detailed schema definitions:
+
+--------------------------------------------------------------------------------
+SCHEMA: CustomPolicy
+--------------------------------------------------------------------------------
+Type: object
+Description: This container defines a seller's custom policy identified by policy ID for the selected eBay marketplace. A successful call returns the requested policy information.
+
+Properties:
+  - customPolicyId: string 
+    The unique custom policy identifier for a policy.
+  - description: string 
+    Contains the seller's policy and policy terms. Buyers access this information from the View Item page for items to which the policy has been applied.<...
+  - label: string 
+    Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hy...
+  - name: string 
+    The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller and policy type.<br><br><span class="tabl...
+  - policyType: string 
+    Specifies the type of Custom Policy being returned. For implementation help, refer to <a href='https://developer.ebay.com/api-docs/sell/account/types/...
+
+--------------------------------------------------------------------------------
+SCHEMA: CustomPolicyCreateRequest
+--------------------------------------------------------------------------------
+Type: object
+Description: This type is used by the request payload of the createCustomPolicy method to define a new custom policy for a specific marketplace.
+
+Properties:
+  - description: string 
+    Contains the seller's policy and policy terms.<br><br><b>Max length:</b> 15,000
+  - label: string 
+    Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hy...
+  - name: string 
+    The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller and policy type.<br><br><span class="tabl...
+  - policyType: string 
+    Specifies the type of custom policy being created. <br><br>Two Custom Policy types are supported: <ul><li>Product Compliance (PRODUCT_COMPLIANCE)</li>...
+
+--------------------------------------------------------------------------------
+SCHEMA: CustomPolicyRequest
+--------------------------------------------------------------------------------
+Type: object
+
+Properties:
+  - description: string 
+    Contains the seller specified policy and policy terms.<br><br><span class="tablenote"><strong>Note:</strong> Always supply this field. If this field i...
+  - label: string 
+    Customer-facing label shown on View Item pages for items to which the policy applies. This seller-defined string is displayed as a system-generated hy...
+  - name: string 
+    The seller-defined name for the custom policy. Names must be unique for policies assigned to the same seller and policy type.<br><br><span class="tabl...
+
+--------------------------------------------------------------------------------
+SCHEMA: CustomPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+
+Properties:
+  - customPolicies: array 
+    This array contains the custom policies that match the input criteria.
+    Array of: CompactCustomPolicyResponse
+  - href: string 
+    <i>This field is for future use.</i>
+  - limit: integer 
+    <i>This field is for future use.</i>
+  - next: string 
+    <i>This field is for future use.</i>
+  - offset: integer 
+    <i>This field is for future use.</i>
+  - prev: string 
+    <i>This field is for future use.</i>
+  - total: integer 
+    <i>This field is for future use.</i>
+
+--------------------------------------------------------------------------------
+SCHEMA: FulfillmentPolicy
+--------------------------------------------------------------------------------
+Type: object
+Description: This type is used by the <b>fulfillmentPolicy</b> response container, a container which defines a seller's fulfillment policy for a specific marketplace.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates whether the fulfillment policy applies to motor vehicle listings, or if it applies to non-motor vehicle listings.
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the fulfillment policy. This description is only for the seller's use, and is not exposed on any eBay pages. This fiel...
+  - freightShipping: boolean 
+    If returned as <code>true</code>, the seller offers freight shipping. Freight shipping can be used for large items over 150 lbs.
+  - fulfillmentPolicyId: string 
+    A unique eBay-assigned ID for the fulfillment policy. This ID is generated when the policy is created.
+  - globalShipping: boolean 
+    <span class="tablenote"><b>Note</b>: This field is only applicable for the eBay United Kingdom marketplace (<code>EBAY_GB</code>).</span><br>If return...
+  - handlingTime: TimeDuration 
+    Specifies the maximum number of business days the seller commits to for preparing and shipping an order after receiving a cleared payment for the orde...
+  - localPickup: boolean 
+    If returned as <code>true</code>, local pickup is available for this policy.
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this fulfillment policy applies. For implementation help, refer to <a href='https://developer.ebay.com/api-doc...
+  - name: string 
+    A seller-defined name for this fulfillment policy. Names must be unique for policies assigned to the same marketplace. <br><br><b>Max length</b>: 64
+  - pickupDropOff: boolean 
+    If returned as <code>true</code>, the seller offers the "Click and Collect" option. <br><br>Currently, "Click and Collect" is available only to large ...
+  - shippingOptions: array 
+    This array is used to provide detailed information on the domestic and international shipping options available for the policy. A separate <b>Shipping...
+    Array of: ShippingOption
+  - shipToLocations: RegionSet 
+    This container consists of the <b>regionIncluded</b> and <b>regionExcluded</b> containers, which define the geographical regions/countries/states or p...
+
+--------------------------------------------------------------------------------
+SCHEMA: FulfillmentPolicyRequest
+--------------------------------------------------------------------------------
+Type: object
+Description: This root container defines a seller's fulfillment policy for a specific marketplace and category group. This type is used when creating or updating a fulfillment business policy.
+
+Properties:
+  - categoryTypes: array 
+    This container is used to specify whether the fulfillment business policy applies to motor vehicle listings, or if it applies to non-motor vehicle lis...
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the fulfillment policy. This description is only for the seller's use, and is not exposed on any eBay pages.  <br><br>...
+  - freightShipping: boolean 
+    This field is included and set to <code>true</code> if freight shipping is available for the item. Freight shipping can be used for large items over 1...
+  - globalShipping: boolean 
+    <span class="tablenote"><b>Note</b>: This field is only applicable for the eBay United Kingdom marketplace (<code>EBAY_GB</code>).</span><br>This fiel...
+  - handlingTime: TimeDuration 
+    This container is used to specify the maximum number of business days the seller commits to for preparing and shipping an order after receiving a clea...
+  - localPickup: boolean 
+    This field should be included and set to <code>true</code> if local pickup is one of the fulfillment options available to the buyer. It is possible fo...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this fulfillment policy applies. For implementation help, refer to <a href='https://developer.ebay.com/api-doc...
+  - name: string 
+    A seller-defined name for this fulfillment policy. Names must be unique for policies assigned to the same marketplace. <br><br><b>Max length</b>: 64
+  - pickupDropOff: boolean 
+    This field should be included and set to <code>true</code> if the seller offers the "Click and Collect" feature for an item. <p>To enable "Click and C...
+  - shippingOptions: array 
+    This array is used to provide detailed information on the domestic and international shipping options available for the policy. <br><br>A separate <b>...
+    Array of: ShippingOption
+  - shipToLocations: RegionSet 
+    This container consists of the <b>regionIncluded</b> and <b>regionExcluded</b> arrays, which are used to define the geographical regions/countries/sta...
+
+--------------------------------------------------------------------------------
+SCHEMA: FulfillmentPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: The response payload for the <b>getFulfillmentPolicies</b> method.<br><br><span class="tablenote"><b>Note</b>: Pagination has not yet been enabled for <b>getFulfillmentPolicies</b>, so all of the pagi...
+
+Properties:
+  - fulfillmentPolicies: array 
+    A list of all of the seller's fulfillment policies defined for the specified marketplace. This array will be returned as empty if no fulfillment polic...
+    Array of: FulfillmentPolicy
+  - href: string 
+    This field is for future use.
+  - limit: integer 
+    This field is for future use.
+  - next: string 
+    This field is for future use.
+  - offset: integer 
+    This field is for future use.
+  - prev: string 
+    This field is for future use.
+  - total: integer 
+    The total number of fulfillment policies retrieved in the result set.  <br><br>If no fulfillment policies are defined for the specified marketplace, t...
+
+--------------------------------------------------------------------------------
+SCHEMA: PaymentPolicy
+--------------------------------------------------------------------------------
+Type: object
+Description: This type is used by the <b>paymentPolicy</b> response container, a container which defines a seller's payment business policy for a specific marketplace.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates whether the payment policy applies to motor vehicle listings, or if it applies to non-motor vehicle listings.
+    Array of: CategoryType
+  - deposit: Deposit 
+    This container is applicable only if the <b>categoryTypes.name</b> field is set to <code>MOTORS_VEHICLES</code>, and is only returned if the seller re...
+  - description: string 
+    A seller-defined description of the payment policy. This description is only for the seller's use, and is not exposed on any eBay pages.  <br><br><b>M...
+  - fullPaymentDueIn: TimeDuration 
+    This container applies to motor vehicles listings only and indicates when a final payment for the vehicle is due. This value is always returned if <b>...
+  - immediatePay: boolean 
+    If this field is returned as <code>true</code>, immediate payment is required from the buyer for: <ul><li>A fixed-price item</li><li>An auction item w...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which the payment business policy applies. For implementation help, refer to <a href='https://developer.ebay.com/api...
+  - name: string 
+    A seller-defined name for this payment policy. Names must be unique for policies assigned to the same marketplace. <br><br><b>Max length</b>: 64
+  - paymentInstructions: string 
+    Although this field may be returned for some older payment business policies, payment instructions are no longer supported by payment business policie...
+  - paymentMethods: array 
+    This container is returned to show the payment methods that are accepted for the payment business policy.  <br><br>Sellers do not have to specify any ...
+    Array of: PaymentMethod
+  - paymentPolicyId: string 
+    A unique eBay-assigned ID for a payment business policy. This ID is generated when the policy is created.
+
+--------------------------------------------------------------------------------
+SCHEMA: PaymentPolicyRequest
+--------------------------------------------------------------------------------
+Type: object
+Description: This root container defines a seller's payment business policy for a specific marketplace and category group. This type is used when creating or updating a payment business policy.
+
+Properties:
+  - categoryTypes: array 
+    This container is used to specify whether the payment business policy applies to motor vehicle listings, or if it applies to non-motor vehicle listing...
+    Array of: CategoryType
+  - deposit: Deposit 
+    This container is used if the seller wants to require an initial deposit on a motor vehicle listing. In this container, the seller sets the deposit am...
+  - description: string 
+    A seller-defined description of the payment business policy. This description is only for the seller's use, and is not exposed on any eBay pages.  <br...
+  - fullPaymentDueIn: TimeDuration 
+    This container is used to specify the number of days that a buyer has to make their full payment to the seller and close the remaining balance on a mo...
+  - immediatePay: boolean 
+    This field should be included and set to <code>true</code> if the seller wants to require immediate payment from the buyer for: <ul><li>A fixed-price ...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this payment business policy applies. For implementation help, refer to <a href='https://developer.ebay.com/ap...
+  - name: string 
+    A seller-defined name for this payment business policy. Names must be unique for policies assigned to the same marketplace.<br><br><b>Max length:</b> ...
+  - paymentInstructions: string 
+    <p class="tablenote"><b>Note:</b> DO NOT USE THIS FIELD. Payment instructions are no longer supported by payment business policies.</p>A free-form str...
+  - paymentMethods: array 
+    <p class="tablenote"><b>Note:</b> This field applies only when the seller needs to specify one or more offline payment methods. eBay now manages the e...
+    Array of: PaymentMethod
+
+--------------------------------------------------------------------------------
+SCHEMA: PaymentPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: The response payload for the <b>getPaymentPolicies</b> method. <br><br><span class="tablenote"><b>Note</b>: Pagination has not yet been enabled for <b>getPaymentPolicies</b>, so all of the pagination-...
+
+Properties:
+  - href: string 
+    This field is for future use.
+  - limit: integer 
+    This field is for future use.
+  - next: string 
+    This field is for future use.
+  - offset: integer 
+    This field is for future use.
+  - paymentPolicies: array 
+    A list of all of the seller's payment business policies defined for the specified marketplace. This array will be returned as empty if no payment busi...
+    Array of: PaymentPolicy
+  - prev: string 
+    This field is for future use.
+  - total: integer 
+    The total number of payment business policies retrieved in the result set.  <br><br>If no payment business policies are defined for the specified mark...
+
+--------------------------------------------------------------------------------
+SCHEMA: ReturnPolicy
+--------------------------------------------------------------------------------
+Type: object
+Description: This type is used by the <b>returnPolicy</b> response container, a container which defines a seller's return business policy for a specific marketplace.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates which category group that the return policy applies to.<br><br><span class="tablenote"><b>Note</b>: Return business policies ...
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the return business policy. This description is only for the seller's use, and is not exposed on any eBay pages.  <br>...
+  - extendedHolidayReturnsOffered: boolean 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer supports extended holiday ...
+  - internationalOverride: InternationalReturnOverrideType 
+    This container shows the seller's international return policy settings. This container is only returned if the seller has set a separate international...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this return business policy applies. For implementation help, refer to <a href='https://developer.ebay.com/api...
+  - name: string 
+    A seller-defined name for this return business policy. Names must be unique for policies assigned to the same marketplace.<br><br><b>Max length:</b> 6...
+  - refundMethod: string 
+    This field indicates the refund method offered by the seller. Its value will be <code>MONEY_BACK</code> unless the seller is enabled for <b>Buy online...
+  - restockingFeePercentage: string 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer allows sellers to charge a...
+  - returnInstructions: string 
+    This text-based field provides more details on seller-specified return instructions. This field is only returned if set for the return business policy...
+  - returnMethod: string 
+    This field is only returned if the seller is willing to offer a replacement item as an alternative to 'Money Back'. For implementation help, refer to ...
+  - returnPeriod: TimeDuration 
+    This container indicates the number of calendar days that the buyer has to return an item. The return period begins when the item is marked "delivered...
+  - returnPolicyId: string 
+    A unique eBay-assigned ID for a return business policy. This ID is generated when the policy is created.
+  - returnsAccepted: boolean 
+    If this field is returned as <code>true</code>, the seller accepts returns. If set to <code>false</code>, the seller does not accept returns.<br><br><...
+  - returnShippingCostPayer: string 
+    This field indicates who is responsible for paying for the shipping charges for returned items. The field can be set to either <code>BUYER</code> or <...
+
+--------------------------------------------------------------------------------
+SCHEMA: ReturnPolicyRequest
+--------------------------------------------------------------------------------
+Type: object
+Description: This root container defines a seller's return business policy for a specific marketplace and category group. This type is used when creating or updating a return business policy.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates which category group that the return policy applies to.<br><br><span class="tablenote"><b>Note</b>: Return business policies ...
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the return business policy. This description is only for the seller's use, and is not exposed on any eBay pages.  <br>...
+  - extendedHolidayReturnsOffered: boolean 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer supports extended holiday ...
+  - internationalOverride: InternationalReturnOverrideType 
+    This container is used by the seller to specify a separate  international return policy. If a separate international return policy is not defined by a...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this return business policy applies.  For implementation help, refer to <a href='https://developer.ebay.com/ap...
+  - name: string 
+    A seller-defined name for this return business policy. Names must be unique for policies assigned to the same marketplace. <br><br><b>Max length</b>: ...
+  - refundMethod: string 
+    This field sets the refund method to use for returned items. Its value defaults to <code>MONEY_BACK</code> if omitted, so this field is only needed fo...
+  - restockingFeePercentage: string 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer allows sellers to charge a...
+  - returnInstructions: string 
+    This text-based field provides more details on seller-specified return instructions. <br><p class="tablenote"><span  style="color: #dd1e31;"><b>Import...
+  - returnMethod: string 
+    This field can be used if the seller is willing and able to offer a replacement item as an alternative to 'Money Back'. For implementation help, refer...
+  - returnPeriod: TimeDuration 
+    This container is used to specify the number of days that the buyer has to return an item. The return period begins when the item is marked "delivered...
+  - returnsAccepted: boolean 
+    If set to <code>true</code>, the seller accepts returns. If set to <code>false</code>, the seller does not accept returns.<br><p><span class="tablenot...
+  - returnShippingCostPayer: string 
+    This field indicates who is responsible for paying for the shipping charges for returned items. The field can be set to either <code>BUYER</code> or <...
+
+--------------------------------------------------------------------------------
+SCHEMA: ReturnPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: The response payload for the <b>getReturnPolicies</b> method. <br><br><span class="tablenote"><b>Note</b>: Pagination has not yet been enabled for <b>getReturnPolicies</b>, so all of the pagination-re...
+
+Properties:
+  - href: string 
+    This field is for future use.
+  - limit: integer 
+    This field is for future use.
+  - next: string 
+    This field is for future use.
+  - offset: integer 
+    This field is for future use.
+  - prev: string 
+    This field is for future use.
+  - returnPolicies: array 
+    A list of all of the seller's return business policies defined for the specified marketplace. This array will be returned as empty if no return busine...
+    Array of: ReturnPolicy
+  - total: integer 
+    The total number of return business policies retrieved in the result set.  <br><br>If no return business policies are defined for the specified market...
+
+--------------------------------------------------------------------------------
+SCHEMA: SellingPrivileges
+--------------------------------------------------------------------------------
+Type: object
+Description: This type is used by the base response of the <b>getPrivileges</b> method.
+
+Properties:
+  - sellerRegistrationCompleted: boolean 
+    If this field is returned as <code>true</code>, the seller's registration is completed. If this field is returned as <code>false</code>, the registrat...
+  - sellingLimit: SellingLimit 
+    This container lists the monthly cap for the quantity of items sold and total sales amount allowed for the seller's account. This container may not be...
+
+--------------------------------------------------------------------------------
+SCHEMA: SetFulfillmentPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: Complex type that that gets populated with a response containing a fulfillment policy.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates whether the fulfillment business policy applies to motor vehicle listings, or if it applies to non-motor vehicle listings.
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the fulfillment policy. This description is only for the seller's use, and is not exposed on any eBay pages. This fiel...
+  - freightShipping: boolean 
+    If returned as <code>true</code>, the seller offers freight shipping. Freight shipping can be used for large items over 150 lbs.
+  - fulfillmentPolicyId: string 
+    A unique eBay-assigned ID for a fulfillment business policy. This ID is generated when the policy is created.
+  - globalShipping: boolean 
+    <span class="tablenote"><b>Note</b>: This field is only applicable for the eBay United Kingdom marketplace (<code>EBAY_GB</code>).</span><br>This fiel...
+  - handlingTime: TimeDuration 
+    Specifies the maximum number of business days the seller commits to for preparing and shipping an order after receiving a cleared payment for the orde...
+  - localPickup: boolean 
+    If returned as <code>true</code>, local pickup is available for items using this policy.
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this fulfillment business policy applies. For implementation help, refer to <a href='https://developer.ebay.co...
+  - name: string 
+    A seller-defined name for this fulfillment business policy. <br><br><b>Max length</b>: 64
+  - pickupDropOff: boolean 
+    If returned as <code>true</code>, the seller offers the "Click and Collect" option. <br><br>Currently, "Click and Collect" is available only to large ...
+  - shippingOptions: array 
+    This array is used to provide detailed information on the domestic and international shipping options available for the policy. A separate <b>Shipping...
+    Array of: ShippingOption
+  - shipToLocations: RegionSet 
+    This container consists of the <b>regionIncluded</b> and <b>regionExcluded</b> containers, which define the geographical regions/countries/states or p...
+  - warnings: array 
+    An array of one or more errors or warnings that were generated during the processing of the request. If there were no issues with the request, this ar...
+    Array of: Error
+
+--------------------------------------------------------------------------------
+SCHEMA: SetPaymentPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: Complex type that that gets populated with a response containing a payment policy.
+
+Properties:
+  - categoryTypes: array 
+    This container indicates whether the payment business policy applies to motor vehicle listings, or if it applies to non-motor vehicle listings.
+    Array of: CategoryType
+  - deposit: Deposit 
+    This container is only returned if the seller just created or updated a motor vehicles payment business policy and requires buyers to pay an initial d...
+  - description: string 
+    A seller-defined description of the payment business policy. This description is only for the seller's use, and is not exposed on any eBay pages. This...
+  - fullPaymentDueIn: TimeDuration 
+    The number of days (after the buyer commits to buy) that a buyer has to pay the remaining balance of a motor vehicle transaction. Sellers can set this...
+  - immediatePay: boolean 
+    The value returned in this field will reflect the value set by the seller in the <b>immediatePay</b> request field. A value of <code>true</code> indic...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this payment business policy applies. For implementation help, refer to <a href='https://developer.ebay.com/ap...
+  - name: string 
+    A seller-defined name for this payment business policy. Names must be unique for policies assigned to the same marketplace.<br><br><b>Max length:</b> ...
+  - paymentInstructions: string 
+    <p class="tablenote"><b>Note:</b> NO LONGER SUPPORTED. Although this field may be returned for some older payment business policies, payment instructi...
+  - paymentMethods: array 
+    This array shows the available payment methods that the seller has set for the payment business policy.<br><br>Sellers do not have to specify any elec...
+    Array of: PaymentMethod
+  - paymentPolicyId: string 
+    A unique eBay-assigned ID for a payment business policy. This ID is generated when the policy is created.
+  - warnings: array 
+    An array of one or more errors or warnings that were generated during the processing of the request. If there were no issues with the request, this ar...
+    Array of: Error
+
+--------------------------------------------------------------------------------
+SCHEMA: SetReturnPolicyResponse
+--------------------------------------------------------------------------------
+Type: object
+Description: A complex type that is populated with a response containing a return policies.
+
+Properties:
+  - categoryTypes: array 
+    This field always returns <code>ALL_EXCLUDING_MOTORS_VEHICLES</code> for return business policies, since return business policies are not applicable t...
+    Array of: CategoryType
+  - description: string 
+    A seller-defined description of the return business policy. This description is only for the seller's use, and is not exposed on any eBay pages. This ...
+  - extendedHolidayReturnsOffered: boolean 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer supports extended holiday ...
+  - internationalOverride: InternationalReturnOverrideType 
+    This container is used by the seller to specify a separate  international return policy, and will only be returned if the seller has set a separate re...
+  - marketplaceId: string 
+    The ID of the eBay marketplace to which this return business policy applies. For implementation help, refer to <a href='https://developer.ebay.com/api...
+  - name: string 
+    A seller-defined name for this return business policy. Names must be unique for policies assigned to the same marketplace.<br><br><b>Max length:</b> 6...
+  - refundMethod: string 
+    If a seller indicates that they will accept buyer returns, this value will be <code>MONEY_BACK</code>. For implementation help, refer to <a href='http...
+  - restockingFeePercentage: string 
+    <p class="tablenote"><span  style="color: #dd1e31;"><b>Important!</b></span> This field is deprecated, since eBay no longer allows sellers to charge a...
+  - returnInstructions: string 
+    This text-based field provides more details on seller-specified return instructions. <br><p class="tablenote"><span  style="color: #dd1e31;"><b>Import...
+  - returnMethod: string 
+    This field will be returned if the seller is willing and able to offer a replacement item as an alternative to 'Money Back'. For implementation help, ...
+  - returnPeriod: TimeDuration 
+    This container specifies the amount of days that the buyer has to return the item after receiving it. The return period begins when the item is marked...
+  - returnPolicyId: string 
+    A unique eBay-assigned ID for a return business policy. This ID is generated when the policy is created.
+  - returnsAccepted: boolean 
+    If set to <code>true</code>, the seller accepts returns. If set to <code>false</code>, this field indicates that the seller does not accept returns.
+  - returnShippingCostPayer: string 
+    This field indicates who is responsible for paying for the shipping charges for returned items. The field can be set to either <code>BUYER</code> or <...
+  - warnings: array 
+    An array of one or more errors or warnings that were generated during the processing of the request. If there were no issues with the request, this ar...
+    Array of: Error
+
+
+================================================================================
+END OF EXTRACTION
+================================================================================
