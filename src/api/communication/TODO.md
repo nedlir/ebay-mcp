@@ -7,22 +7,34 @@ This file outlines the tasks for completing the implementation of the Communicat
 The following endpoints are defined in the OpenAPI specification but are not yet implemented in the server:
 
 ### Feedback
-- `POST /feedback/{feedbackId}/respond` - Respond to feedback
-- `POST /feedback/{feedbackId}/dispute` - Dispute feedback
+- `GET /awaiting_feedback` - Get items awaiting feedback
+- `GET /feedback_rating_summary` - Get feedback rating summary
+- `POST /respond_to_feedback` - Respond to feedback
 
 ### Message
-- `POST /message` - Send a message
-- `DELETE /message/{messageId}` - Delete a message
+- `POST /bulk_update_conversation` - Bulk update conversation
+- `GET /conversation/{conversation_id}` - Get conversation
+- `GET /conversation` - Get conversations
+- `POST /send_message` - Send a message
+- `POST /update_conversation` - Update a conversation
 
 ### Negotiation
-- `GET /negotiation/{negotiationId}` - Get a negotiation
-- `POST /negotiation/{negotiationId}/accept` - Accept a negotiation
-- `POST /negotiation/{negotiationId}/decline` - Decline a negotiation
-- `POST /negotiation/{negotiationId}/counteroffer` - Make a counteroffer
+- `GET /find_eligible_items` - Find eligible items for a seller-initiated offer
 
 ### Notification
-- `GET /destination` - Get all destinations
-- `POST /destination/{destinationId}/ping` - Ping a destination
+- `GET /subscription` - Get all subscriptions
+- `POST /subscription` - Create a subscription
+- `GET /subscription/{subscription_id}` - Get a subscription
+- `PUT /subscription/{subscription_id}` - Update a subscription
+- `DELETE /subscription/{subscription_id}` - Delete a subscription
+- `POST /subscription/{subscription_id}/disable` - Disable a subscription
+- `POST /subscription/{subscription_id}/enable` - Enable a subscription
+- `POST /subscription/{subscription_id}/test` - Test a subscription
+- `GET /topic/{topic_id}` - Get a topic
+- `GET /topic` - Get all topics
+- `POST /subscription/{subscription_id}/filter` - Create a subscription filter
+- `GET /subscription/{subscription_id}/filter/{filter_id}` - Get a subscription filter
+- `DELETE /subscription/{subscription_id}/filter/{filter_id}` - Delete a subscription filter
 
 ## Improvements
 

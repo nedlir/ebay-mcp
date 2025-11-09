@@ -2,6 +2,7 @@ import type { EbaySellerApi } from "../api/index.js";
 import {
   accountTools,
   analyticsTools,
+  chatGptTools,
   communicationTools,
   fulfillmentTools,
   inventoryTools,
@@ -19,6 +20,7 @@ export type { ToolDefinition };
  */
 export function getToolDefinitions(): ToolDefinition[] {
   return [
+    ...chatGptTools,
     ...accountTools,
     ...inventoryTools,
     ...fulfillmentTools,
@@ -40,6 +42,60 @@ export async function executeTool(
   args: Record<string, unknown>,
 ): Promise<unknown> {
   switch (toolName) {
+    // ChatGPT Connector Tools
+    case "search": {
+      // For this example, we'll treat the query as a search for inventory items.
+      // A more robust implementation might search across different types of content.
+      const response = await api.inventory.getInventoryItems(
+        (args.limit as number) || 10,
+      );
+      const results =
+        response.inventoryItems?.map((item) => ({
+          id: item.sku,
+          title: item.product?.title || "No Title",
+          // The URL should be a canonical link to the item, which we don't have here.
+          // We'll use a placeholder.
+          url: `https://www.ebay.com/itm/${item.sku}`, // Placeholder URL
+        })) || [];
+
+      // Format the response as required by the ChatGPT connector spec.
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({ results }),
+          },
+        ],
+      };
+    }
+
+    case "fetch": {
+      const sku = args.id as string;
+      const item = await api.inventory.getInventoryItem(sku);
+
+      // Format the response as required by the ChatGPT connector spec.
+      const result = {
+        id: item.sku,
+        title: item.product?.title || "No Title",
+        text: item.product?.description || "No description available.",
+        url: `https://www.ebay.com/itm/${item.sku}`, // Placeholder URL
+        metadata: {
+          source: "ebay_inventory",
+          aspects: item.product?.aspects,
+          condition: item.condition,
+        },
+      };
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result),
+          },
+        ],
+      };
+    }
+
     // Account Management
     case "ebay_get_custom_policies":
       return api.account.getCustomPolicies(args.policyTypes as string);

@@ -1,17 +1,23 @@
-/**
- * MCP Tool definitions - part 1 (Core APIs)
- * Separated for better organization
- */
 
-export interface ToolDefinition {
-  name: string;
-  description: string;
-  inputSchema: {
-    type: string;
-    properties: Record<string, unknown>;
-    required?: string[];
-  };
-}
+
+import type { ToolDefinition } from './tool-definitions.js';
+import { chatGptTools } from './chatgpt-tools.js';
+
+export {
+  ToolDefinition,
+  accountTools,
+  analyticsTools,
+  communicationTools,
+  fulfillmentTools,
+  inventoryTools,
+  marketingTools,
+  metadataTools,
+  otherApiTools,
+  taxonomyTools,
+  chatGptTools,
+};
+
+
 
 export const accountTools: ToolDefinition[] = [
   {
