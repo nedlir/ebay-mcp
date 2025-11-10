@@ -22,55 +22,46 @@ This document tracks completed features and outlines the next priorities for dev
 
 ---
 
-## 🔴 Critical Priority - Next Features
+### ✅ Environment-Specific OAuth Scope Management (Completed: 2025-11-11)
+- **Status**: COMPLETED
+- **Impact**: High - Proper sandbox/production separation
+- **Details**:
+  - ✅ **Phase 1.1**: Scope loading from JSON files (already implemented)
+    - `getProductionScopes()` and `getSandboxScopes()` functions load from JSON
+    - `validateScopes()` function validates scopes against environment
+    - Dynamic scope loading from `docs/auth/production_scopes.json` and `sandbox_scopes.json`
 
-### 1. Environment-Specific OAuth Scope Management
-**Priority**: CRITICAL | **Effort**: Medium (3-5 days) | **Impact**: High
+  - ✅ **Phase 1.2**: Scope validation in tools (already implemented)
+    - `ebay_get_oauth_url` tool validates scopes (src/tools/index.ts:175-179)
+    - Returns warnings for environment-incompatible scopes
+    - User-friendly error messages in tool responses
 
-**Current Issue**:
-OAuth scopes are hardcoded and not environment-aware. Sandbox and Production environments have different available scopes, but the code doesn't handle this distinction properly.
+  - ✅ **Phase 1.3**: Token scope validation (already implemented)
+    - Token loading validates scopes against environment (src/auth/oauth.ts:29-39)
+    - Console warnings when stored token scopes don't match environment
+    - Graceful degradation with helpful error messages
 
-**Scope Differences Summary**:
-- Production: 27 unique scopes (includes `sell.edelivery`, `commerce.shipping`)
-- Sandbox: 35 unique scopes (includes Buy API scopes, extended Identity scopes, `sell.item.draft`)
-- Common: 21 scopes available in both environments
+  - ✅ **Phase 1.4**: Documentation (completed)
+    - Created comprehensive `docs/auth/scope-differences.md` (complete scope reference)
+    - Updated main README with OAuth scopes section
+    - Includes troubleshooting guides and migration instructions
 
-**Tasks**:
-- [ ] **Phase 1.1**: Update `src/config/environment.ts`
-  - Already has `getProductionScopes()` and `getSandboxScopes()` functions (DONE)
-  - Already has `validateScopes()` function (DONE)
-  - Already has `validateEnvironmentConfig()` (DONE)
-  - ✅ Functions load scopes from JSON files dynamically
-  - ✅ Scope validation working
+**Benefits Delivered**:
+- ✅ Automatic scope validation for sandbox vs production
+- ✅ Clear warnings when requesting incompatible scopes
+- ✅ Environment-aware defaults prevent authorization errors
+- ✅ Complete documentation for scope differences
 
-- [ ] **Phase 1.2**: Add scope validation to tools
-  - Update `ebay_get_oauth_url` tool to validate scopes against environment
-  - Warn users when requesting environment-incompatible scopes
-  - Add scope validation error messages
-
-- [ ] **Phase 1.3**: Token scope validation
-  - Validate scopes when loading persisted tokens
-  - Warn if stored token scopes don't match current environment
-  - Consider auto-refresh if scopes are insufficient
-
-- [ ] **Phase 1.4**: Documentation
-  - Create `docs/auth/scope-differences.md`
-  - Update main README with scope information
-  - Add troubleshooting guide for scope-related errors
-
-**Files to Modify**:
-- `src/tools/tool-definitions.ts` (scope validation in tools)
-- `src/auth/oauth.ts` (token scope validation)
-- `docs/auth/` (new documentation)
-
-**Reference Files** (already exist):
-- `docs/auth/production_scopes.json` ✅
-- `docs/auth/sandbox_scopes.json` ✅
-- `src/config/environment.ts` ✅ (has helper functions)
+**Files Modified**:
+- `docs/auth/scope-differences.md` (NEW - comprehensive scope guide)
+- `README.md` (added OAuth scopes section)
+- All validation code was already in place
 
 ---
 
-### 2. Enhanced Error Handling & Logging
+## 🔴 Critical Priority - Next Features
+
+### 1. Enhanced Error Handling & Logging
 **Priority**: HIGH | **Effort**: Small (1-2 days) | **Impact**: High
 
 **Current Issue**:
@@ -107,7 +98,7 @@ Error messages are generic and don't provide enough context for debugging. No st
 
 ---
 
-### 3. Rate Limiting & Request Throttling
+### 2. Rate Limiting & Request Throttling
 **Priority**: HIGH | **Effort**: Medium (2-3 days) | **Impact**: Medium-High
 
 **Current Issue**:
@@ -316,16 +307,16 @@ Command-line interface for common operations (token management, quick queries, b
 ### Phase 1: Foundation & Critical Fixes (Week 1-2)
 **Focus**: Stability, proper OAuth scope handling, better error messages
 
-1. ✅ Zod Schema Implementation (COMPLETED)
-2. 🔄 Environment-Specific OAuth Scope Management (IN PROGRESS)
-3. Enhanced Error Handling & Logging
+1. ✅ Zod Schema Implementation (COMPLETED 2025-11-11)
+2. ✅ Environment-Specific OAuth Scope Management (COMPLETED 2025-11-11)
+3. Enhanced Error Handling & Logging (NEXT)
 4. Rate Limiting & Request Throttling
 
 **Expected Outcomes**:
-- Proper sandbox/production separation
-- Better developer experience
-- Protection against rate limits
-- Clear error messages
+- ✅ Proper sandbox/production separation (ACHIEVED)
+- ✅ Better developer experience (ACHIEVED)
+- Protection against rate limits (PENDING)
+- Clear error messages (PENDING)
 
 ---
 

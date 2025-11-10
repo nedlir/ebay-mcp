@@ -194,6 +194,24 @@ This server supports two authentication modes:
 - No user authorization needed
 - Used automatically when user tokens unavailable
 
+### OAuth Scopes & Environment Differences
+
+**Important:** eBay's Production and Sandbox environments support different OAuth scopes. The server automatically validates scopes and warns you when requesting environment-incompatible scopes.
+
+**Key Differences:**
+- **Production**: 27 unique scopes (includes `sell.edelivery`, `commerce.shipping`)
+- **Sandbox**: 35 unique scopes (includes Buy API scopes, extended Identity scopes, `sell.item.draft`)
+- **Common**: 21 scopes available in both environments
+
+**Scope Validation:**
+- ✅ Automatic validation when generating OAuth URLs
+- ✅ Warnings when loading tokens with environment-incompatible scopes
+- ✅ Environment-specific default scopes loaded from JSON files
+
+**Recommendation:** Use default scopes (don't specify `scopes` parameter) to automatically get environment-appropriate scopes.
+
+📚 **For detailed scope information**, see [docs/auth/scope-differences.md](./docs/auth/scope-differences.md)
+
 ### API Categories
 
 The server organizes eBay's APIs into logical categories:
