@@ -1,5 +1,6 @@
 import type { EbaySellerApi } from "../api/index.js";
 import { getOAuthAuthorizationUrl } from "../config/environment.js";
+import createTokenTemplateFile from "./token-template.js";
 import {
   accountTools,
   analyticsTools,
@@ -189,6 +190,10 @@ export async function executeTool(
           "All tokens cleared successfully. You will need to re-authenticate for subsequent API calls.",
       };
     }
+
+    case "create_token_template_file":
+      return createTokenTemplateFile.execute(args);
+
 
     // Account Management
     case "ebay_get_custom_policies":

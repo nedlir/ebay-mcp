@@ -46,6 +46,14 @@ EBAY_CLIENT_SECRET=your_client_secret_here
 EBAY_ENVIRONMENT=sandbox  # or 'production'
 ```
 
+### Manual Token Configuration
+
+For development and testing, you can also configure the server by manually creating a `.ebay-mcp-tokens.json` file in your home directory. This allows the server to use your OAuth tokens without requiring you to use the `ebay_set_user_tokens` tool.
+
+You can use the `create_token_template_file` tool to generate a template file in the root of the project. Simply copy this file to your home directory and fill in the values.
+
+For detailed instructions, see the [Manual Token Configuration guide](./docs/auth/manual-token-config.md).
+
 ### 3. Run the Server
 
 ```bash
@@ -70,6 +78,7 @@ This MCP server exposes the following tools:
 | `ebay_set_user_tokens` | Claude, Claude Code |
 | `ebay_get_token_status` | Claude, Claude Code |
 | `ebay_clear_tokens` | Claude, Claude Code |
+| `create_token_template_file` | Claude, Claude Code |
 
 ### Account API
 - `ebay_get_custom_policies`

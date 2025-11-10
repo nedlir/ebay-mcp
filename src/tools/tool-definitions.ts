@@ -98,6 +98,14 @@ export const chatGptTools: ToolDefinition[] = [
       type: 'object',
       properties: {}
     }
+  },
+  {
+    name: 'create_token_template_file',
+    description: 'Creates a template .ebay-mcp-tokens.json file in the project root.',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
   }
 ];
 
