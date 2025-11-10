@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import nock from "nock";
 import { EbayApiClient } from "../../../src/api/client.js";
 import type { EbayConfig } from "../../../src/types/ebay.js";
 import {
@@ -9,15 +10,15 @@ import {
 } from "../../helpers/mock-http.js";
 import { createMockTokens } from "../../helpers/mock-token-storage.js";
 
-// Mock TokenStorage
-const mockTokenStorage = {
+// Mock TokenStorage - use vi.hoisted to ensure mock is available when hoisted
+const mockTokenStorage = vi.hoisted(() => ({
   hasTokens: vi.fn(),
   loadTokens: vi.fn(),
   saveTokens: vi.fn(),
   clearTokens: vi.fn(),
   isAccessTokenExpired: vi.fn(),
   isRefreshTokenExpired: vi.fn(),
-};
+}));
 
 vi.mock("../../../src/auth/token-storage.js", () => ({
   TokenStorage: mockTokenStorage,
@@ -354,13 +355,11 @@ describe("EbayApiClient Integration Tests", () => {
       const quickClient = new EbayApiClient(quickTimeoutConfig);
       await quickClient.initialize();
 
-      // Mock a slow response (delay longer than timeout)
-      mockEbayApiEndpoint(
-        "/sell/inventory/v1/inventory_item",
-        "get",
-        "sandbox",
-        { items: [] }
-      ).delay(35000); // Delay 35 seconds (longer than default 30s timeout)
+      // Mock a slow response using nock directly (delay longer than timeout)
+      nock("https://api.sandbox.ebay.com")
+        .get("/sell/inventory/v1/inventory_item")
+        .delay(35000) // Delay 35 seconds (longer than default 30s timeout)
+        .reply(200, { items: [] });
 
       await expect(
         quickClient.get("/sell/inventory/v1/inventory_item")

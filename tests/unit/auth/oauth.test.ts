@@ -9,15 +9,15 @@ import {
 } from "../../helpers/mock-token-storage.js";
 import { mockOAuthTokenEndpoint, cleanupMocks } from "../../helpers/mock-http.js";
 
-// Mock TokenStorage
-const mockTokenStorage = {
+// Mock TokenStorage - use vi.hoisted to ensure mock is available when hoisted
+const mockTokenStorage = vi.hoisted(() => ({
   hasTokens: vi.fn(),
   loadTokens: vi.fn(),
   saveTokens: vi.fn(),
   clearTokens: vi.fn(),
   isAccessTokenExpired: vi.fn(),
   isRefreshTokenExpired: vi.fn(),
-};
+}));
 
 vi.mock("../../../src/auth/token-storage.js", () => ({
   TokenStorage: mockTokenStorage,

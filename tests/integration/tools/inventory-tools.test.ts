@@ -9,15 +9,15 @@ import {
 } from "../../helpers/mock-http.js";
 import { createMockTokens } from "../../helpers/mock-token-storage.js";
 
-// Mock TokenStorage
-const mockTokenStorage = {
+// Mock TokenStorage - use vi.hoisted to ensure mock is available when hoisted
+const mockTokenStorage = vi.hoisted(() => ({
   hasTokens: vi.fn(),
   loadTokens: vi.fn(),
   saveTokens: vi.fn(),
   clearTokens: vi.fn(),
   isAccessTokenExpired: vi.fn(),
   isRefreshTokenExpired: vi.fn(),
-};
+}));
 
 vi.mock("../../../src/auth/token-storage.js", () => ({
   TokenStorage: mockTokenStorage,
@@ -265,7 +265,7 @@ describe("Inventory Tools Integration Tests", () => {
       };
 
       mockEbayApiEndpoint(
-        "/sell/inventory/v1/offer?marketplaceId=EBAY_US",
+        "/sell/inventory/v1/offer?marketplace_id=EBAY_US",
         "get",
         "sandbox",
         mockResponse
