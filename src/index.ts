@@ -46,13 +46,13 @@ class EbayMcpServer {
   private setupHandlers(): void {
     const tools = getToolDefinitions();
 
-    // Register each tool with the MCP server using the non-deprecated API
+    // Register each tool with the MCP server
     for (const toolDef of tools) {
       this.server.registerTool(
         toolDef.name,
         {
           description: toolDef.description,
-          inputSchema: toolDef.inputSchema as any,
+          inputSchema: toolDef.inputSchema,
         },
         async (args: Record<string, unknown>) => {
           try {
