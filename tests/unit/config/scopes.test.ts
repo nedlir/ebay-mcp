@@ -178,10 +178,17 @@ describe("Scope Validation", () => {
         "production"
       );
 
-      expect(url).toContain("https://signin.ebay.com/authorize");
-      expect(url).toContain(`client_id=${clientId}`);
-      expect(url).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
-      expect(url).toContain("response_type=code");
+      expect(url).toContain("https://signin.ebay.com/signin");
+      expect(url).toContain("ru=");
+      expect(url).toContain(`AppName=${clientId}`);
+      // Decode the ru parameter to check authorize URL contents
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).toContain("https://auth.ebay.com/oauth2/authorize");
+      expect(decodedRu).toContain(`client_id=${clientId}`);
+      expect(decodedRu).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
+      expect(decodedRu).toContain("response_type=code");
     });
 
     it("should generate valid OAuth URL for sandbox", () => {
@@ -191,10 +198,17 @@ describe("Scope Validation", () => {
         "sandbox"
       );
 
-      expect(url).toContain("https://signin.sandbox.ebay.com/authorize");
-      expect(url).toContain(`client_id=${clientId}`);
-      expect(url).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
-      expect(url).toContain("response_type=code");
+      expect(url).toContain("https://signin.sandbox.ebay.com/signin");
+      expect(url).toContain("ru=");
+      expect(url).toContain(`AppName=${clientId}`);
+      // Decode the ru parameter to check authorize URL contents
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).toContain("https://auth.sandbox.ebay.com/oauth2/authorize");
+      expect(decodedRu).toContain(`client_id=${clientId}`);
+      expect(decodedRu).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
+      expect(decodedRu).toContain("response_type=code");
     });
 
     it("should include default scopes when no scopes provided", () => {
@@ -204,9 +218,13 @@ describe("Scope Validation", () => {
         "production"
       );
 
-      expect(url).toContain("scope=");
+      // Decode the ru parameter to check scopes
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).toContain("scope=");
       // Should include at least one default scope
-      expect(url).toContain("sell.inventory");
+      expect(decodedRu).toContain("sell.inventory");
     });
 
     it("should include custom scopes when provided", () => {
@@ -222,8 +240,13 @@ describe("Scope Validation", () => {
         customScopes
       );
 
+      // Decode the ru parameter to check custom scopes
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+
       customScopes.forEach((scope) => {
-        expect(url).toContain(encodeURIComponent(scope));
+        expect(decodedRu).toContain(encodeURIComponent(scope));
       });
     });
 
@@ -238,7 +261,11 @@ describe("Scope Validation", () => {
         state
       );
 
-      expect(url).toContain(`state=${state}`);
+      // Decode the ru parameter to check state
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).toContain(`state=${state}`);
     });
 
     it("should not include state parameter when not provided", () => {
@@ -248,7 +275,11 @@ describe("Scope Validation", () => {
         "production"
       );
 
-      expect(url).not.toContain("state=");
+      // Decode the ru parameter to check state is not present
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).not.toContain("state=");
     });
 
     it("should properly encode special characters in redirect URI", () => {
@@ -260,7 +291,11 @@ describe("Scope Validation", () => {
         "production"
       );
 
-      expect(url).toContain(encodeURIComponent(specialRedirectUri));
+      // Decode the ru parameter to check redirect_uri encoding
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+      expect(decodedRu).toContain(encodeURIComponent(specialRedirectUri));
     });
 
     it("should join multiple scopes with space", () => {
@@ -276,9 +311,14 @@ describe("Scope Validation", () => {
         scopes
       );
 
+      // Decode the ru parameter to check scopes are joined
+      const ruMatch = url.match(/ru=([^&]+)/);
+      expect(ruMatch).not.toBeNull();
+      const decodedRu = decodeURIComponent(ruMatch![1]!);
+
       // Scopes should be joined and encoded
       const scopeParam = scopes.join(" ");
-      expect(url).toContain(encodeURIComponent(scopeParam));
+      expect(decodedRu).toContain(encodeURIComponent(scopeParam));
     });
   });
 });
