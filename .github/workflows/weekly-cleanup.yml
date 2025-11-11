@@ -1,27 +1,99 @@
-name: weekly workflows history cleanup
+name: Weekly Cleanup
 
 on:
+  workflow_dispatch: # Manual trigger
+    inputs:
+      days_to_keep:
+        description: 'Number of days of workflow history to keep'
+        type: number
+        default: 30
+        required: true
   schedule:
-    # Runs at 00:00 UTC every Sunday
-    - cron: "0 0 * * 0"
-  workflow_dispatch: # Allows manual triggering
+    # Runs every Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+      inputs:
+        days_to_keep:
+          description: 'Number of days of workflow history to keep'
+          type: number
+          default: 30
+          required: true
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # Required to delete workflow runs
+      contents: read # Required to checkout the repo
+
     steps:
-      - name: Placeholder for workflow history reset
-        run: |
-          echo "This workflow is scheduled to run weekly for cleanup tasks."
-          echo "GitHub Actions automatically manages workflow run history retention based on repository settings."
-          echo "If specific cleanup actions (e.g., deleting artifacts, logs, or temporary files) are needed,"
-          echo "the commands below can be adapted or replaced."
-          # Example: Clean up a specific directory (replace with actual command if needed)
-          # rm -rf /path/to/cleanup/directory/*
-          echo "Cleanup placeholder executed."
-      - name: Delete old workflow runs
-        uses: Mattraks/delete-workflow-runs@v2 # This action is deprecated. Consider using 'actions/delete-old-workflow-runs@v1' or a custom script.
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          retain_days: 7 # Keep workflow runs for 7 days
+          # Fetch all history to ensure we can see all runs
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or a version compatible with gh CLI
+
+      - name: Install GitHub CLI
+        run: |
+          type -f gh || {
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt update \
+            && sudo apt install gh -y
+          }
+
+      - name: Authenticate GitHub CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the default token provided by Actions
+        run: |
+          echo "$GITHUB_TOKEN" | gh auth login --with-token
+
+      - name: Delete old workflow runs
+        env:
+          DAYS_TO_KEEP: ${{ github.event.inputs.days_to_keep || 30 }} # Use input or default to 30 days
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          echo "Keeping workflow runs from the last $DAYS_TO_KEEP days."
+          echo "Repository: $OWNER/$REPO"
+
+          # Get all workflow runs, sorted by creation date descending
+          # We fetch more than needed to ensure we have enough to filter
+          RUNS=$(gh run list --repo $OWNER/$REPO --limit 100 --json databaseId,createdAt --jq '[.[] | sort_by(.createdAt) | reverse | .[] | "\(.databaseId):\(.createdAt)" ]')
+
+          echo "Found runs: $RUNS"
+
+          # Get current time for comparison
+          CURRENT_TIME=$(date -u +%s)
+
+          # Iterate through runs and delete old ones
+          echo "$RUNS" | while IFS=: read -r run_id created_at; do
+            # Convert created_at to Unix timestamp
+            # GitHub's createdAt is in ISO 8601 format, e.g., "2023-10-27T10:00:00Z"
+            # We need to parse this into a Unix timestamp
+            # Using `date -d` for parsing ISO 8601
+            created_timestamp=$(date -u -d "$created_at" +%s)
+
+            # Calculate age in days
+            age_seconds=$((CURRENT_TIME - created_timestamp))
+            age_days=$((age_seconds / 86400)) # 86400 seconds in a day
+
+            echo "Processing run ID: $run_id, Created: $created_at (Age: $age_days days)"
+
+            if [ "$age_days" -gt "$DAYS_TO_KEEP" ]; then
+              echo "Deleting run $run_id (Age: $age_days days, Keep: $DAYS_TO_KEEP days)..."
+              gh run delete --repo $OWNER/$REPO --id $run_id --confirm
+              if [ $? -eq 0 ]; then
+                echo "Successfully deleted run $run_id."
+              else
+                echo "Failed to delete run $run_id."
+              fi
+            else
+              echo "Keeping run $run_id (Age: $age_days days, Keep: $DAYS_TO_KEEP days)."
+            fi
+          done
