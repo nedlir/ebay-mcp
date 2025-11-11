@@ -1,6 +1,6 @@
 {
 	"name": "ebay-api-mcp-server",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "MCP server for eBay APIs - provides access to eBay developer functionality through MCP (Model Context Protocol)",
 	"type": "module",
 	"main": "build/index.js",
@@ -55,11 +55,11 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/user/ebay-api-mcp-server.git"
+		"url": "https://github.com/YosefHayim/ebay-api-mcp-server.git"
 	},
-	"homepage": "https://github.com/user/ebay-api-mcp-server#readme",
+	"homepage": "https://github.com/YosefHayim/ebay-api-mcp-server#readme",
 	"bugs": {
-		"url": "https://github.com/user/ebay-api-mcp-server/issues"
+		"url": "https://github.com/YosefHayim/ebay-api-mcp-server/issues"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.21.1",
