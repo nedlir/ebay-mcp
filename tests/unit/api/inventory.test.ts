@@ -360,4 +360,374 @@ describe('InventoryApi', () => {
       ).rejects.toThrow('requests is required and must be an object');
     });
   });
+
+  describe('getOffer', () => {
+    it('should get offer by ID', async () => {
+      const mockOffer = { offerId: 'OFFER-123' };
+      vi.mocked(client.get).mockResolvedValue(mockOffer);
+
+      const result = await api.getOffer('OFFER-123');
+
+      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-123');
+      expect(result).toEqual(mockOffer);
+    });
+
+    it('should throw error when offerId is missing', async () => {
+      await expect(api.getOffer('')).rejects.toThrow('offerId is required');
+    });
+  });
+
+  describe('updateOffer', () => {
+    it('should update offer', async () => {
+      const mockOffer = { availableQuantity: 10 };
+      vi.mocked(client.put).mockResolvedValue(undefined);
+
+      await api.updateOffer('OFFER-123', mockOffer);
+
+      expect(client.put).toHaveBeenCalledWith(
+        '/sell/inventory/v1/offer/OFFER-123',
+        mockOffer
+      );
+    });
+
+    it('should throw error when offerId is missing', async () => {
+      await expect(api.updateOffer('', {})).rejects.toThrow('offerId is required');
+    });
+
+    it('should throw error when offer data is missing', async () => {
+      await expect(api.updateOffer('OFFER-123', undefined as any)).rejects.toThrow(
+        'offer is required'
+      );
+    });
+  });
+
+  describe('bulkCreateOffer', () => {
+    it('should bulk create offers', async () => {
+      const requests = { requests: [{ sku: 'TEST-SKU' }] };
+      vi.mocked(client.post).mockResolvedValue({ responses: [] });
+
+      await api.bulkCreateOffer(requests);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/bulk_create_offer',
+        requests
+      );
+    });
+
+    it('should throw error when requests are missing', async () => {
+      await expect(api.bulkCreateOffer(undefined as any)).rejects.toThrow(
+        'requests is required'
+      );
+    });
+  });
+
+  describe('bulkPublishOffer', () => {
+    it('should bulk publish offers', async () => {
+      const requests = { requests: [{ offerId: 'OFFER-123' }] };
+      vi.mocked(client.post).mockResolvedValue({ responses: [] });
+
+      await api.bulkPublishOffer(requests);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/bulk_publish_offer',
+        requests
+      );
+    });
+
+    it('should throw error when requests are missing', async () => {
+      await expect(api.bulkPublishOffer(undefined as any)).rejects.toThrow(
+        'requests is required'
+      );
+    });
+  });
+
+  describe('getListingFees', () => {
+    it('should get listing fees', async () => {
+      const offers = { offers: [{ offerId: 'OFFER-123' }] };
+      vi.mocked(client.post).mockResolvedValue({ feeSummaries: [] });
+
+      await api.getListingFees(offers);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/offer/get_listing_fees',
+        offers
+      );
+    });
+
+    it('should throw error when offers are missing', async () => {
+      await expect(api.getListingFees(undefined as any)).rejects.toThrow(
+        'offers is required'
+      );
+    });
+  });
+
+  describe('bulkMigrateListing', () => {
+    it('should bulk migrate listings', async () => {
+      const requests = { requests: [{ listingId: 'LISTING-123' }] };
+      vi.mocked(client.post).mockResolvedValue({ responses: [] });
+
+      await api.bulkMigrateListing(requests);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/bulk_migrate_listing',
+        requests
+      );
+    });
+
+    it('should throw error when requests are missing', async () => {
+      await expect(api.bulkMigrateListing(undefined as any)).rejects.toThrow(
+        'requests is required'
+      );
+    });
+  });
+
+  describe('getProductCompatibility', () => {
+    it('should get product compatibility', async () => {
+      const mockCompatibility = { compatibleProducts: [] };
+      vi.mocked(client.get).mockResolvedValue(mockCompatibility);
+
+      const result = await api.getProductCompatibility('TEST-SKU');
+
+      expect(client.get).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item/TEST-SKU/product_compatibility'
+      );
+      expect(result).toEqual(mockCompatibility);
+    });
+
+    it('should throw error when SKU is missing', async () => {
+      await expect(api.getProductCompatibility('')).rejects.toThrow('sku is required');
+    });
+  });
+
+  describe('createOrReplaceProductCompatibility', () => {
+    it('should create or replace product compatibility', async () => {
+      const compatibility = { compatibleProducts: [] };
+      vi.mocked(client.put).mockResolvedValue(undefined);
+
+      await api.createOrReplaceProductCompatibility('TEST-SKU', compatibility);
+
+      expect(client.put).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item/TEST-SKU/product_compatibility',
+        compatibility
+      );
+    });
+
+    it('should throw error when SKU is missing', async () => {
+      await expect(
+        api.createOrReplaceProductCompatibility('', {})
+      ).rejects.toThrow('sku is required');
+    });
+
+    it('should throw error when compatibility is missing', async () => {
+      await expect(
+        api.createOrReplaceProductCompatibility('TEST-SKU', undefined as any)
+      ).rejects.toThrow('compatibility is required');
+    });
+  });
+
+  describe('deleteProductCompatibility', () => {
+    it('should delete product compatibility', async () => {
+      vi.mocked(client.delete).mockResolvedValue(undefined);
+
+      await api.deleteProductCompatibility('TEST-SKU');
+
+      expect(client.delete).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item/TEST-SKU/product_compatibility'
+      );
+    });
+
+    it('should throw error when SKU is missing', async () => {
+      await expect(api.deleteProductCompatibility('')).rejects.toThrow(
+        'sku is required'
+      );
+    });
+  });
+
+  describe('getInventoryItemGroup', () => {
+    it('should get inventory item group', async () => {
+      const mockGroup = { inventoryItemGroupKey: 'GROUP-123' };
+      vi.mocked(client.get).mockResolvedValue(mockGroup);
+
+      const result = await api.getInventoryItemGroup('GROUP-123');
+
+      expect(client.get).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item_group/GROUP-123'
+      );
+      expect(result).toEqual(mockGroup);
+    });
+
+    it('should throw error when group key is missing', async () => {
+      await expect(api.getInventoryItemGroup('')).rejects.toThrow(
+        'inventoryItemGroupKey is required'
+      );
+    });
+  });
+
+  describe('createOrReplaceInventoryItemGroup', () => {
+    it('should create or replace inventory item group', async () => {
+      const group = { title: 'Test Group', variantSKUs: ['SKU1', 'SKU2'] };
+      vi.mocked(client.put).mockResolvedValue(undefined);
+
+      await api.createOrReplaceInventoryItemGroup('GROUP-123', group);
+
+      expect(client.put).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item_group/GROUP-123',
+        group
+      );
+    });
+
+    it('should throw error when group key is missing', async () => {
+      await expect(
+        api.createOrReplaceInventoryItemGroup('', {})
+      ).rejects.toThrow('inventoryItemGroupKey is required');
+    });
+
+    it('should throw error when group data is missing', async () => {
+      await expect(
+        api.createOrReplaceInventoryItemGroup('GROUP-123', undefined as any)
+      ).rejects.toThrow('inventoryItemGroup is required');
+    });
+  });
+
+  describe('deleteInventoryItemGroup', () => {
+    it('should delete inventory item group', async () => {
+      vi.mocked(client.delete).mockResolvedValue(undefined);
+
+      await api.deleteInventoryItemGroup('GROUP-123');
+
+      expect(client.delete).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item_group/GROUP-123'
+      );
+    });
+
+    it('should throw error when group key is missing', async () => {
+      await expect(api.deleteInventoryItemGroup('')).rejects.toThrow(
+        'inventoryItemGroupKey is required'
+      );
+    });
+  });
+
+  describe('getInventoryLocation', () => {
+    it('should get inventory location', async () => {
+      const mockLocation = { merchantLocationKey: 'LOC-123' };
+      vi.mocked(client.get).mockResolvedValue(mockLocation);
+
+      const result = await api.getInventoryLocation('LOC-123');
+
+      expect(client.get).toHaveBeenCalledWith(
+        '/sell/inventory/v1/location/LOC-123'
+      );
+      expect(result).toEqual(mockLocation);
+    });
+
+    it('should throw error when location key is missing', async () => {
+      await expect(api.getInventoryLocation('')).rejects.toThrow(
+        'merchantLocationKey is required'
+      );
+    });
+  });
+
+  describe('disableInventoryLocation', () => {
+    it('should disable inventory location', async () => {
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.disableInventoryLocation('LOC-123');
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/location/LOC-123/disable',
+        {}
+      );
+    });
+
+    it('should throw error when location key is missing', async () => {
+      await expect(api.disableInventoryLocation('')).rejects.toThrow(
+        'merchantLocationKey is required'
+      );
+    });
+  });
+
+  describe('enableInventoryLocation', () => {
+    it('should enable inventory location', async () => {
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.enableInventoryLocation('LOC-123');
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/location/LOC-123/enable',
+        {}
+      );
+    });
+
+    it('should throw error when location key is missing', async () => {
+      await expect(api.enableInventoryLocation('')).rejects.toThrow(
+        'merchantLocationKey is required'
+      );
+    });
+  });
+
+  describe('updateLocationDetails', () => {
+    it('should update location details', async () => {
+      const details = { name: 'Updated Warehouse' };
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.updateLocationDetails('LOC-123', details);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/location/LOC-123/update_location_details',
+        details
+      );
+    });
+
+    it('should throw error when location key is missing', async () => {
+      await expect(api.updateLocationDetails('', {})).rejects.toThrow(
+        'merchantLocationKey is required'
+      );
+    });
+
+    it('should throw error when location details are missing', async () => {
+      await expect(
+        api.updateLocationDetails('LOC-123', undefined as any)
+      ).rejects.toThrow('locationDetails is required');
+    });
+  });
+
+  describe('bulkCreateOrReplaceInventoryItem', () => {
+    it('should bulk create or replace inventory items', async () => {
+      const requests = { requests: [{ sku: 'TEST-SKU' }] };
+      vi.mocked(client.post).mockResolvedValue({ responses: [] });
+
+      await api.bulkCreateOrReplaceInventoryItem(requests);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/bulk_create_or_replace_inventory_item',
+        requests
+      );
+    });
+
+    it('should throw error when requests are missing', async () => {
+      await expect(
+        api.bulkCreateOrReplaceInventoryItem(undefined as any)
+      ).rejects.toThrow('requests is required');
+    });
+  });
+
+  describe('bulkGetInventoryItem', () => {
+    it('should bulk get inventory items', async () => {
+      const requests = { requests: [{ sku: 'TEST-SKU' }] };
+      vi.mocked(client.post).mockResolvedValue({ responses: [] });
+
+      await api.bulkGetInventoryItem(requests);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/inventory/v1/bulk_get_inventory_item',
+        requests
+      );
+    });
+
+    it('should throw error when requests are missing', async () => {
+      await expect(api.bulkGetInventoryItem(undefined as any)).rejects.toThrow(
+        'requests is required'
+      );
+    });
+  });
 });
