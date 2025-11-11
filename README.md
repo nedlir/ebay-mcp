@@ -845,7 +845,7 @@ npm run dev
 
 ### Get Help
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/yourusername/ebay-api-mcp-server/issues)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/YosefHayim/ebay-api-mcp-server/issues)
 - **Documentation**: [eBay API Docs](https://developer.ebay.com/docs)
 - **MCP Specification**: [MCP Protocol](https://modelcontextprotocol.io/)
 
@@ -935,8 +935,8 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/ebay-api-mcp-server/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/ebay-api-mcp-server/discussions)
+- **Issues**: [GitHub Issues](https://github.com/YosefHayim/ebay-api-mcp-server/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/YosefHayim/ebay-api-mcp-server/discussions)
 - **eBay Developer Support**: [eBay Developer Forums](https://community.ebay.com/t5/Developer-Forums/ct-p/api_dev)
 
 ---
