@@ -101,6 +101,8 @@ export class EbayOAuthClient {
   async setUserTokens(
     accessToken: string,
     refreshToken: string,
+    accessTokenExpiry?: number,
+    refreshTokenExpiry?: number,
   ): Promise<void> {
     // Store tokens with default expiry (adjust based on actual token response)
     // Access tokens typically expire in 2 hours (7200 seconds)
@@ -110,8 +112,8 @@ export class EbayOAuthClient {
       accessToken,
       refreshToken,
       tokenType: "Bearer",
-      accessTokenExpiry: now + 7200 * 1000, // 2 hours
-      refreshTokenExpiry: now + 18 * 30 * 24 * 60 * 60 * 1000, // ~18 months
+      accessTokenExpiry: accessTokenExpiry ?? (now + 7200 * 1000), // 2 hours default
+      refreshTokenExpiry: refreshTokenExpiry ?? (now + 18 * 30 * 24 * 60 * 60 * 1000), // ~18 months default
     };
 
     this.userTokens = storedTokens;

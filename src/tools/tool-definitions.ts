@@ -84,6 +84,32 @@ export const chatGptTools: ToolDefinition[] = [
     name: 'create_token_template_file',
     description: 'Creates a template .ebay-mcp-tokens.json file in the project root.',
     inputSchema: {}
+  },
+  {
+    name: 'ebay_convert_date_to_timestamp',
+    description: 'Convert a date string or number to Unix timestamp (milliseconds). Supports ISO 8601 dates, Unix timestamps (seconds or milliseconds), and relative time (e.g., "in 2 hours", "in 7200 seconds"). Useful when setting token expiry times from user input.',
+    inputSchema: {
+      dateInput: z.union([z.string(), z.number()]).describe('Date to convert. Supports ISO 8601 strings (e.g., "2025-01-15T10:30:00Z"), Unix timestamps (seconds or milliseconds), or relative time (e.g., "in 2 hours")')
+    }
+  },
+  {
+    name: 'ebay_validate_token_expiry',
+    description: 'Validate token expiry times and get recommendations. Checks if access/refresh tokens are expired or expiring soon, and provides actionable recommendations (e.g., refresh access token, re-authorize user).',
+    inputSchema: {
+      accessTokenExpiry: z.union([z.string(), z.number()]).describe('Access token expiry time. Can be ISO date string, Unix timestamp (seconds or milliseconds), or relative time'),
+      refreshTokenExpiry: z.union([z.string(), z.number()]).describe('Refresh token expiry time. Can be ISO date string, Unix timestamp (seconds or milliseconds), or relative time')
+    }
+  },
+  {
+    name: 'ebay_set_user_tokens_with_expiry',
+    description: 'Set user access and refresh tokens with custom expiry times. This is an enhanced version of ebay_set_user_tokens that accepts expiry times and can automatically refresh the access token if it\'s expired but the refresh token is valid. Useful when user provides tokens that may already be partially expired.',
+    inputSchema: {
+      accessToken: z.string().min(1).describe('eBay user access token'),
+      refreshToken: z.string().min(1).describe('eBay user refresh token'),
+      accessTokenExpiry: z.union([z.string(), z.number()]).optional().describe('Optional: Access token expiry time. If not provided, defaults to 2 hours from now. Can be ISO date string, Unix timestamp, or relative time (e.g., "in 7200 seconds")'),
+      refreshTokenExpiry: z.union([z.string(), z.number()]).optional().describe('Optional: Refresh token expiry time. If not provided, defaults to 18 months from now. Can be ISO date string, Unix timestamp, or relative time'),
+      autoRefresh: z.boolean().optional().default(true).describe('If true and access token is expired but refresh token is valid, automatically refresh the access token. Default: true')
+    }
   }
 ];
 

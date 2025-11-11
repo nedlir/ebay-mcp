@@ -1,6 +1,7 @@
 import type { EbaySellerApi } from "@/api/index.js";
 import { getOAuthAuthorizationUrl, validateScopes } from "@/config/environment.js";
 import { createTokenTemplateFileExecute } from "@/tools/token-template.js";
+import { convertToTimestamp, validateTokenExpiry } from "@/utils/date-converter.js";
 import {
   accountTools,
   analyticsTools,
@@ -254,6 +255,115 @@ export async function executeTool(
     case "create_token_template_file":
       return await createTokenTemplateFileExecute(args);
 
+    case "ebay_convert_date_to_timestamp": {
+      const dateInput = args.dateInput as string | number;
+
+      try {
+        const timestamp = convertToTimestamp(dateInput);
+
+        return {
+          success: true,
+          timestamp,
+          input: dateInput,
+          formattedDate: new Date(timestamp).toISOString(),
+          message: `Successfully converted to timestamp: ${timestamp}ms (${new Date(timestamp).toISOString()})`
+        };
+      } catch (error) {
+        throw new Error(`Failed to convert date: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    case "ebay_validate_token_expiry": {
+      const accessTokenExpiry = args.accessTokenExpiry as string | number;
+      const refreshTokenExpiry = args.refreshTokenExpiry as string | number;
+
+      try {
+        // Convert to timestamps
+        const accessExpiry = convertToTimestamp(accessTokenExpiry);
+        const refreshExpiry = convertToTimestamp(refreshTokenExpiry);
+
+        // Validate
+        const validation = validateTokenExpiry(accessExpiry, refreshExpiry);
+
+        return {
+          ...validation,
+          accessTokenExpiryTimestamp: accessExpiry,
+          refreshTokenExpiryTimestamp: refreshExpiry,
+          accessTokenExpiryDate: new Date(accessExpiry).toISOString(),
+          refreshTokenExpiryDate: new Date(refreshExpiry).toISOString()
+        };
+      } catch (error) {
+        throw new Error(`Failed to validate token expiry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    case "ebay_set_user_tokens_with_expiry": {
+      const accessToken = args.accessToken as string;
+      const refreshToken = args.refreshToken as string;
+      const accessTokenExpiry = args.accessTokenExpiry as string | number | undefined;
+      const refreshTokenExpiry = args.refreshTokenExpiry as string | number | undefined;
+      const autoRefresh = (args.autoRefresh as boolean) ?? true;
+
+      if (!accessToken || !refreshToken) {
+        throw new Error("Both accessToken and refreshToken are required");
+      }
+
+      try {
+        // Convert expiry times to timestamps if provided
+        let accessExpiry: number | undefined;
+        let refreshExpiry: number | undefined;
+
+        if (accessTokenExpiry !== undefined) {
+          accessExpiry = convertToTimestamp(accessTokenExpiry);
+        }
+
+        if (refreshTokenExpiry !== undefined) {
+          refreshExpiry = convertToTimestamp(refreshTokenExpiry);
+        }
+
+        // Set tokens (will use defaults if expiry times not provided)
+        await api.setUserTokens(accessToken, refreshToken, accessExpiry, refreshExpiry);
+
+        // Get the stored token info to check expiry status
+        const tokenInfo = api.getTokenInfo();
+
+        // If autoRefresh is enabled and access token is expired but refresh token is valid
+        if (autoRefresh && tokenInfo.accessTokenExpired && !tokenInfo.refreshTokenExpired) {
+          try {
+            // Force a refresh by calling getAccessToken
+            const authClient = api.getAuthClient().getOAuthClient();
+            await authClient.getAccessToken();
+
+            // Get updated token info
+            const updatedTokenInfo = api.getTokenInfo();
+
+            return {
+              success: true,
+              message: "User tokens stored successfully. Access token was expired, so it was automatically refreshed.",
+              tokenInfo: updatedTokenInfo,
+              refreshed: true
+            };
+          } catch (refreshError) {
+            return {
+              success: true,
+              message: "User tokens stored, but failed to refresh expired access token. You may need to re-authorize.",
+              tokenInfo,
+              refreshed: false,
+              refreshError: refreshError instanceof Error ? refreshError.message : 'Unknown error'
+            };
+          }
+        }
+
+        return {
+          success: true,
+          message: "User tokens successfully stored. These tokens will be used for all subsequent API requests and will be automatically refreshed when needed.",
+          tokenInfo,
+          refreshed: false
+        };
+      } catch (error) {
+        throw new Error(`Failed to set user tokens: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
 
     // Account Management
     case "ebay_get_custom_policies":
