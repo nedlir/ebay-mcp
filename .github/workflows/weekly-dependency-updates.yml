@@ -14,8 +14,10 @@ jobs:
       pull-requests: write # Needed to create PRs
 
     steps:
-      - name: Checkout code
+      - name: Checkout dev branch
         uses: actions/checkout@v4
+        with:
+          ref: dev # Checkout the dev branch
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -48,28 +50,27 @@ jobs:
         env:
           CI: true # Ensure pnpm behaves correctly in CI
 
-      - name: Create Pull Request if updates are found
+      - name: Update dependencies and create PR to stage
         if: steps.check-outdated.outputs.has_updates == 'true'
         run: |
-          # Generate a unique branch name
-          BRANCH_NAME="deps/update-$(date +%Y-%m-%d-%H-%M-%S)"
-          git checkout -b $BRANCH_NAME
-
-          # Update dependencies
+          # Update dependencies directly on the dev branch
           pnpm update
 
-          # Commit changes
+          # Commit changes to the dev branch
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m "chore: Update dependencies"
 
-          # Push branch and create Pull Request
-          git push origin $BRANCH_NAME
+          # Push changes to the dev branch
+          git push origin dev
 
-          # Use GitHub CLI to create the PR. Ensure GH CLI is installed in the runner.
-          # The GITHUB_TOKEN secret is automatically provided by GitHub Actions.
-          gh pr create --base main --head $BRANCH_NAME --title "Weekly Dependency Updates" --body "Automated dependency updates." --label "dependencies"
+          # Create a Pull Request from the dev branch to the stage branch
+          # This fulfills the requirement of PRs to 'dev' (by updating it directly)
+          # and 'stage' (by creating a PR from dev to stage).
+          # It also avoids creating a new separate branch for each run.
+          gh pr create --base stage --head dev --title "Weekly Dependency Updates to stage" --body "Automated dependency updates from dev to stage." --label "dependencies"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Required for gh cli and pushing to repo
           CI: true
+
