@@ -2,33 +2,31 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8
-        run_install: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18' # Or a version compatible with your project, e.g., '20'
-        cache: 'pnpm'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Or a version compatible with your project, e.g., '20'
+          cache: "pnpm"
 
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
-
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-
-    - name: Run tests with coverage
-      run: pnpm run test:coverage
+      - name: Run tests with coverage
+        run: pnpm run test:coverage
