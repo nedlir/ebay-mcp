@@ -66,8 +66,11 @@
 ## 📋 Prerequisites
 
 - **Node.js** 18.0.0 or higher
+- **Package Manager**: npm (comes with Node.js) or pnpm (install with `npm install -g pnpm`)
 - **eBay Developer Account** with API credentials ([Get credentials](https://developer.ebay.com/my/keys))
 - **OAuth Authorization Server** (optional, for HTTP mode) - Keycloak, Auth0, Okta, etc.
+
+> 💡 **Package Manager Flexibility**: This project supports both npm and pnpm. All commands in this guide work with either package manager.
 
 ---
 
@@ -782,6 +785,7 @@ ebay-api-mcp-server/
 
 ### Setup Development Environment
 
+**Using npm:**
 ```bash
 # Install dependencies
 npm install
@@ -803,10 +807,41 @@ npm run test:watch
 
 # Run tests with UI
 npm run test:ui
+
+# Lint and format check
+npm run check
+```
+
+**Using pnpm:**
+```bash
+# Install dependencies
+pnpm install
+
+# Type check
+pnpm typecheck
+
+# Watch mode (auto-rebuild on changes)
+pnpm watch
+
+# Run tests
+pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run tests with UI
+pnpm test:ui
+
+# Lint and format check
+pnpm check
 ```
 
 ### Build Commands
 
+**Using npm:**
 ```bash
 # Clean build artifacts
 npm run clean
@@ -818,8 +853,21 @@ npm run build
 npm run clean && npm run build
 ```
 
+**Using pnpm:**
+```bash
+# Clean build artifacts
+pnpm clean
+
+# Build TypeScript to JavaScript
+pnpm build
+
+# Rebuild (clean + build)
+pnpm clean && pnpm build
+```
+
 ### Testing
 
+**Using npm:**
 ```bash
 # Run all tests
 npm test
@@ -832,6 +880,21 @@ npm run test:coverage
 
 # Open interactive test UI
 npm run test:ui
+```
+
+**Using pnpm:**
+```bash
+# Run all tests
+pnpm test
+
+# Watch mode for development
+pnpm test:watch
+
+# Generate coverage report
+pnpm test:coverage
+
+# Open interactive test UI
+pnpm test:ui
 ```
 
 ### Code Quality
@@ -914,11 +977,20 @@ We welcome contributions! Here's how to get started:
 1. Fork the repository
 2. Clone your fork: `git clone https://github.com/yourusername/ebay-api-mcp-server.git`
 3. Create a branch: `git checkout -b feature/your-feature-name`
-4. Install dependencies: `npm install`
+4. Install dependencies:
+   - **npm**: `npm install`
+   - **pnpm**: `pnpm install`
 5. Make your changes
-6. Run tests: `npm test`
-7. Type check: `npm run typecheck`
-8. Submit a pull request
+6. Run tests:
+   - **npm**: `npm test`
+   - **pnpm**: `pnpm test`
+7. Type check:
+   - **npm**: `npm run typecheck`
+   - **pnpm**: `pnpm typecheck`
+8. Run quality checks:
+   - **npm**: `npm run check`
+   - **pnpm**: `pnpm check`
+9. Submit a pull request
 
 ### Contribution Guidelines
 
