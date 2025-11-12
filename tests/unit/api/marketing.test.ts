@@ -1289,7 +1289,7 @@ describe("MarketingApi", () => {
       );
 
       expect(mockClient.post).toHaveBeenCalledWith(
-        "/sell/marketing/v1/ad_campaign/campaign-001/bulk_update_negative_keyword",
+        "/sell/marketing/v1/ad_campaign/campaign-001/bulk_update_negative_keywords",
         bulkRequest
       );
       expect(result).toEqual(mockResponse);
