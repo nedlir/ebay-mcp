@@ -81,11 +81,6 @@ export const chatGptTools: ToolDefinition[] = [
     inputSchema: {}
   },
   {
-    name: 'create_token_template_file',
-    description: 'Creates a template .ebay-mcp-tokens.json file in the project root.',
-    inputSchema: {}
-  },
-  {
     name: 'ebay_convert_date_to_timestamp',
     description: 'Convert a date string or number to Unix timestamp (milliseconds). Supports ISO 8601 dates, Unix timestamps (seconds or milliseconds), and relative time (e.g., "in 2 hours", "in 7200 seconds"). Useful when setting token expiry times from user input.',
     inputSchema: {

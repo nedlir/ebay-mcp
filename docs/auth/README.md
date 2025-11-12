@@ -554,85 +554,12 @@ Parameters:
 
 ---
 
-#### Method 3: Shell Script Token Template (🚀 Quick Setup)
-
-**Best for:** Local development, quick testing, visual file management
-
-**Step 1: Generate Template**
-
-Run the token template generator script:
-```bash
-./scripts/create-token-template.sh
-```
-
-**What the script does:**
-- Creates `.ebay-mcp-tokens.json` in project root with placeholders
-- Warns if file already exists (prevents accidental overwrites)
-- Provides detailed next steps and documentation links
-- Shows both manual editing and MCP config options
-
-**Step 2: Edit Token File**
-
-Open `.ebay-mcp-tokens.json` in your editor and replace placeholders:
-```json
-{
-  "accessToken": "v^1.1#i^1#...",
-  "refreshToken": "v^1.1#i^1#...",
-  "tokenType": "Bearer",
-  "accessTokenExpiry": 1767225600000,
-  "refreshTokenExpiry": 1825363200000,
-  "scope": "https://api.ebay.com/oauth/api_scope ..."
-}
-```
-
-**Replace these values:**
-- `accessToken`: Your eBay OAuth access token
-- `refreshToken`: Your eBay OAuth refresh token
-- `accessTokenExpiry`: Access token expiration in **milliseconds since epoch**
-- `refreshTokenExpiry`: Refresh token expiration in **milliseconds since epoch**
-- `scope`: Space-separated OAuth scopes (see [OAuth Scopes](#oauth-scopes))
-
-**Step 3: Start Server**
-
-The server automatically detects and loads tokens from `.ebay-mcp-tokens.json` on startup.
-
-**Benefits:**
-- ✅ Quick local development setup
-- ✅ Visual file-based token management
-- ✅ Interactive script with helpful prompts
-- ✅ Good for testing and debugging
-- ✅ Can commit template (without values) to git
-
----
-
-#### Method 4: MCP Tool Template Generation
-
-**Best for:** When already connected to MCP client, remote workflows
-
-**Step 1: Call MCP Tool**
-
-Use the `create_token_template_file` tool through your MCP client:
-```
-Tool: create_token_template_file
-Parameters: (none required)
-```
-
-**Step 2: Edit Token File**
-
-Follow the same steps as Method 2 (Shell Script) to edit the generated `.ebay-mcp-tokens.json` file.
-
-**Benefits:**
-- ✅ No need to access terminal
-- ✅ Works from any MCP client
-- ✅ Same file-based workflow as Method 2
-
----
-
 #### Token File Location & Security
 
 **File Location:**
 - Path: `.ebay-mcp-tokens.json` (project root directory, same folder as `package.json`)
-- Script: `./scripts/create-token-template.sh`
+- Generated automatically by `setup-mcp-clients.sh` if tokens are provided in `mcp-setup.json`
+- Can also be created by `ebay_set_user_tokens` or `ebay_set_user_tokens_with_expiry` tools
 
 **Security:**
 - ✅ Already protected in `.gitignore` (line 17) - won't be committed to git

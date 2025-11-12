@@ -1,7 +1,6 @@
 import type { EbaySellerApi } from "@/api/index.js";
 import { TokenStorage } from "@/auth/token-storage.js";
 import { getOAuthAuthorizationUrl, validateScopes } from "@/config/environment.js";
-import { createTokenTemplateFileExecute } from "@/tools/token-template.js";
 import { convertToTimestamp, validateTokenExpiry } from "@/utils/date-converter.js";
 import {
   accountTools,
@@ -252,9 +251,6 @@ export async function executeTool(
           "All tokens cleared successfully. You will need to re-authenticate for subsequent API calls.",
       };
     }
-
-    case "create_token_template_file":
-      return await createTokenTemplateFileExecute(args);
 
     case "ebay_convert_date_to_timestamp": {
       const dateInput = args.dateInput as string | number;

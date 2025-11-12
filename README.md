@@ -374,7 +374,6 @@ The server supports two authentication modes:
 - `ebay_get_user` - Get authenticated user identity
 - `ebay_get_listing_violations` - Get compliance violations
 - `ebay_translate` - Translate listing text
-- `create_token_template_file` - Generate token template file
 - `SearchClaudeCodeDocs` - Search Claude Code documentation
 
 For the complete list of 170+ tools, see [Tool Definitions](src/tools/tool-definitions.ts).
