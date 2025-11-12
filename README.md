@@ -500,16 +500,13 @@ ebay-api-mcp-server/
 │   ├── auth/                   # OAuth & authentication guides
 │   └── sell-apps/              # OpenAPI specifications
 ├── scripts/                    # Build and setup scripts
-│   ├── create-mcp-setup.sh     # Generate mcp-setup.json
-│   ├── setup-mcp-clients.sh    # Auto-configure MCP clients
-│   └── ...
+│   └── generate-types.sh       # Generate TypeScript types from OpenAPI specs
 ├── tests/                      # Test suite
 │   ├── unit/                   # Unit tests
 │   ├── integration/            # Integration tests
 │   └── e2e/                    # End-to-end tests
 ├── build/                      # Compiled JavaScript
 ├── .env.example                # Environment template
-├── mcp-setup.json.template     # Configuration template
 └── package.json                # Dependencies & scripts
 ```
 
