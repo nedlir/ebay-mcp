@@ -51,9 +51,9 @@ describe('eBay Enums', () => {
       expect(MarketplaceId.EBAY_CA).toBe('EBAY_CA');
     });
 
-    it('should contain 40 marketplace values', () => {
+    it('should contain 41 marketplace values', () => {
       const values = Object.values(MarketplaceId);
-      expect(values).toHaveLength(40);
+      expect(values).toHaveLength(41);
     });
   });
 
@@ -91,7 +91,7 @@ describe('eBay Enums', () => {
       expect(OrderPaymentStatus.PAID).toBe('PAID');
       expect(OrderPaymentStatus.PENDING).toBe('PENDING');
       expect(OrderPaymentStatus.FAILED).toBe('FAILED');
-      expect(OrderPaymentStatus.REFUNDED).toBe('REFUNDED');
+      expect(OrderPaymentStatus.FULLY_REFUNDED).toBe('FULLY_REFUNDED');
       expect(OrderPaymentStatus.PARTIALLY_REFUNDED).toBe('PARTIALLY_REFUNDED');
     });
 
@@ -162,10 +162,10 @@ describe('eBay Enums', () => {
     it('should have payment method values', () => {
       expect(PaymentMethodType.PAYPAL).toBe('PAYPAL');
       expect(PaymentMethodType.CREDIT_CARD).toBe('CREDIT_CARD');
-      expect(PaymentMethodType.APPLE_PAY).toBe('APPLE_PAY');
-      expect(PaymentMethodType.GOOGLE_PAY).toBe('GOOGLE_PAY');
-      expect(PaymentMethodType.PAY_UPON_INVOICE).toBe('PAY_UPON_INVOICE');
-      expect(PaymentMethodType.ESCROW).toBe('ESCROW');
+      expect(PaymentMethodType.PERSONAL_CHECK).toBe('PERSONAL_CHECK');
+      expect(PaymentMethodType.MONEY_ORDER_CASHIERS_CHECK).toBe('MONEY_ORDER_CASHIERS_CHECK');
+      expect(PaymentMethodType.CASH_ON_DELIVERY).toBe('CASH_ON_DELIVERY');
+      expect(PaymentMethodType.CASH_ON_PICKUP).toBe('CASH_ON_PICKUP');
     });
 
     it('should contain 6 payment method values', () => {
@@ -201,10 +201,10 @@ describe('eBay Enums', () => {
   describe('ComplianceType', () => {
     it('should have compliance type values', () => {
       expect(ComplianceType.PRODUCT_ADOPTION).toBe('PRODUCT_ADOPTION');
-      expect(ComplianceType.OUTSIDE_EBAY_BUYING_AND_SELLING).toBe('OUTSIDE_EBAY_BUYING_AND_SELLING');
-      expect(ComplianceType.PRODUCT_COMPLIANCE).toBe('PRODUCT_COMPLIANCE');
-      expect(ComplianceType.REGULATORY_INFORMATION).toBe('REGULATORY_INFORMATION');
-      expect(ComplianceType.SAFETY_RECALL).toBe('SAFETY_RECALL');
+      expect(ComplianceType.PRODUCT_SAFETY).toBe('PRODUCT_SAFETY');
+      expect(ComplianceType.PRODUCT_ASPECTS_ADOPTION).toBe('PRODUCT_ASPECTS_ADOPTION');
+      expect(ComplianceType.REGULATORY).toBe('REGULATORY');
+      expect(ComplianceType.RETURNS_POLICY).toBe('RETURNS_POLICY');
     });
   });
 
@@ -252,8 +252,8 @@ describe('eBay Enums', () => {
       expect(LanguageCode.FR).toBe('fr');
       expect(LanguageCode.ES).toBe('es');
       expect(LanguageCode.IT).toBe('it');
-      expect(LanguageCode.JA).toBe('ja');
-      expect(LanguageCode.ZH).toBe('zh');
+      expect(LanguageCode.NL).toBe('nl');
+      expect(LanguageCode.ZH_CN).toBe('zh-CN');
     });
 
     it('should contain 13 language codes', () => {
