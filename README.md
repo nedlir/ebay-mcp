@@ -1,3 +1,9 @@
+<div align="center">
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-Support%20the%20Project-yellow?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/yosefhayim)
+
+</div>
+
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/yosefhayim-ebay-api-mcp-server-badge.png)](https://mseep.ai/app/yosefhayim-ebay-api-mcp-server)
 
 # eBay API MCP Server
@@ -59,17 +65,62 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
 
 ### API Coverage
 
-| Category | Tools | Description |
-|----------|-------|-------------|
-| **Account Management** | 28 | Policies, payments, subscriptions, sales tax |
-| **Inventory** | 30 | Items, offers, locations, product compatibility |
-| **Fulfillment** | 4 | Orders, shipping, refunds |
-| **Marketing** | 9 | Campaigns, promotions, recommendations |
-| **Analytics** | 4 | Traffic reports, seller standards, metrics |
-| **Communication** | 3 | Messaging, negotiation, feedback |
-| **Metadata** | 25 | Policies, compatibility, jurisdictions |
-| **Taxonomy** | 4 | Category trees, suggestions, item aspects |
-| **Other** | 8+ | Compliance, identity, translation, eDelivery |
+<table width="100%">
+<thead>
+  <tr>
+    <th width="25%">Category</th>
+    <th width="10%">Tools</th>
+    <th width="65%">Description</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><strong>Account Management</strong></td>
+    <td align="center">28</td>
+    <td>Fulfillment policies, payment policies, return policies, sales tax management, seller subscriptions, KYC verification</td>
+  </tr>
+  <tr>
+    <td><strong>Inventory</strong></td>
+    <td align="center">30</td>
+    <td>Inventory items, offers, bulk operations, inventory locations, product compatibility, publishing and unpublishing</td>
+  </tr>
+  <tr>
+    <td><strong>Fulfillment</strong></td>
+    <td align="center">4</td>
+    <td>Order retrieval, order details, shipping fulfillment, refund processing</td>
+  </tr>
+  <tr>
+    <td><strong>Marketing</strong></td>
+    <td align="center">9</td>
+    <td>Campaign management (create, pause, resume, clone), promotions, ad groups, keyword bidding, recommendations</td>
+  </tr>
+  <tr>
+    <td><strong>Analytics</strong></td>
+    <td align="center">4</td>
+    <td>Traffic reports, seller performance standards, customer service metrics, listing analytics</td>
+  </tr>
+  <tr>
+    <td><strong>Communication</strong></td>
+    <td align="center">3</td>
+    <td>Buyer-seller messaging, message threading, negotiation handling, feedback management</td>
+  </tr>
+  <tr>
+    <td><strong>Metadata</strong></td>
+    <td align="center">25</td>
+    <td>Category policies, automotive compatibility, regulatory jurisdictions, listing structure validation</td>
+  </tr>
+  <tr>
+    <td><strong>Taxonomy</strong></td>
+    <td align="center">4</td>
+    <td>Category tree navigation, category suggestions, item aspect requirements, attribute schemas</td>
+  </tr>
+  <tr>
+    <td><strong>Other</strong></td>
+    <td align="center">8+</td>
+    <td>Compliance violations, user identity, translation services, eDelivery, VERO reporting</td>
+  </tr>
+</tbody>
+</table>
 
 ---
 
@@ -704,8 +755,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**[⬆ Back to Top](#ebay-api-mcp-server)**
-
-Made with ❤️ by [Yosef Hayim Sabag](https://github.com/YosefHayim)
+Dedicated to the open source community by [Yosef Hayim Sabag](https://github.com/YosefHayim)
 
 </div>
