@@ -17,11 +17,11 @@
 [![MCP](https://img.shields.io/badge/MCP-1.21.1-blue)](https://modelcontextprotocol.io)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
-[![Tests](https://img.shields.io/badge/tests-870%20passing-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-890%2B%20passing-brightgreen)](tests/)
 [![Coverage](https://img.shields.io/badge/coverage-99%25%2B-brightgreen)](tests/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that provides AI assistants with full access to eBay's Sell APIs through 140 tools for inventory management, order fulfillment, marketing campaigns, analytics, and more.
+A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that provides AI assistants with full access to eBay's Sell APIs through 230+ tools for inventory management, order fulfillment, marketing campaigns, analytics, shipping, and more.
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Configuration](#-configuration) • [OAuth Setup](#-oauth-setup) • [Documentation](#-documentation) • [Community](#-community) • [Contributing](#-contributing)
 
@@ -54,7 +54,7 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
 
 ### Core Capabilities
 
-- **140 eBay API Tools** - Comprehensive coverage of eBay Sell APIs across 8 categories
+- **230+ eBay API Tools** - Comprehensive coverage of eBay Sell APIs across 8 categories
 - **Dual Transport Modes** - STDIO (local) and HTTP with OAuth 2.1 (remote multi-user)
 - **OAuth 2.0 Support** - Full user token management with automatic refresh
 - **Simple Configuration** - All authentication managed through `.env` file only (no token files)
@@ -76,23 +76,23 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
 <tbody>
   <tr>
     <td><strong>Account Management</strong></td>
-    <td align="center">28</td>
-    <td>Fulfillment policies, payment policies, return policies, sales tax management, seller subscriptions, KYC verification</td>
+    <td align="center">40</td>
+    <td>Fulfillment policies, payment policies, return policies, sales tax management, seller subscriptions, KYC verification, program eligibility</td>
   </tr>
   <tr>
     <td><strong>Inventory</strong></td>
-    <td align="center">30</td>
+    <td align="center">34</td>
     <td>Inventory items, offers, bulk operations, inventory locations, product compatibility, publishing and unpublishing</td>
   </tr>
   <tr>
     <td><strong>Fulfillment</strong></td>
-    <td align="center">4</td>
-    <td>Order retrieval, order details, shipping fulfillment, refund processing</td>
+    <td align="center">15</td>
+    <td>Order retrieval, order details, shipping fulfillment, refund processing, payment disputes</td>
   </tr>
   <tr>
     <td><strong>Marketing</strong></td>
-    <td align="center">9</td>
-    <td>Campaign management (create, pause, resume, clone), promotions, ad groups, keyword bidding, recommendations</td>
+    <td align="center">77</td>
+    <td>Campaign management (create, pause, resume, clone), promotions, ad groups, keyword bidding, targeting, bulk operations, reporting</td>
   </tr>
   <tr>
     <td><strong>Analytics</strong></td>
@@ -101,13 +101,13 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
   </tr>
   <tr>
     <td><strong>Communication</strong></td>
-    <td align="center">3</td>
-    <td>Buyer-seller messaging, message threading, negotiation handling, feedback management</td>
+    <td align="center">22</td>
+    <td>Buyer-seller messaging, message threading, negotiation handling, feedback management, notifications, inquiry topics</td>
   </tr>
   <tr>
     <td><strong>Metadata</strong></td>
-    <td align="center">25</td>
-    <td>Category policies, automotive compatibility, regulatory jurisdictions, listing structure validation</td>
+    <td align="center">27</td>
+    <td>Category policies, automotive compatibility, regulatory jurisdictions, listing structure validation, aspect metadata</td>
   </tr>
   <tr>
     <td><strong>Taxonomy</strong></td>
@@ -116,8 +116,8 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
   </tr>
   <tr>
     <td><strong>Other</strong></td>
-    <td align="center">8+</td>
-    <td>Compliance violations, user identity, translation services, eDelivery, VERO reporting</td>
+    <td align="center">39</td>
+    <td>Compliance violations, user identity, translation services, eDelivery shipping (packages, bundles, tracking), VERO reporting</td>
   </tr>
 </tbody>
 </table>
@@ -413,7 +413,7 @@ The server supports two authentication modes:
 - `ebay_translate` - Translate listing text
 - `SearchClaudeCodeDocs` - Search Claude Code documentation
 
-For the complete list of 140 tools, see the modular [Tool Definitions](src/tools/definitions/).
+For the complete list of 230+ tools, see the modular [Tool Definitions](src/tools/definitions/).
 
 ---
 
@@ -425,7 +425,7 @@ This server has been tested and verified with the following MCP clients:
 
 | Client | Status | Version Tested | Notes |
 | :----- | :----- | :------------- | :---- |
-| **[Gemini CLI](https://gemini.google.com/)** | ✅ **Working** | Latest | Fully functional with all 140 tools |
+| **[Gemini CLI](https://gemini.google.com/)** | ✅ **Working** | Latest | Fully functional with all 230+ tools |
 | **[Claude Code](https://claude.ai/code)** | ✅ **Working** | Latest | Complete integration, all features supported |
 | **[Codex](https://github.com/openai/codex)** | ✅ **Working** | Latest | Tested and verified |
 

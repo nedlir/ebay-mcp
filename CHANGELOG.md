@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Documentation Updates**: Updated tool counts throughout documentation
+  - README.md: Updated from 140 to 230+ tools in all references
+  - Tool category breakdown updated with accurate counts (Account: 40, Inventory: 34, Marketing: 77, etc.)
+  - Test count badge updated to 890+ passing tests
+  - Enhanced descriptions for Communication, Metadata, and Other categories
+- **TODO.md Updates**: Marked eDelivery MCP tools and Zod schemas as complete
+- **CLAUDE.md Updates**: Moved completed tasks to "Recent Completed Tasks" section
+
 ## [1.2.2] - 2025-01-13
 
 ### Added
