@@ -13,7 +13,6 @@
 		"watch": "tsc --watch",
 		"dev": "tsx src/index.ts",
 		"dev:http": "tsx src/server-http.ts",
-		"dev:cf": "wrangler dev",
 		"start": "node build/index.js",
 		"start:http": "node build/server-http.js",
 		"clean": "rm -rf build",
@@ -26,16 +25,13 @@
 		"test:watch": "vitest",
 		"test:ui": "vitest --ui",
 		"test:coverage": "vitest run --coverage",
-		"test:endpoints": "tsx scripts/test-endpoints.ts",
+		"test:endpoints": "tsx src/scripts/test-endpoints.ts",
 		"generate:types": "bash scripts/generate-types.sh",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write \"src/**/*.{ts,js,json,md}\" \"tests/**/*.{ts,js,json}\"",
 		"format:check": "prettier --check \"src/**/*.{ts,js,json,md}\" \"tests/**/*.{ts,js,json}\"",
-		"check": "npm run typecheck && npm run lint && npm run format:check",
-		"cf:create-kv": "wrangler kv namespace create OAUTH_KV",
-		"cf:deploy": "npm run build && wrangler deploy",
-		"cf:tail": "wrangler tail"
+		"check": "npm run typecheck && npm run lint && npm run format:check"
 	},
 	"keywords": [
 		"mcp",
@@ -79,7 +75,6 @@
 		"zod": "3"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20250106.0",
 		"@eslint/js": "^9.39.1",
 		"@types/cors": "^2.8.19",
 		"@types/eslint__js": "^9.14.0",
@@ -102,8 +97,7 @@
 		"tsx": "^4.19.2",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.46.4",
-		"vitest": "^4.0.8",
-		"wrangler": "^3.109.0"
+		"vitest": "^4.0.8"
 	},
 	"engines": {
 		"node": ">=18.0.0"

@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+// @ts-nocheck - Test script with dynamic API calls
 
 /**
  * Endpoint Testing Script - Failure-Focused Logging
@@ -13,8 +14,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { EbaySellerApi } from '../src/api/index.js';
-import { getEbayConfig } from '../src/config/environment.js';
+import { EbaySellerApi } from '@/api/index.js';
+import { getEbayConfig } from '@/config/environment.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

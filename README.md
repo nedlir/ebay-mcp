@@ -55,12 +55,11 @@ A comprehensive [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 
 ### Core Capabilities
 
 - **230+ eBay API Tools** - Comprehensive coverage of eBay Sell APIs across 8 categories
-- **Dual Transport Modes** - STDIO (local) and HTTP with OAuth 2.1 (remote multi-user)
+- **Local MCP Server** - STDIO transport for direct integration with MCP clients (Claude Desktop, Cline, etc.)
 - **OAuth 2.0 Support** - Full user token management with automatic refresh
 - **Simple Configuration** - All authentication managed through `.env` file only (no token files)
 - **Type Safety** - Built with TypeScript, Zod validation, OpenAPI-generated types, and 33+ native enums
 - **Smart Authentication** - Automatic fallback from user tokens (10k-50k req/day) to client credentials (1k req/day)
-- **Cloudflare Workers** - Deploy as HTTP server for remote MCP access with OAuth 2.1 support
 - **Comprehensive Testing** - 870+ tests with 99%+ function coverage and 85%+ line coverage
 
 ### API Coverage

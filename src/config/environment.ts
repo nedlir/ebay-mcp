@@ -6,15 +6,9 @@ import type { EbayConfig } from '@/types/ebay.js';
 
 config();
 
-// Handle environments where import.meta.url might not be available (e.g., Cloudflare Workers)
-let __dirname: string;
-try {
-  const __filename = fileURLToPath(import.meta.url);
-  __dirname = dirname(__filename);
-} catch {
-  // Fallback for Cloudflare Workers or other environments
-  __dirname = '';
-}
+// Get the current directory for loading scope files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Type for scope JSON structure
 interface ScopeDefinition {
