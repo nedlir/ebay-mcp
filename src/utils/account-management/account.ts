@@ -294,11 +294,11 @@ export const createFulfillmentPolicySchema = z.object({
       description: 'Whether Click and Collect is available',
     })
     .optional(),
-  shipping_options: z.array(z.record(z.any())).optional(),
+  shipping_options: z.array(z.record(z.unknown())).optional(),
   ship_to_locations: z
     .object({
-      region_included: z.array(z.record(z.any())).optional(),
-      region_excluded: z.array(z.record(z.any())).optional(),
+      region_included: z.array(z.record(z.unknown())).optional(),
+      region_excluded: z.array(z.record(z.unknown())).optional(),
     })
     .optional(),
 });
@@ -334,11 +334,11 @@ export const updateFulfillmentPolicySchema = z.object({
   marketplace_id: marketplaceIdSchema,
   name: z.string().max(64).optional(),
   pickup_drop_off: z.boolean().optional(),
-  shipping_options: z.array(z.record(z.any())).optional(),
+  shipping_options: z.array(z.record(z.unknown())).optional(),
   ship_to_locations: z
     .object({
-      region_included: z.array(z.record(z.any())).optional(),
-      region_excluded: z.array(z.record(z.any())).optional(),
+      region_included: z.array(z.record(z.unknown())).optional(),
+      region_excluded: z.array(z.record(z.unknown())).optional(),
     })
     .optional(),
 });
@@ -436,7 +436,7 @@ export const createPaymentPolicySchema = z.object({
           value: z.number().int().optional(),
         })
         .optional(),
-      payment_methods: z.array(z.record(z.any())).optional(),
+      payment_methods: z.array(z.record(z.unknown())).optional(),
     })
     .optional(),
   full_payment_due_in: z
@@ -459,7 +459,7 @@ export const createPaymentPolicySchema = z.object({
     })
     .max(64, 'name must be 64 characters or less')
     .optional(),
-  payment_methods: z.array(z.record(z.any())).optional(),
+  payment_methods: z.array(z.record(z.unknown())).optional(),
 });
 
 /**
@@ -495,7 +495,7 @@ export const updatePaymentPolicySchema = z.object({
           value: z.number().int().optional(),
         })
         .optional(),
-      payment_methods: z.array(z.record(z.any())).optional(),
+      payment_methods: z.array(z.record(z.unknown())).optional(),
     })
     .optional(),
   full_payment_due_in: z
@@ -507,7 +507,7 @@ export const updatePaymentPolicySchema = z.object({
   immediate_pay: z.boolean().optional(),
   marketplace_id: marketplaceIdSchema,
   name: z.string().max(64).optional(),
-  payment_methods: z.array(z.record(z.any())).optional(),
+  payment_methods: z.array(z.record(z.unknown())).optional(),
 });
 
 /**

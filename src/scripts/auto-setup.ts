@@ -175,14 +175,19 @@ function updateClientConfig(client: MCPClient, serverConfig: MCPServerConfig): b
     }
 
     // Read existing config or create new one
-    let config: any = { mcpServers: {} };
+    interface McpConfig {
+      mcpServers: Record<string, unknown>;
+      [key: string]: unknown;
+    }
+    let config: McpConfig = { mcpServers: {} };
     if (existsSync(client.configPath)) {
       try {
         const existing = readFileSync(client.configPath, 'utf-8');
-        config = JSON.parse(existing);
-        if (!config.mcpServers) {
-          config.mcpServers = {};
-        }
+        const parsed = JSON.parse(existing) as Partial<McpConfig>;
+        config = {
+          ...parsed,
+          mcpServers: parsed.mcpServers || {},
+        };
       } catch (error) {
         printWarning(`Invalid JSON in ${client.configPath}, creating backup and new config`);
         const backup = `${client.configPath}.backup.${Date.now()}`;

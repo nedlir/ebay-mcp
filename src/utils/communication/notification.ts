@@ -390,7 +390,7 @@ export const getTopicsSchema = z.object({
 export const createSubscriptionFilterSchema = z.object({
   subscription_id: idSchema('Subscription ID', 'The unique identifier for the subscription'),
   filter_schema: z
-    .record(z.any(), {
+    .record(z.unknown(), {
       invalid_type_error: 'filter_schema must be an object',
       description:
         'Valid JSON Schema Core document (version 2020-12 or later) to filter notifications',

@@ -67,21 +67,21 @@ type BulkUpdateNegativeKeywordResponse = components['schemas']['BulkUpdateNegati
 type NegativeKeywordRequest = components['schemas']['UpdateNegativeKeywordRequest'];
 
 // Types that don't exist in OpenAPI schema - using fallback types
-type BulkDeleteAdsByInventoryReferenceRequest = Record<string, any>;
+type BulkDeleteAdsByInventoryReferenceRequest = Record<string, unknown>;
 type CreateAdGroupRequest = AdGroupRequest;
-type UpdateKeywordByKeywordIdRequest = Record<string, any>;
-type SuggestKeywordsRequest = Record<string, any>;
-type UpdateBidRequest = Record<string, any>;
-type ItemPromotionRequest = Record<string, any>;
-type ItemPromotionResponse = Record<string, any>;
-type ItemPromotionsPagedCollection = Record<string, any>;
-type TargetingRequest = Record<string, any>;
-type TargetingResponse = Record<string, any>;
-type BulkDeleteKeywordsResponse = Record<string, any>;
-type CreateKeywordResponse = Record<string, any>;
-type BulkDeleteNegativeKeywordRequest = Record<string, any>;
-type BulkDeleteNegativeKeywordResponse = Record<string, any>;
-type Report = Record<string, any>;
+type UpdateKeywordByKeywordIdRequest = Record<string, unknown>;
+type SuggestKeywordsRequest = Record<string, unknown>;
+type UpdateBidRequest = Record<string, unknown>;
+type ItemPromotionRequest = Record<string, unknown>;
+type ItemPromotionResponse = Record<string, unknown>;
+type ItemPromotionsPagedCollection = Record<string, unknown>;
+type TargetingRequest = Record<string, unknown>;
+type TargetingResponse = Record<string, unknown>;
+type BulkDeleteKeywordsResponse = Record<string, unknown>;
+type CreateKeywordResponse = Record<string, unknown>;
+type BulkDeleteNegativeKeywordRequest = Record<string, unknown>;
+type BulkDeleteNegativeKeywordResponse = Record<string, unknown>;
+type Report = Record<string, unknown>;
 type BulkUpdateKeywordRequest = BulkUpdateKeywordBidsRequest;
 
 /**
