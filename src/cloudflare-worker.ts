@@ -190,8 +190,10 @@ async function handleMcpPost(request: Request, env: Env): Promise<Response> {
     write(chunk: string) {
       this.body += chunk;
     },
-    end() {
-      // No-op
+    end(chunk?: string) {
+      if (chunk) {
+        this.body += chunk;
+      }
     },
   } as any;
 
@@ -247,8 +249,10 @@ async function handleSessionRequest(request: Request): Promise<Response> {
     write(chunk: string) {
       this.body += chunk;
     },
-    end() {
-      // No-op
+    end(chunk?: string) {
+      if (chunk) {
+        this.body += chunk;
+      }
     },
   } as any;
 
