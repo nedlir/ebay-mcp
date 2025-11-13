@@ -33,6 +33,23 @@ const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '../..');
 
 // ═══════════════════════════════════════════════════════════════════════════
+// eBay Brand Colors
+// ═══════════════════════════════════════════════════════════════════════════
+
+const ebayColors = {
+  red: chalk.hex('#E53238'),
+  blue: chalk.hex('#0064D2'),
+  yellow: chalk.hex('#F5AF02'),
+  green: chalk.hex('#85B716'),
+};
+
+// Rotate through eBay colors for questions
+function getQuestionColor(index: number): chalk.Chalk {
+  const colors = [ebayColors.red, ebayColors.blue, ebayColors.yellow, ebayColors.green];
+  return colors[index % colors.length];
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // CLI Arguments
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -78,69 +95,66 @@ function createClickableLink(text: string, url: string): string {
 }
 
 const EBAY_LOGO = `
-╔════════════════════════════════════════════════════════════╗
-║                                                            ║
-║     ███████╗██████╗  █████╗ ██╗   ██╗                     ║
-║     ██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝                     ║
-║     █████╗  ██████╔╝███████║ ╚████╔╝                      ║
-║     ██╔══╝  ██╔══██╗██╔══██║  ╚██╔╝                       ║
-║     ███████╗██████╔╝██║  ██║   ██║                        ║
-║     ╚══════╝╚═════╝ ╚═╝  ╚═╝   ╚═╝                        ║
-║                                                            ║
-║              🔌 API MCP Server Setup 🚀                    ║
-║                                                            ║
-╚════════════════════════════════════════════════════════════╝
+   ${ebayColors.red('███████╗')}${ebayColors.blue('██████╗ ')} ${ebayColors.yellow('█████╗ ')}${ebayColors.green('██╗   ██╗')}
+   ${ebayColors.red('██╔════╝')}${ebayColors.blue('██╔══██╗')}${ebayColors.yellow('██╔══██╗')}${ebayColors.green('╚██╗ ██╔╝')}
+   ${ebayColors.red('█████╗  ')}${ebayColors.blue('██████╔╝')}${ebayColors.yellow('███████║')}${ebayColors.green(' ╚████╔╝ ')}
+   ${ebayColors.red('██╔══╝  ')}${ebayColors.blue('██╔══██╗')}${ebayColors.yellow('██╔══██║')}${ebayColors.green('  ╚██╔╝  ')}
+   ${ebayColors.red('███████╗')}${ebayColors.blue('██████╔╝')}${ebayColors.yellow('██║  ██║')}${ebayColors.green('   ██║   ')}
+   ${ebayColors.red('╚══════╝')}${ebayColors.blue('╚═════╝ ')}${ebayColors.yellow('╚═╝  ╚═╝')}${ebayColors.green('   ╚═╝   ')}
+
+            ${chalk.bold.white('API MCP Server Setup')}
 `;
 
 const CREATOR_CREDIT = `
-   ╔═══════════════════════════════════════════════════════╗
-   ║  Creator: ${chalk.cyan('YosefHayim')}                                 ║
-   ║  ${createClickableLink(chalk.blue.underline('linkedin.com/in/yosef-hayim-sabag'), 'https://www.linkedin.com/in/yosef-hayim-sabag/')}      ║
-   ╚═══════════════════════════════════════════════════════╝
+   Creator: ${chalk.bold('YosefHayim')}
+   ${createClickableLink(chalk.underline('linkedin.com/in/yosef-hayim-sabag'), 'https://www.linkedin.com/in/yosef-hayim-sabag/')}
 `;
 
 const OAUTH_SETUP_INFO = `
-${chalk.bold.yellow('⚠️  IMPORTANT: OAuth Setup Requirements')}
+${chalk.bold.yellow('IMPORTANT: OAuth Setup Requirements')}
 
-${chalk.bold.white('This is a local MCP server, eBay OAuth only works with HTTPS.')}
+This is a local MCP server. eBay OAuth requires HTTPS redirect URIs.
 
-${chalk.bold.cyan('Two Setup Options:')}
+${chalk.bold.white('Setup Options:')}
 
-  ${chalk.green('1. For API Testing Only (Recommended for Beginners)')}
-     ${chalk.gray('   • No OAuth needed! Just ask the LLM about schemas and endpoints')}
-     ${chalk.gray('   • Perfect for understanding how to structure API requests')}
-     ${chalk.gray('   • Limited to read-only operations')}
+  ${ebayColors.green('1. App Token Only')} (Quick Start)
+     - No OAuth needed
+     - Limited to app-level operations
+     - Good for testing and exploration
 
-  ${chalk.yellow('2. Full API Access (Requires OAuth - One-Time Setup)')}
-     ${chalk.gray('   • First time: Manual OAuth URL decode required')}
-     ${chalk.gray('   • Get your refresh token once, use forever')}
-     ${chalk.gray('   • After setup: Everything is automated')}
-     ${chalk.gray('   • Full read/write access to eBay APIs')}
+  ${ebayColors.blue('2. Full User Access')} (Recommended)
+     - Requires OAuth setup (one-time)
+     - Complete access to all APIs
+     - All operations available
 
-${chalk.bold.magenta('📝 Quick Steps for OAuth:')}
-  ${chalk.white('1.')} Run this setup to save your Client ID & Secret
-  ${chalk.white('2.')} Use ${chalk.cyan('ebay_get_oauth_url')} tool to get OAuth URL
-  ${chalk.white('3.')} Visit URL, authorize, copy callback URL
-  ${chalk.white('4.')} Manually decode the callback URL once to get tokens
-  ${chalk.white('5.')} Save refresh token - ${chalk.green('done! Everything else is automatic')}
+${chalk.bold.white('OAuth Setup Steps:')}
+  1. Run this setup wizard
+  2. Use ebay_get_oauth_url tool
+  3. Authorize in browser
+  4. Extract refresh token from callback
+  5. Add token to configuration
 
-${chalk.gray('━'.repeat(70))}
+${chalk.gray('─'.repeat(70))}
 `;
 
 const WELCOME_MESSAGE = `
-${chalk.bold.white('Welcome to the Setup Wizard! 🚀')}
+${chalk.bold.white('eBay API MCP Server Configuration')}
 
-${chalk.bold.cyan('What You Need:')}
-  ${chalk.gray('•')} eBay Client ID & Secret (from developer.ebay.com)
-  ${chalk.gray('•')} Redirect URI (RuName from eBay Developer Portal)
-  ${chalk.gray('•')} Optional: User tokens for higher rate limits
+${chalk.bold.white('Required Credentials:')}
+  - eBay Client ID
+  - eBay Client Secret
+  - Redirect URI (RuName)
 
-${chalk.bold.green('✨ Features:')}
-  ${chalk.gray('•')} Auto-detect & configure LLM clients (Claude, Cline, Continue)
-  ${chalk.gray('•')} Validate configuration with automated tests
-  ${chalk.gray('•')} Smart defaults and validation
+${chalk.bold.white('Optional:')}
+  - User Refresh Token (for user-specific operations)
 
-${chalk.gray('━'.repeat(70))}
+${chalk.bold.white('This wizard will:')}
+  - Configure your credentials
+  - Detect and setup LLM clients
+  - Validate configuration
+  - Verify API connectivity
+
+${chalk.gray('─'.repeat(70))}
 `;
 
 // ═══════════════════════════════════════════════════════════════════════════
