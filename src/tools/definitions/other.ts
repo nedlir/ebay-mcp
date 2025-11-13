@@ -107,6 +107,198 @@ export const otherApiTools: ToolDefinition[] = [
       shippingQuoteId: z.string().describe('The shipping quote ID'),
     },
   },
+  // eDelivery API - Cost & Preferences
+  {
+    name: 'ebay_get_actual_costs',
+    description: 'Get actual costs for shipped packages',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., package_id)'),
+    },
+  },
+  {
+    name: 'ebay_get_address_preferences',
+    description: 'Get address preferences for international shipping',
+    inputSchema: {},
+  },
+  {
+    name: 'ebay_create_address_preference',
+    description: 'Create an address preference for international shipping',
+    inputSchema: {
+      addressPreference: z.record(z.unknown()).describe('Address preference data'),
+    },
+  },
+  {
+    name: 'ebay_get_consign_preferences',
+    description: 'Get consign preferences for international shipping',
+    inputSchema: {},
+  },
+  {
+    name: 'ebay_create_consign_preference',
+    description: 'Create a consign preference for international shipping',
+    inputSchema: {
+      consignPreference: z.record(z.unknown()).describe('Consign preference data'),
+    },
+  },
+  // eDelivery API - Agents & Services
+  {
+    name: 'ebay_get_agents',
+    description: 'Get available shipping agents for international shipping',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., country)'),
+    },
+  },
+  {
+    name: 'ebay_get_battery_qualifications',
+    description: 'Get battery qualifications for international shipping',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., battery_type)'),
+    },
+  },
+  {
+    name: 'ebay_get_dropoff_sites',
+    description: 'Get available dropoff sites for international shipping',
+    inputSchema: {
+      params: z.record(z.string()).describe('Query parameters (postal_code, country required)'),
+    },
+  },
+  {
+    name: 'ebay_get_shipping_services',
+    description: 'Get available shipping services for international shipping',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., country)'),
+    },
+  },
+  // eDelivery API - Bundles
+  {
+    name: 'ebay_create_bundle',
+    description: 'Create a bundle of packages for international shipping',
+    inputSchema: {
+      bundleRequest: z.record(z.unknown()).describe('Bundle creation data'),
+    },
+  },
+  {
+    name: 'ebay_get_bundle',
+    description: 'Get bundle details by ID',
+    inputSchema: {
+      bundleId: z.string().describe('The bundle ID'),
+    },
+  },
+  {
+    name: 'ebay_cancel_bundle',
+    description: 'Cancel a bundle by ID',
+    inputSchema: {
+      bundleId: z.string().describe('The bundle ID to cancel'),
+    },
+  },
+  {
+    name: 'ebay_get_bundle_label',
+    description: 'Get shipping label for a bundle',
+    inputSchema: {
+      bundleId: z.string().describe('The bundle ID'),
+    },
+  },
+  // eDelivery API - Packages (Single)
+  {
+    name: 'ebay_create_package',
+    description: 'Create a package for international shipping',
+    inputSchema: {
+      packageRequest: z.record(z.unknown()).describe('Package creation data'),
+    },
+  },
+  {
+    name: 'ebay_get_package',
+    description: 'Get package details by ID',
+    inputSchema: {
+      packageId: z.string().describe('The package ID'),
+    },
+  },
+  {
+    name: 'ebay_delete_package',
+    description: 'Delete a package by ID',
+    inputSchema: {
+      packageId: z.string().describe('The package ID to delete'),
+    },
+  },
+  {
+    name: 'ebay_get_package_by_order_line_item',
+    description: 'Get package details by order line item ID',
+    inputSchema: {
+      orderLineItemId: z.string().describe('The order line item ID'),
+    },
+  },
+  {
+    name: 'ebay_cancel_package',
+    description: 'Cancel a package by ID',
+    inputSchema: {
+      packageId: z.string().describe('The package ID to cancel'),
+    },
+  },
+  {
+    name: 'ebay_clone_package',
+    description: 'Clone a package to create a duplicate',
+    inputSchema: {
+      packageId: z.string().describe('The package ID to clone'),
+    },
+  },
+  {
+    name: 'ebay_confirm_package',
+    description: 'Confirm a package for shipping',
+    inputSchema: {
+      packageId: z.string().describe('The package ID to confirm'),
+    },
+  },
+  // eDelivery API - Packages (Bulk)
+  {
+    name: 'ebay_bulk_cancel_packages',
+    description: 'Cancel multiple packages in one request',
+    inputSchema: {
+      bulkCancelRequest: z.record(z.unknown()).describe('Bulk cancel request data'),
+    },
+  },
+  {
+    name: 'ebay_bulk_confirm_packages',
+    description: 'Confirm multiple packages in one request',
+    inputSchema: {
+      bulkConfirmRequest: z.record(z.unknown()).describe('Bulk confirm request data'),
+    },
+  },
+  {
+    name: 'ebay_bulk_delete_packages',
+    description: 'Delete multiple packages in one request',
+    inputSchema: {
+      bulkDeleteRequest: z.record(z.unknown()).describe('Bulk delete request data'),
+    },
+  },
+  // eDelivery API - Labels & Tracking
+  {
+    name: 'ebay_get_labels',
+    description: 'Get shipping labels for packages',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., package_id)'),
+    },
+  },
+  {
+    name: 'ebay_get_handover_sheet',
+    description: 'Get handover sheet for packages',
+    inputSchema: {
+      params: z.record(z.string()).optional().describe('Query parameters (e.g., bundle_id)'),
+    },
+  },
+  {
+    name: 'ebay_get_tracking',
+    description: 'Get tracking information for packages',
+    inputSchema: {
+      params: z.record(z.string()).describe('Query parameters (tracking_number required)'),
+    },
+  },
+  // eDelivery API - Other
+  {
+    name: 'ebay_create_complaint',
+    description: 'Create a complaint for international shipping issues',
+    inputSchema: {
+      complaintRequest: z.record(z.unknown()).describe('Complaint request data'),
+    },
+  },
 ];
 
 export const claudeTools: ToolDefinition[] = [

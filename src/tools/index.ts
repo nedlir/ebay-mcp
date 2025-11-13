@@ -568,7 +568,7 @@ export async function executeTool(
         args.salesTaxBase as Record<string, unknown>
       );
     case 'ebay_bulk_create_or_replace_sales_tax':
-      return await api.account.bulkCreateOrReplaceSalesTax(args.requests as unknown as { countryCode: string; jurisdictionId: string; salesTaxBase: Record<string, unknown> }[]);
+      return await api.account.bulkCreateOrReplaceSalesTax(args.requests as { countryCode: string; jurisdictionId: string; salesTaxBase: Record<string, unknown> }[]);
     case 'ebay_delete_sales_tax':
       return await api.account.deleteSalesTax(
         args.countryCode as string,
@@ -1478,6 +1478,82 @@ export async function executeTool(
       );
     case 'ebay_get_shipping_quote':
       return await api.edelivery.getShippingQuote(args.shippingQuoteId as string);
+
+    // eDelivery - Cost & Preferences
+    case 'ebay_get_actual_costs':
+      return await api.edelivery.getActualCosts(args.params as Record<string, string> | undefined);
+    case 'ebay_get_address_preferences':
+      return await api.edelivery.getAddressPreferences();
+    case 'ebay_create_address_preference':
+      return await api.edelivery.createAddressPreference(
+        args.addressPreference as Record<string, unknown>
+      );
+    case 'ebay_get_consign_preferences':
+      return await api.edelivery.getConsignPreferences();
+    case 'ebay_create_consign_preference':
+      return await api.edelivery.createConsignPreference(
+        args.consignPreference as Record<string, unknown>
+      );
+
+    // eDelivery - Agents & Services
+    case 'ebay_get_agents':
+      return await api.edelivery.getAgents(args.params as Record<string, string> | undefined);
+    case 'ebay_get_battery_qualifications':
+      return await api.edelivery.getBatteryQualifications(
+        args.params as Record<string, string> | undefined
+      );
+    case 'ebay_get_dropoff_sites':
+      return await api.edelivery.getDropoffSites(args.params as Record<string, string>);
+    case 'ebay_get_shipping_services':
+      return await api.edelivery.getShippingServices(args.params as Record<string, string> | undefined);
+
+    // eDelivery - Bundles
+    case 'ebay_create_bundle':
+      return await api.edelivery.createBundle(args.bundleRequest as Record<string, unknown>);
+    case 'ebay_get_bundle':
+      return await api.edelivery.getBundle(args.bundleId as string);
+    case 'ebay_cancel_bundle':
+      return await api.edelivery.cancelBundle(args.bundleId as string);
+    case 'ebay_get_bundle_label':
+      return await api.edelivery.getBundleLabel(args.bundleId as string);
+
+    // eDelivery - Packages (Single)
+    case 'ebay_create_package':
+      return await api.edelivery.createPackage(args.packageRequest as Record<string, unknown>);
+    case 'ebay_get_package':
+      return await api.edelivery.getPackage(args.packageId as string);
+    case 'ebay_delete_package':
+      return await api.edelivery.deletePackage(args.packageId as string);
+    case 'ebay_get_package_by_order_line_item':
+      return await api.edelivery.getPackageByOrderLineItem(args.orderLineItemId as string);
+    case 'ebay_cancel_package':
+      return await api.edelivery.cancelPackage(args.packageId as string);
+    case 'ebay_clone_package':
+      return await api.edelivery.clonePackage(args.packageId as string);
+    case 'ebay_confirm_package':
+      return await api.edelivery.confirmPackage(args.packageId as string);
+
+    // eDelivery - Packages (Bulk)
+    case 'ebay_bulk_cancel_packages':
+      return await api.edelivery.bulkCancelPackages(args.bulkCancelRequest as Record<string, unknown>);
+    case 'ebay_bulk_confirm_packages':
+      return await api.edelivery.bulkConfirmPackages(
+        args.bulkConfirmRequest as Record<string, unknown>
+      );
+    case 'ebay_bulk_delete_packages':
+      return await api.edelivery.bulkDeletePackages(args.bulkDeleteRequest as Record<string, unknown>);
+
+    // eDelivery - Labels & Tracking
+    case 'ebay_get_labels':
+      return await api.edelivery.getLabels(args.params as Record<string, string> | undefined);
+    case 'ebay_get_handover_sheet':
+      return await api.edelivery.getHandoverSheet(args.params as Record<string, string> | undefined);
+    case 'ebay_get_tracking':
+      return await api.edelivery.getTracking(args.params as Record<string, string>);
+
+    // eDelivery - Other
+    case 'ebay_create_complaint':
+      return await api.edelivery.createComplaint(args.complaintRequest as Record<string, unknown>);
 
     case 'SearchClaudeCodeDocs':
       // Placeholder implementation for SearchClaudeCodeDocs

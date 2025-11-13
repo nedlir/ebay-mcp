@@ -13,64 +13,59 @@
 - [x] MCP tools added (5 tools)
 - [x] Zod schemas added
 
-## Missing Endpoints
-
-### eDelivery API (`edelivery.ts`)
-
-The following 24 endpoint methods need to be implemented based on the OpenAPI spec at `docs/sell-apps/other-apis/sell_edelivery_international_shipping_oas3.json`:
+### eDelivery API (`edelivery.ts`) - ✅ All endpoints implemented (v1.2.1)
 
 **Cost & Preferences:**
 
-- [ ] `getActualCosts` - GET /actual_costs
-- [ ] `getAddressPreferences` - GET /address_preference
-- [ ] `createAddressPreference` - POST /address_preference
-- [ ] `getConsignPreferences` - GET /consign_preference
-- [ ] `createConsignPreference` - POST /consign_preference
+- [x] `getActualCosts` - GET /actual_costs
+- [x] `getAddressPreferences` - GET /address_preference
+- [x] `createAddressPreference` - POST /address_preference
+- [x] `getConsignPreferences` - GET /consign_preference
+- [x] `createConsignPreference` - POST /consign_preference
 
 **Agents & Services:**
 
-- [ ] `getAgents` - GET /agents
-- [ ] `getBatteryQualifications` - GET /battery_qualifications
-- [ ] `getDropoffSites` - GET /dropoff_sites
-- [ ] `getShippingServices` - GET /services
+- [x] `getAgents` - GET /agents
+- [x] `getBatteryQualifications` - GET /battery_qualifications
+- [x] `getDropoffSites` - GET /dropoff_sites
+- [x] `getShippingServices` - GET /services
 
 **Bundles:**
 
-- [ ] `createBundle` - POST /bundle
-- [ ] `getBundle` - GET /bundle/{bundle_id}
-- [ ] `cancelBundle` - POST /bundle/{bundle_id}/cancel
-- [ ] `getBundleLabel` - GET /bundle/{bundle_id}/label
+- [x] `createBundle` - POST /bundle
+- [x] `getBundle` - GET /bundle/{bundle_id}
+- [x] `cancelBundle` - POST /bundle/{bundle_id}/cancel
+- [x] `getBundleLabel` - GET /bundle/{bundle_id}/label
 
 **Packages (Single):**
 
-- [ ] `createPackage` - POST /package
-- [ ] `getPackage` - GET /package/{package_id}
-- [ ] `deletePackage` - DELETE /package/{package_id}
-- [ ] `getPackageByOrderLineItem` - GET /package/{order_line_item_id}/item
-- [ ] `cancelPackage` - POST /package/{package_id}/cancel
-- [ ] `clonePackage` - POST /package/{package_id}/clone
-- [ ] `confirmPackage` - POST /package/{package_id}/confirm
+- [x] `createPackage` - POST /package
+- [x] `getPackage` - GET /package/{package_id}
+- [x] `deletePackage` - DELETE /package/{package_id}
+- [x] `getPackageByOrderLineItem` - GET /package/{order_line_item_id}/item
+- [x] `cancelPackage` - POST /package/{package_id}/cancel
+- [x] `clonePackage` - POST /package/{package_id}/clone
+- [x] `confirmPackage` - POST /package/{package_id}/confirm
 
 **Packages (Bulk):**
 
-- [ ] `bulkCancelPackages` - POST /package/bulk_cancel_packages
-- [ ] `bulkConfirmPackages` - POST /package/bulk_confirm_packages
-- [ ] `bulkDeletePackages` - POST /package/bulk_delete_packages
+- [x] `bulkCancelPackages` - POST /package/bulk_cancel_packages
+- [x] `bulkConfirmPackages` - POST /package/bulk_confirm_packages
+- [x] `bulkDeletePackages` - POST /package/bulk_delete_packages
 
 **Labels & Tracking:**
 
-- [ ] `getLabels` - GET /labels
-- [ ] `getHandoverSheet` - GET /handover_sheet
-- [ ] `getTracking` - GET /tracking
+- [x] `getLabels` - GET /labels
+- [x] `getHandoverSheet` - GET /handover_sheet
+- [x] `getTracking` - GET /tracking
 
 **Other:**
 
-- [ ] `createComplaint` - POST /complaint
+- [x] `createComplaint` - POST /complaint
+- [x] Unit tests added (24 tests)
 
 **Note:** Existing `createShippingQuote` and `getShippingQuote` are NOT part of the eDelivery spec above. They appear to be from a different API version or spec file.
 
 ## Future Improvements
 
-- **eDelivery Implementation:** Complete the 24 missing endpoints listed above
-- **Testing:** Add unit tests for all eDelivery endpoints
-- **MCP Tools:** Add tool definitions and Zod schemas for eDelivery endpoints
+- **MCP Tools:** Add tool definitions and Zod schemas for all eDelivery endpoints (currently pending)

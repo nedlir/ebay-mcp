@@ -7,16 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2025-01-13
+
+### Added
+- **Complete eDelivery API Implementation** (24 new endpoints)
+  - **Cost & Preferences**: `getActualCosts`, `getAddressPreferences`, `createAddressPreference`, `getConsignPreferences`, `createConsignPreference`
+  - **Agents & Services**: `getAgents`, `getBatteryQualifications`, `getDropoffSites`, `getShippingServices`
+  - **Bundles**: `createBundle`, `getBundle`, `cancelBundle`, `getBundleLabel`
+  - **Packages (Single)**: `createPackage`, `getPackage`, `deletePackage`, `getPackageByOrderLineItem`, `cancelPackage`, `clonePackage`, `confirmPackage`
+  - **Packages (Bulk)**: `bulkCancelPackages`, `bulkConfirmPackages`, `bulkDeletePackages`
+  - **Labels & Tracking**: `getLabels`, `getHandoverSheet`, `getTracking`
+  - **Other**: `createComplaint`
+
+- **MCP Tool Definitions**: 24 new tool definitions for all eDelivery endpoints with Zod validation schemas
+  - Tools cover international shipping package management, bundle operations, label generation, and tracking
+  - Complete input validation for all endpoint parameters
+
+### Changed
+- **Test Suite Enhancements**
+  - Added 24 comprehensive unit tests for all eDelivery API endpoints
+  - Improved test coverage across integration and unit test files
+  - Enhanced error handling tests for API client and OAuth flows
+
+### Documentation
+- **Updated TODO.md**: Marked all 24 eDelivery endpoints as complete
+- Comprehensive documentation for eDelivery API usage patterns
+
 ### Fixed
 - **Auto-Setup Token Configuration**: Fixed MCP client configurations to include all token environment variables
   - `EBAY_USER_REFRESH_TOKEN`, `EBAY_USER_ACCESS_TOKEN`, and `EBAY_APP_ACCESS_TOKEN` now automatically included
   - Resolves "Access token is missing" error when using Claude Desktop and other MCP clients
   - Tokens from `.env` file are now properly propagated to all detected MCP clients
 
-### Documentation
-- Updated OAuth setup instructions with clearer guidance on token configuration
-- Added troubleshooting section for MCP client token issues
-- Clarified the difference between `.env` token persistence vs MCP tool memory-only tokens
+- **OAuth Setup Instructions**: Updated with clearer guidance on token configuration
+- **Troubleshooting Documentation**: Added section for MCP client token issues
+- **Token Persistence Clarity**: Clarified the difference between `.env` token persistence vs MCP tool memory-only tokens
 
 ## [1.2.1] - 2025-01-13
 

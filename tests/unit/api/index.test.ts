@@ -3,15 +3,19 @@ import { EbaySellerApi } from '@/api/index.js';
 import type { EbayConfig } from '@/types/ebay.js';
 
 // Mock EbayOAuthClient
-const mockOAuthClient = vi.hoisted(() => ({
+const mockOAuthClient = {
   hasUserTokens: vi.fn(),
   getAccessToken: vi.fn(),
   setUserTokens: vi.fn(),
   initialize: vi.fn(),
-}));
+  getTokenInfo: vi.fn(),
+  isAuthenticated: vi.fn(),
+};
 
 vi.mock('@/auth/oauth.js', () => ({
-  EbayOAuthClient: vi.fn().mockImplementation(() => mockOAuthClient),
+  EbayOAuthClient: vi.fn(function(this: any) {
+    return mockOAuthClient;
+  }),
 }));
 
 describe('EbaySellerApi', () => {
@@ -31,6 +35,12 @@ describe('EbaySellerApi', () => {
     mockOAuthClient.hasUserTokens.mockReturnValue(true);
     mockOAuthClient.getAccessToken.mockResolvedValue('test_access_token');
     mockOAuthClient.initialize.mockResolvedValue(undefined);
+    mockOAuthClient.isAuthenticated.mockReturnValue(true);
+    mockOAuthClient.getTokenInfo.mockReturnValue({
+      hasUserTokens: true,
+      accessToken: 'test_access_token',
+      refreshToken: 'test_refresh_token',
+    });
 
     api = new EbaySellerApi(config);
     await api.initialize();

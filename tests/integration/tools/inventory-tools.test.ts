@@ -5,15 +5,19 @@ import type { EbayConfig } from '../../../src/types/ebay.js';
 import { mockEbayApiEndpoint, mockEbayApiError, cleanupMocks } from '../../helpers/mock-http.js';
 
 // Mock EbayOAuthClient
-const mockOAuthClient = vi.hoisted(() => ({
+const mockOAuthClient = {
   hasUserTokens: vi.fn(),
   getAccessToken: vi.fn(),
   setUserTokens: vi.fn(),
   initialize: vi.fn(),
-}));
+  getTokenInfo: vi.fn(),
+  isAuthenticated: vi.fn(),
+};
 
 vi.mock('../../../src/auth/oauth.js', () => ({
-  EbayOAuthClient: vi.fn().mockImplementation(() => mockOAuthClient),
+  EbayOAuthClient: vi.fn(function(this: any) {
+    return mockOAuthClient;
+  }),
 }));
 
 describe('Inventory Tools Integration Tests', () => {

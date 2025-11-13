@@ -32,6 +32,11 @@ describe('EbayOAuthClient', () => {
     vi.clearAllMocks();
     cleanupMocks();
 
+    // Clear environment variables to prevent automatic token loading
+    delete process.env.EBAY_USER_REFRESH_TOKEN;
+    delete process.env.EBAY_USER_ACCESS_TOKEN;
+    delete process.env.EBAY_APP_ACCESS_TOKEN;
+
     // Default config
     config = {
       clientId: 'test_client_id',

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 
 /**
  * Auto-Setup Script for eBay API MCP Server
@@ -76,11 +75,11 @@ interface MCPClient {
   configGenerated?: boolean;
 }
 
-function getConfigPaths(): { [key: string]: string } {
+function getConfigPaths(): Record<string, string> {
   const home = homedir();
   const os = platform();
 
-  const paths: { [key: string]: string } = {};
+  const paths: Record<string, string> = {};
 
   // Claude Desktop config paths
   if (os === 'darwin') {

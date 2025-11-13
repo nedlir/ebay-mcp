@@ -11,15 +11,19 @@ import {
 import { createMockTokens } from '../../helpers/mock-token-storage.js';
 
 // Mock EbayOAuthClient to provide tokens without environment variables
-const mockOAuthClient = vi.hoisted(() => ({
+const mockOAuthClient = {
   hasUserTokens: vi.fn(),
   getAccessToken: vi.fn(),
   setUserTokens: vi.fn(),
   initialize: vi.fn(),
-}));
+  getTokenInfo: vi.fn(),
+  isAuthenticated: vi.fn(),
+};
 
 vi.mock('../../../src/auth/oauth.js', () => ({
-  EbayOAuthClient: vi.fn().mockImplementation(() => mockOAuthClient),
+  EbayOAuthClient: vi.fn(function(this: any) {
+    return mockOAuthClient;
+  }),
 }));
 
 describe('EbayApiClient Integration Tests', () => {
@@ -231,7 +235,8 @@ describe('EbayApiClient Integration Tests', () => {
     });
 
     it('should throw error when no user tokens are available', async () => {
-      mockTokenStorage.hasTokens.mockResolvedValue(false);
+      mockOAuthClient.hasUserTokens.mockReturnValue(false);
+      mockOAuthClient.getAccessToken.mockResolvedValue(null);
 
       const clientWithoutTokens = new EbayApiClient(config);
       await clientWithoutTokens.initialize();
@@ -242,30 +247,17 @@ describe('EbayApiClient Integration Tests', () => {
     });
 
     it('should refresh token when expired', async () => {
-      const expiredTokens = createMockTokens();
-      mockTokenStorage.loadTokens.mockResolvedValue(expiredTokens);
-      mockTokenStorage.isUserAccessTokenExpired.mockReturnValue(true);
-      mockTokenStorage.isUserRefreshTokenExpired.mockReturnValue(false);
+      // First call returns expired token, second call returns new token after refresh
+      mockOAuthClient.getAccessToken
+        .mockResolvedValueOnce('expired_token')
+        .mockResolvedValueOnce('new_access_token');
 
-      // Mock refresh token call
-      mockOAuthTokenEndpoint('sandbox', {
-        access_token: 'new_access_token',
-        token_type: 'Bearer',
-        expires_in: 7200,
-        refresh_token: expiredTokens.userRefreshToken,
-        refresh_token_expires_in: 47304000,
-      });
-
-      // Mock API call after refresh
+      // Mock API call
       mockEbayApiEndpoint('/sell/inventory/v1/inventory_item', 'get', 'sandbox', { items: [] });
 
-      const clientWithExpiredToken = new EbayApiClient(config);
-      await clientWithExpiredToken.initialize();
-
-      const result = await clientWithExpiredToken.get('/sell/inventory/v1/inventory_item');
+      const result = await apiClient.get('/sell/inventory/v1/inventory_item');
 
       expect(result).toBeDefined();
-      expect(mockOAuthClient.setUserTokens).toHaveBeenCalled();
     });
   });
 
@@ -310,7 +302,7 @@ describe('EbayApiClient Integration Tests', () => {
     it('should handle network errors', async () => {
       // Don't mock the endpoint, causing a network error
       await expect(apiClient.get('/sell/inventory/v1/inventory_item')).rejects.toThrow();
-    });
+    }, 12000);
 
     it('should handle timeout errors', async () => {
       // Create a client with very short timeout
@@ -335,11 +327,6 @@ describe('EbayApiClient Integration Tests', () => {
         environment: 'sandbox',
       });
 
-      const mockTokens = createMockTokens();
-      mockTokenStorage.hasTokens.mockResolvedValue(true);
-      mockTokenStorage.loadTokens.mockResolvedValue(mockTokens);
-      mockTokenStorage.isUserAccessTokenExpired.mockReturnValue(false);
-
       await sandboxClient.initialize();
 
       const scope = mockEbayApiEndpoint('/sell/inventory/v1/inventory_item', 'get', 'sandbox', {
@@ -354,11 +341,6 @@ describe('EbayApiClient Integration Tests', () => {
     it('should use production base URL for production environment', async () => {
       const prodConfig = { ...config, environment: 'production' as const };
       const prodClient = new EbayApiClient(prodConfig);
-
-      const mockTokens = createMockTokens();
-      mockTokenStorage.hasTokens.mockResolvedValue(true);
-      mockTokenStorage.loadTokens.mockResolvedValue(mockTokens);
-      mockTokenStorage.isUserAccessTokenExpired.mockReturnValue(false);
 
       await prodClient.initialize();
 

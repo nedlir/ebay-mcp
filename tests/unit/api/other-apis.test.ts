@@ -379,6 +379,288 @@ describe('Other APIs', () => {
 
       expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/shipping_quote/QUOTE123');
     });
+
+    // Cost & Preferences
+    it('should get actual costs', async () => {
+      const mockResponse = { costs: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getActualCosts({ package_id: 'PKG123' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/actual_costs', {
+        package_id: 'PKG123',
+      });
+    });
+
+    it('should get address preferences', async () => {
+      const mockResponse = { preferences: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getAddressPreferences();
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/address_preference');
+    });
+
+    it('should create address preference', async () => {
+      const mockResponse = { preferenceId: 'PREF123' };
+      const addressData = { address: { city: 'New York' } };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.createAddressPreference(addressData);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/logistics/v1/address_preference',
+        addressData
+      );
+    });
+
+    it('should get consign preferences', async () => {
+      const mockResponse = { preferences: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getConsignPreferences();
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/consign_preference');
+    });
+
+    it('should create consign preference', async () => {
+      const mockResponse = { preferenceId: 'CONS123' };
+      const consignData = { consignment: { type: 'DROPOFF' } };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.createConsignPreference(consignData);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/logistics/v1/consign_preference',
+        consignData
+      );
+    });
+
+    // Agents & Services
+    it('should get agents', async () => {
+      const mockResponse = { agents: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getAgents({ country: 'US' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/agents', { country: 'US' });
+    });
+
+    it('should get battery qualifications', async () => {
+      const mockResponse = { qualifications: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getBatteryQualifications({ battery_type: 'LITHIUM_ION' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/battery_qualifications', {
+        battery_type: 'LITHIUM_ION',
+      });
+    });
+
+    it('should get dropoff sites', async () => {
+      const mockResponse = { sites: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getDropoffSites({ postal_code: '10001', country: 'US' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/dropoff_sites', {
+        postal_code: '10001',
+        country: 'US',
+      });
+    });
+
+    it('should get shipping services', async () => {
+      const mockResponse = { services: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getShippingServices({ country: 'US' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/services', { country: 'US' });
+    });
+
+    // Bundles
+    it('should create bundle', async () => {
+      const mockResponse = { bundleId: 'BUNDLE123' };
+      const bundleData = { packages: ['PKG1', 'PKG2'] };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.createBundle(bundleData);
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/bundle', bundleData);
+    });
+
+    it('should get bundle', async () => {
+      const mockResponse = { bundleId: 'BUNDLE123' };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getBundle('BUNDLE123');
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/bundle/BUNDLE123');
+    });
+
+    it('should cancel bundle', async () => {
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.cancelBundle('BUNDLE123');
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/bundle/BUNDLE123/cancel', {});
+    });
+
+    it('should get bundle label', async () => {
+      const mockResponse = { labelUrl: 'https://label.url' };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getBundleLabel('BUNDLE123');
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/bundle/BUNDLE123/label');
+    });
+
+    // Packages (Single)
+    it('should create package', async () => {
+      const mockResponse = { packageId: 'PKG123' };
+      const packageData = { weight: { value: 1, unit: 'kg' } };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.createPackage(packageData);
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/package', packageData);
+    });
+
+    it('should get package', async () => {
+      const mockResponse = { packageId: 'PKG123' };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getPackage('PKG123');
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/package/PKG123');
+    });
+
+    it('should delete package', async () => {
+      vi.mocked(client.delete).mockResolvedValue(undefined);
+
+      await api.deletePackage('PKG123');
+
+      expect(client.delete).toHaveBeenCalledWith('/sell/logistics/v1/package/PKG123');
+    });
+
+    it('should get package by order line item', async () => {
+      const mockResponse = { packageId: 'PKG123' };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getPackageByOrderLineItem('ORDER_LINE_123');
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/package/ORDER_LINE_123/item');
+    });
+
+    it('should cancel package', async () => {
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.cancelPackage('PKG123');
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/package/PKG123/cancel', {});
+    });
+
+    it('should clone package', async () => {
+      const mockResponse = { packageId: 'PKG456' };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.clonePackage('PKG123');
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/package/PKG123/clone', {});
+    });
+
+    it('should confirm package', async () => {
+      vi.mocked(client.post).mockResolvedValue(undefined);
+
+      await api.confirmPackage('PKG123');
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/package/PKG123/confirm', {});
+    });
+
+    // Packages (Bulk)
+    it('should bulk cancel packages', async () => {
+      const mockResponse = { results: [] };
+      const bulkData = { packageIds: ['PKG1', 'PKG2'] };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.bulkCancelPackages(bulkData);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/logistics/v1/package/bulk_cancel_packages',
+        bulkData
+      );
+    });
+
+    it('should bulk confirm packages', async () => {
+      const mockResponse = { results: [] };
+      const bulkData = { packageIds: ['PKG1', 'PKG2'] };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.bulkConfirmPackages(bulkData);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/logistics/v1/package/bulk_confirm_packages',
+        bulkData
+      );
+    });
+
+    it('should bulk delete packages', async () => {
+      const mockResponse = { results: [] };
+      const bulkData = { packageIds: ['PKG1', 'PKG2'] };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.bulkDeletePackages(bulkData);
+
+      expect(client.post).toHaveBeenCalledWith(
+        '/sell/logistics/v1/package/bulk_delete_packages',
+        bulkData
+      );
+    });
+
+    // Labels & Tracking
+    it('should get labels', async () => {
+      const mockResponse = { labels: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getLabels({ package_id: 'PKG123' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/labels', {
+        package_id: 'PKG123',
+      });
+    });
+
+    it('should get handover sheet', async () => {
+      const mockResponse = { sheetUrl: 'https://sheet.url' };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getHandoverSheet({ bundle_id: 'BUNDLE123' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/handover_sheet', {
+        bundle_id: 'BUNDLE123',
+      });
+    });
+
+    it('should get tracking', async () => {
+      const mockResponse = { tracking: [] };
+      vi.mocked(client.get).mockResolvedValue(mockResponse);
+
+      await api.getTracking({ tracking_number: 'TRACK123' });
+
+      expect(client.get).toHaveBeenCalledWith('/sell/logistics/v1/tracking', {
+        tracking_number: 'TRACK123',
+      });
+    });
+
+    // Other
+    it('should create complaint', async () => {
+      const mockResponse = { complaintId: 'COMPLAINT123' };
+      const complaintData = { description: 'Package damaged' };
+      vi.mocked(client.post).mockResolvedValue(mockResponse);
+
+      await api.createComplaint(complaintData);
+
+      expect(client.post).toHaveBeenCalledWith('/sell/logistics/v1/complaint', complaintData);
+    });
   });
 
   describe('IdentityApi', () => {
