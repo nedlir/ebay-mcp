@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    // to allow baseUrl field to work.
-    "ignoreDeprecations": "6.0",
     "target": "ES2022",
     "module": "Node16",
     "moduleResolution": "Node16",
