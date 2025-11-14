@@ -18,8 +18,7 @@ export default tseslint.config(
       '*.config.mjs',
       'scripts/**',
       // Generated OpenAPI types
-      'src/types/sell_*.ts',
-      'src/types/commerce_*.ts',
+      'src/types/*.d.ts',
     ],
   },
 
