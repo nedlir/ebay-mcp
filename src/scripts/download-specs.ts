@@ -33,10 +33,10 @@ const getFolderName = (specUrl: string): string => {
   // mapping from file name to folder name
   // This mapping is based on the README.md structure and common API groupings
   const folderMap: { [key: string]: string } = {
-    // Application Settings and Insights
-    'developer_analytics_v1_beta_oas3.json': 'application-settings/analytics',
-    'developer_key_management_v1_oas3.json': 'application-settings/key-management',
-    'developer_client_registration_v1_oas3.json': 'application-settings/client-registration',
+    // Application Settings
+    'developer_analytics_v1_beta_oas3.json': 'application-settings',
+    'developer_key_management_v1_oas3.json': 'application-settings',
+    'developer_client_registration_v1_oas3.json': 'application-settings',
 
     // Selling Apps - Listing Management
     'sell_inventory_v1_oas3.json': 'sell-apps/listing-management',
@@ -50,9 +50,9 @@ const getFolderName = (specUrl: string): string => {
     'commerce_charity_v1_oas3.json': 'sell-apps/listing-metadata',
 
     // Selling Apps - Account Management
-    'sell_account_v1_oas3.json': 'account-management',
-    'sell_account_v2_oas3.json': 'account-management',
-    'sell_finances_v1_oas3.json': 'account-management',
+    'sell_account_v1_oas3.json': 'sell-apps/account-management',
+    'sell_account_v2_oas3.json': 'sell-apps/account-management',
+    'sell_finances_v1_oas3.json': 'sell-apps/account-management',
 
     // Selling Apps - Communication & Negotiation
     'commerce_message_v1_oas3.json': 'sell-apps/communication',
@@ -67,7 +67,7 @@ const getFolderName = (specUrl: string): string => {
     // Selling Apps - Marketing & Promotions
     'sell_marketing_v1_oas3.json': 'sell-apps/marketing-and-promotions',
     'sell_recommendation_v1_oas3.json': 'sell-apps/marketing-and-promotions',
-    'sell_analytics_v1_oas3.json': 'analytics-and-report',
+    'sell_analytics_v1_oas3.json': 'sell-apps/analytics-and-report',
 
     // Selling Apps - Other Selling APIs
     'commerce_translation_v1_beta_oas3.json': 'sell-apps/other-apis',
@@ -80,7 +80,7 @@ const getFolderName = (specUrl: string): string => {
     'buy_browse_v1_oas3.json': 'buy-apps/inventory-discovery',
     'buy_feed_v1_beta_oas3.json': 'buy-apps/inventory-discovery',
     'buy_feed_v1_oas3.json': 'buy-apps/inventory-discovery',
-    // commerce_notification_v1_oas3.json is already mapped under sell-apps/communication,
+    // commerce_notification_v1_oas3.json is already mapped under sell-apps,
     // but it's also relevant here. We'll prioritize the first mapping or create a symlink if needed.
 
     // Buying Apps - Marketing & Discounts
@@ -88,17 +88,17 @@ const getFolderName = (specUrl: string): string => {
     'buy_marketing_v1_beta_oas3.json': 'buy-apps/marketing-and-discounts',
 
     // Buying Apps - Marketplace Metadata
-    // commerce_taxonomy_v1_oas3.json is already mapped under sell-apps/listing-metadata
+    // commerce_taxonomy_v1_oas3.json is already mapped under sell-apps
     'commerce_catalog_v1_beta_oas3.json': 'buy-apps/marketplace-metadata',
-    // commerce_charity_v1_oas3.json is already mapped under sell-apps/listing-metadata
+    // commerce_charity_v1_oas3.json is already mapped under sell-apps
 
     // Buying Apps - Checkout & Bidding
     'buy_order_v2_oas3.json': 'buy-apps/checkout-and-bidding',
     'buy_offer_v1_beta_oas3.json': 'buy-apps/checkout-and-bidding',
 
     // Buying Apps - Other Buying APIs
-    // commerce_translation_v1_beta_oas3.json is already mapped under sell-apps/other-apis
-    // commerce_identity_v1_oas3.json is already mapped under sell-apps/other-apis
+    // commerce_translation_v1_beta_oas3.json is already mapped under sell-apps
+    // commerce_identity_v1_oas3.json is already mapped under sell-apps
   };
   // Default to 'other-apis' if not found in map, or use the mapped folder
   return folderMap[fileName] || 'other-apis';

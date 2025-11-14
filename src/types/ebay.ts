@@ -134,3 +134,95 @@ export enum EbayApi {
   TRANSLATION = 'commerce/translation/v1',
   EDELIVERY = 'sell/logistics/v1',
 }
+
+
+export const productionScopes = [
+  "https://api.ebay.com/oauth/api_scope",
+  "https://api.ebay.com/oauth/api_scope/sell.marketing.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory",
+  "https://api.ebay.com/oauth/api_scope/sell.account",
+  "https://api.ebay.com/oauth/api_scope/sell.fulfillment",
+  "https://api.ebay.com/oauth/api_scope/sell.analytics.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.marketing",
+  "https://api.ebay.com/oauth/api_scope/sell.account.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.finances",
+  "https://api.ebay.com/oauth/api_scope/sell.payment.dispute",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.reputation",
+  "https://api.ebay.com/oauth/api_scope/sell.reputation.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.notification.subscription",
+  "https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.stores",
+  "https://api.ebay.com/oauth/api_scope/sell.stores.readonly",
+  "https://api.ebay.com/oauth/scope/sell.edelivery",
+  "https://api.ebay.com/oauth/api_scope/commerce.vero",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory.mapping",
+  "https://api.ebay.com/oauth/api_scope/commerce.message",
+  "https://api.ebay.com/oauth/api_scope/commerce.feedback",
+  "https://api.ebay.com/oauth/api_scope/commerce.shipping",
+  "https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly"
+];
+
+export const sandboxScopes = [
+  "https://api.ebay.com/oauth/api_scope",
+  "https://api.ebay.com/oauth/api_scope/sell.marketing.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.marketing",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory",
+  "https://api.ebay.com/oauth/api_scope/sell.account.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.account",
+  "https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.fulfillment",
+  "https://api.ebay.com/oauth/api_scope/sell.analytics.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.finances",
+  "https://api.ebay.com/oauth/api_scope/sell.payment.dispute",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.reputation",
+  "https://api.ebay.com/oauth/api_scope/sell.reputation.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.notification.subscription",
+  "https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.stores",
+  "https://api.ebay.com/oauth/api_scope/sell.stores.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.edelivery",
+  "https://api.ebay.com/oauth/api_scope/commerce.vero",
+  "https://api.ebay.com/oauth/api_scope/sell.inventory.mapping",
+  "https://api.ebay.com/oauth/api_scope/commerce.message",
+  "https://api.ebay.com/oauth/api_scope/commerce.feedback",
+  "https://api.ebay.com/oauth/api_scope/commerce.shipping",
+  "https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly",
+  "https://api.ebay.com/oauth/api_scope/sell.item.draft",
+  "https://api.ebay.com/oauth/api_scope/sell.item",
+  "https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.email.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.phone.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.address.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.name.readonly",
+  "https://api.ebay.com/oauth/api_scope/commerce.identity.status.readonly"
+];
+
+/**
+ * OAuth API endpoints
+ */
+export enum EbayOAuthApi {
+  TOKEN = '/identity/v1/oauth2/token',
+  AUTHORIZE_SANDBOX = 'https://auth.sandbox.ebay.com/oauth2/authorize',
+  AUTHORIZE_PRODUCTION = 'https://auth.ebay.com/oauth2/authorize',
+  SIGNIN_SANDBOX = 'https://signin.sandbox.ebay.com/signin',
+  SIGNIN_PRODUCTION = 'https://signin.ebay.com/signin',
+}
+
+/**
+ * OAuth parameter descriptions
+ */
+export interface EbayOAuthParams {
+  client_id: string;
+  redirect_uri: string;
+  response_type: 'code';
+  scope: string;
+  state?: string;
+  locale?: string;
+  prompt?: 'login';
+}
