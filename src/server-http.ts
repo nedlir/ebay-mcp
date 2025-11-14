@@ -181,10 +181,21 @@ async function createApp(): Promise<express.Application> {
         name: 'ebay-api-mcp-server',
         version: '1.4.0',
         title: 'eBay API MCP Server',
-        description: 'eBay API MCP Server',
+        websiteUrl: 'https://coming-soon.com',
+        description: 'Access eBay APIs to manage listings, orders, and inventory.',
         icons: [
           {
-            src: './icons/512x512.png',
+            src: './icons/16x16.png',
+            mimeType: 'image/png',
+            sizes: ['16x16'],
+          },
+          {
+            src: './icons/32x32.png',
+            mimeType: 'image/png',
+            sizes: ['32x32'],
+          },
+          {
+            src: './icons/48x48.png',
             mimeType: 'image/png',
             sizes: ['48x48'],
           },
@@ -210,6 +221,7 @@ async function createApp(): Promise<express.Application> {
           }
         ],
       },
+
     );
 
     // Register tools
