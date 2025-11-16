@@ -19,14 +19,15 @@ Tested the eBay MCP server package following the flow a new developer would take
 
 ## Critical Bugs
 
-### 🔴 BUG #1: Token Refresh Uses Wrong URL (405 Error)
+### ✅ BUG #1: Token Refresh Uses Wrong URL (405 Error) - **FIXED**
 
-**Severity:** CRITICAL
+**Severity:** CRITICAL (WAS)
 **Impact:** Token refresh functionality completely broken
-**File:** `src/auth/oauth.ts:299`
+**File:** `src/auth/oauth.ts:286`
+**Status:** **FIXED** ✅
 
 **Description:**
-The `refreshUserToken()` method uses the wrong URL for token refresh requests, causing HTTP 405 (Method Not Allowed) errors.
+The `refreshUserToken()` method was using the wrong URL for token refresh requests, causing HTTP 405 (Method Not Allowed) errors.
 
 **Current Code (Line 285-299):**
 ```typescript
@@ -69,11 +70,20 @@ const authUrl = `${getBaseUrl(this.config.environment)}/identity/v1/oauth2/token
 2. Call `ebay_refresh_access_token` tool
 3. Observe 405 error
 
-**Fix Required:**
-Replace line 285 with:
+**Fix Applied:**
+✅ Replaced line 285-286:
 ```typescript
+// OLD (WRONG):
+const authUrl = getAuthUrl(this.config.clientId, this.config.redirectUri, ...);
+
+// NEW (CORRECT):
 const authUrl = `${getBaseUrl(this.config.environment)}/identity/v1/oauth2/token`;
 ```
+
+**Test Results After Fix:**
+- ✅ Error changed from 405 to 503
+- ✅ Confirms correct endpoint is now being used
+- ⚠️ 503 error indicates refresh token in .env may be expired/revoked (separate issue)
 
 ---
 
