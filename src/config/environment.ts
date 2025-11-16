@@ -3,9 +3,8 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
-import { version } from 'os';
-import { title } from 'process';
 import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
+import { LocaleEnum } from '@/types/ebay-enums.js';
 
 config();
 
@@ -220,36 +219,60 @@ export function getIdentityBaseUrl(environment: 'production' | 'sandbox'): strin
   return environment === 'production' ? 'https://apiz.ebay.com' : 'https://apiz.sandbox.ebay.com';
 }
 
-export function getAuthUrl(environment: 'production' | 'sandbox'): string {
-  return environment === 'production'
-    ? 'https://api.ebay.com/identity/v1/oauth2/token'
-    : 'https://api.sandbox.ebay.com/identity/v1/oauth2/token';
+
+/**
+ * Generate the OAuth authorization URL for user consent
+ * @param clientId The client ID of your eBay application.
+ * @param redirectUri The redirect URI configured for your eBay application.
+ * @param environment The eBay environment ('production' or 'sandbox').
+ * @param locale The locale for the authorization page (defaults to en_US).
+ * @param prompt Whether to prompt the user for login or consent (defaults to 'login').
+ * @param responseType The response type for the OAuth flow (defaults to 'code').
+ * @param state An opaque value used to maintain state between the request and callback.
+ *              It is also used to prevent cross-site request forgery.
+ * @param scopes An array of OAuth scopes to request. If not provided, default scopes for the environment will be used.
+ * 
+ * @return The generated OAuth authorization URL.
+ *
+ * This URL should be opened in a browser for the user to grant permissions
+ */
+export function getAuthUrl(
+  clientId: string,
+  redirectUri: string,
+  environment: 'production' | 'sandbox',
+  locale: LocaleEnum = LocaleEnum.en_US,
+  prompt: 'login' | 'consent' = 'login',
+  responseType: 'code' = 'code',
+  state?: string,
+  scopes?: string[],
+): string {
+  const scope = getDefaultScopes(environment);
+
+  if (!(clientId && redirectUri)) {
+    console.error("clientId, redirectUri (RuName), and scope are required,please initialize the class properly.");
+    return ''
+  }
+
+  const authDomain = environment === 'production' ? 'https://auth.ebay.com' : 'https://auth.sandbox.ebay.com';
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: responseType,
+    scope: scopes?.join(' ') || scope.join(' '),
+    prompt,
+    locale,
+    ...(state ? { state } : {}),
+  });
+
+  return `${authDomain}/oauth2/authorize?${params.toString()}`;
 }
 
 /**
  * Generate the OAuth authorization URL for user consent
  * This URL should be opened in a browser for the user to grant permissions
  *
- * IMPORTANT - eBay RuName Requirement:
- * The redirectUri parameter MUST be your eBay RuName, NOT a traditional URL.
- *
- * What is a RuName?
- * - RuName format: "YourName-AppName-xxxxx-xxxxxx" (e.g., "yosef_sabag-yosefsab-saasds-eduelsdtr")
- * - It's a special identifier that eBay generates for your application
- * - Each application has separate RuNames for Sandbox and Production environments
- *
- * How to get your RuName:
- * 1. Log in to eBay Developer Portal (developer.ebay.com)
- * 2. Navigate to: Application Keys > User Token
- * 3. Click the "User Tokens" link next to your Client ID
- * 4. Your RuName will be displayed (copy it exactly)
- *
- * Common Error:
- * If you see "unauthorized_client" error, you're likely using a URL instead of RuName
- *
- * Scopes:
- * - Scopes are optional - eBay automatically grants appropriate scopes based on your keyset
- * - You can specify custom scopes if needed
+ * Note: Scopes are optional - eBay will automatically grant the appropriate scopes
+ * based on your application's keyset configuration if scopes are not specified.
  */
 export function getOAuthAuthorizationUrl(
   clientId: string,
@@ -268,7 +291,7 @@ export function getOAuthAuthorizationUrl(
   // Build query parameters for the authorize endpoint
   const params = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: redirectUri, // This MUST be your eBay RuName
+    redirect_uri: redirectUri,
   });
 
   // Add scopes only if provided (optional - eBay handles automatically if not specified)
