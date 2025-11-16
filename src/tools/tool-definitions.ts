@@ -31,12 +31,14 @@ import {
 } from './schemas.js';
 
 export interface OutputArgs {
+  [x: string]: unknown;
   type: 'object';
   properties?: Record<string, object>;
   required?: string[];
 }
 
 export interface ToolAnnotations {
+  [x: string]: unknown;
   title?: string;
   readOnlyHint?: boolean;
   destructiveHint?: boolean;

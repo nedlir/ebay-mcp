@@ -22,8 +22,8 @@ export interface ToolDefinition {
   description: string;
   inputSchema: Record<string, z.ZodTypeAny>;
   title?: string;
-  outputSchema?: z.ZodTypeAny;
-  annotations?: McpToolAnnotations;
+  outputSchema?: OutputArgs;
+  annotations?: ToolAnnotations;
   _meta?: Record<string, unknown>;
 }
 export const analyticsTools: ToolDefinition[] = [

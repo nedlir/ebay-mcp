@@ -9,14 +9,15 @@ import {
   issueRefundOutputSchema,
   getPaymentDisputesOutputSchema,
 } from '@/schemas/fulfillment/orders.js';
+import { OutputArgs, ToolAnnotations } from '../tool-definitions.js';
 
 export interface ToolDefinition {
   name: string;
   description: string;
   inputSchema: Record<string, z.ZodTypeAny>;
   title?: string;
-  outputSchema?: z.ZodTypeAny;
-  annotations?: McpToolAnnotations;
+  outputSchema?: OutputArgs;
+  annotations?: ToolAnnotations;
   _meta?: Record<string, unknown>;
 }
 export const fulfillmentTools: ToolDefinition[] = [
