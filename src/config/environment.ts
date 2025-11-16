@@ -185,15 +185,10 @@ export function getEbayConfig(): EbayConfig {
   const refreshToken = process.env.EBAY_USER_REFRESH_TOKEN ?? '';
   const appAccessToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
 
-  if (
-    clientId === '' ||
-    clientSecret === '' ||
-    accessToken === '' ||
-    refreshToken === '' ||
-    appAccessToken === ''
-  ) {
+  // Only require client credentials - tokens can be optional (generated from refresh token)
+  if (clientId === '' || clientSecret === '') {
     console.error(
-      'Missing required eBay credentials. Please set the follow:\n1) EBAY_CLIENT_ID\n2) EBAY_CLIENT_SECRET\n3) EBAY_USER_ACCESS_TOKEN\n4) EBAY_USER_REFRESH_TOKEN\n5) EBAY_APP_ACCESS_TOKEN in your .env file at project root'
+      'Missing required eBay credentials. Please set:\n1) EBAY_CLIENT_ID\n2) EBAY_CLIENT_SECRET\nin your .env file at project root'
     );
   }
 

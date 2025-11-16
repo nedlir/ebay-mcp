@@ -31,7 +31,7 @@ export class EbayOAuthClient {
     const locale = this.config?.locale || LocaleEnum.en_US;
 
 
-    if (envRefreshToken && envAccessToken) {
+    if (envRefreshToken) {
       console.log('📝 Loading refresh token, access token and app to env file...');
 
       // Create token object with just the refresh token from environment
@@ -40,7 +40,7 @@ export class EbayOAuthClient {
       this.userTokens = {
         clientId: this.config.clientId,
         clientSecret: this.config.clientSecret,
-        userAccessToken: envAccessToken, // Empty, will be filled by refresh
+        userAccessToken: envAccessToken || '', // Can be empty, will be filled by refresh
         userRefreshToken: envRefreshToken,
         redirectUri: this.config.redirectUri,
         envAppToken,
