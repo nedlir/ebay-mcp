@@ -4,17 +4,52 @@
 
 [![npm version](https://img.shields.io/npm/v/ebay-mcp)](https://www.npmjs.com/package/ebay-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/ebay-mcp)](https://www.npmjs.com/package/ebay-mcp)
-[![Tests](https://img.shields.io/badge/tests-914%20passing-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-958%20passing-brightgreen)](tests/)
+[![API Coverage](https://img.shields.io/badge/API%20coverage-100%25-success)](src/tools/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/yosefhayim-ebay-api-mcp-server-badge.png)](https://mseep.ai/app/yosefhayim-ebay-api-mcp-server)
 <a href="https://www.buymeacoffee.com/yosefhayim" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server providing AI assistants with comprehensive access to eBay's Sell APIs. Includes **339 tools** for inventory management, order fulfillment, marketing campaigns, analytics, developer tools, and more.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server providing AI assistants with comprehensive access to eBay's Sell APIs. Includes **387 tools** for inventory management, order fulfillment, marketing campaigns, analytics, developer tools, and more.
 
-**API Coverage:** 82.5% (293 of 355 eBay API endpoints)
+**API Coverage:** 100% (270 unique eBay API endpoints)
 
 </div>
+
+---
+
+## One-Click AI Setup
+
+> **Let your AI assistant set this up for you!** Copy the prompt below and paste it into Claude, ChatGPT, or any AI assistant with MCP support.
+
+<details>
+<summary><strong>Click to copy the AI setup prompt</strong></summary>
+
+```
+I want to set up the eBay MCP Server for my AI assistant. Please help me:
+
+1. Install the eBay MCP server:
+   npm install -g ebay-mcp
+
+2. I need to configure it for [Claude Desktop / Cursor / Cline / Zed / Continue.dev / Windsurf / Claude Code CLI / Amazon Q] (choose one)
+
+3. My eBay credentials are:
+   - Client ID: [YOUR_CLIENT_ID]
+   - Client Secret: [YOUR_CLIENT_SECRET]
+   - Environment: [sandbox / production]
+   - Redirect URI (RuName): [YOUR_REDIRECT_URI]
+
+Please:
+- Create the appropriate config file for my MCP client
+- Set up the environment variables
+- Help me complete the OAuth flow to get a refresh token for higher rate limits
+- Test that the connection works
+
+If I don't have eBay credentials yet, guide me through creating a developer account at https://developer.ebay.com/
+```
+
+</details>
 
 ---
 
@@ -75,12 +110,14 @@ For official eBay API support, please refer to the [eBay Developer Program](http
 
 ## Features
 
-- **339 eBay API Tools** - Comprehensive coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
+- **387 eBay API Tools** - 100% coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
+- **9 AI Clients Supported** - Auto-configuration for Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, and Amazon Q
 - **OAuth 2.0 Support** - Full user token management with automatic refresh
 - **Type Safety** - Built with TypeScript, Zod validation, and OpenAPI-generated types
 - **MCP Integration** - STDIO transport for direct integration with AI assistants
 - **Smart Authentication** - Automatic fallback from user tokens (10k-50k req/day) to client credentials (1k req/day)
-- **Well Tested** - 914+ tests with comprehensive coverage
+- **Well Tested** - 958+ tests with comprehensive coverage
+- **Interactive Setup Wizard** - Run `npm run setup` for guided configuration with auto browser-open for OAuth
 - **Developer Analytics** - Rate limit monitoring and signing key management
 
 ## Quick Start
@@ -210,13 +247,19 @@ For detailed OAuth setup and comprehensive configuration guide, see the [Configu
 
 ### MCP Client Compatibility
 
-This server is compatible with any MCP client that supports STDIO transport:
+This server supports **9 AI clients** with auto-configuration via `npm run setup`:
 
-**Tested and Supported:**
-
-- ✅ **Claude Desktop** (macOS, Windows, Linux) - Full support
-- ✅ **MCP Inspector** - For development and testing
-- ✅ **Custom MCP Clients** - Via STDIO or HTTP transport
+| Client | Platform | Config Path | Status |
+|--------|----------|-------------|--------|
+| **Claude Desktop** | macOS, Windows, Linux | `~/Library/Application Support/Claude/claude_desktop_config.json` | ✅ Auto-configured |
+| **Cursor IDE** | macOS, Windows, Linux | `~/.cursor/mcp.json` | ✅ Auto-configured |
+| **Zed Editor** | macOS, Windows, Linux | `~/.config/zed/settings.json` | ✅ Auto-configured |
+| **Cline** | VSCode Extension | `~/...globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` | ✅ Auto-configured |
+| **Continue.dev** | VSCode, JetBrains | `~/.continue/config.json` | ✅ Auto-configured |
+| **Windsurf (Codeium)** | macOS, Windows, Linux | `~/.codeium/windsurf/mcp_config.json` | ✅ Auto-configured |
+| **Roo Code** | VSCode Extension | `~/...globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json` | ✅ Auto-configured |
+| **Claude Code CLI** | Terminal | `~/.claude.json` | ✅ Auto-configured |
+| **Amazon Q Developer** | AWS | `~/.aws/amazonq/mcp.json` | ✅ Auto-configured |
 
 **Configuration Requirements:**
 
@@ -224,15 +267,14 @@ This server is compatible with any MCP client that supports STDIO transport:
 - Transport: STDIO (default) or HTTP
 - Node.js runtime: 18.0.0 or higher
 
-**Other MCP Clients:**
+**Quick Setup for Any Client:**
 
-While not specifically tested, the server should work with any MCP-compliant client including:
+```bash
+npm install -g ebay-mcp
+npx ebay-mcp  # Interactive setup wizard - auto-detects installed clients
+```
 
-- Continue.dev
-- Other editors with MCP support
-- Custom implementations
-
-If you successfully use this server with another MCP client, please let us know by [opening a discussion](https://github.com/YosefHayim/ebay-mcp/discussions)!
+The setup wizard will automatically detect which AI clients you have installed and configure them for you.
 
 ### Rate Limiting
 
@@ -279,7 +321,7 @@ Monitor your API usage in the [eBay Developer Portal](https://developer.ebay.com
 
 ## Available Tools
 
-The server provides **339 tools** organized into the following categories:
+The server provides **387 tools** with **100% API coverage** organized into the following categories:
 
 - **Account Management** - Policies, programs, subscriptions, sales tax
 - **Inventory Management** - Items, offers, locations, bulk operations, SKU location mapping
