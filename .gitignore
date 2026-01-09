@@ -196,3 +196,13 @@ credentials.json
 GEMINI.md
 .claude
 .mcp.json
+
+# Generated reports
+dev-sync-report.json
+
+# Bun lock file (project uses npm)
+bun.lock
+
+# External tool configs
+context7.json
+Taskfile.yml
