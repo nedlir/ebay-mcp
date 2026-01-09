@@ -272,6 +272,65 @@ async function getAppAccessToken(
 }
 
 /**
+ * Refresh access token using refresh token
+ */
+async function refreshAccessToken(
+  refreshToken: string,
+  clientId: string,
+  clientSecret: string,
+  environment: 'sandbox' | 'production'
+): Promise<{ accessToken: string; expiresIn: number }> {
+  const tokenUrl =
+    environment === 'production'
+      ? 'https://api.ebay.com/identity/v1/oauth2/token'
+      : 'https://api.sandbox.ebay.com/identity/v1/oauth2/token';
+
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+  const response = await axios.post(
+    tokenUrl,
+    new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }).toString(),
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${credentials}`,
+      },
+    }
+  );
+
+  return {
+    accessToken: response.data.access_token,
+    expiresIn: response.data.expires_in,
+  };
+}
+
+/**
+ * Verify refresh token by getting an access token and fetching user info
+ */
+async function verifyRefreshToken(
+  refreshToken: string,
+  clientId: string,
+  clientSecret: string,
+  environment: 'sandbox' | 'production'
+): Promise<{ accessToken: string; userInfo: EbayUserInfo }> {
+  // First, refresh to get an access token
+  const { accessToken } = await refreshAccessToken(
+    refreshToken,
+    clientId,
+    clientSecret,
+    environment
+  );
+
+  // Then fetch user info to verify everything works
+  const userInfo = await fetchEbayUserInfo(accessToken, environment);
+
+  return { accessToken, userInfo };
+}
+
+/**
  * Fetch eBay user info using the Identity API
  * Uses apiz.ebay.com subdomain as per eBay API requirements
  */
