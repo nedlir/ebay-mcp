@@ -2,6 +2,7 @@
 
 import prompts from 'prompts';
 import chalk from 'chalk';
+import axios from 'axios';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -127,6 +128,125 @@ function openBrowser(url: string): Promise<void> {
 
 function showWarning(message: string): void {
   console.log(`  ${ui.warning('⚠')} ${message}`);
+}
+
+/**
+ * Parse authorization code from callback URL or raw code
+ * Handles both full URLs and just the code parameter
+ */
+function parseAuthorizationCode(input: string): string | null {
+  const trimmed = input.trim();
+
+  // If it looks like a URL, parse the code parameter
+  if (trimmed.includes('code=') || trimmed.includes('?') || trimmed.includes('&')) {
+    try {
+      // Handle both full URLs and query strings
+      let searchParams: URLSearchParams;
+
+      if (trimmed.startsWith('http')) {
+        const url = new URL(trimmed);
+        searchParams = url.searchParams;
+      } else {
+        // It might just be query params like "code=xxx&expires_in=299"
+        searchParams = new URLSearchParams(trimmed.startsWith('?') ? trimmed.slice(1) : trimmed);
+      }
+
+      const code = searchParams.get('code');
+      if (code) {
+        // URL decode the code (it's often URL-encoded)
+        return decodeURIComponent(code);
+      }
+    } catch {
+      // Fall through to try as raw code
+    }
+  }
+
+  // Check if it looks like a raw authorization code (starts with v^1.1#)
+  if (trimmed.startsWith('v^1.1#') || trimmed.startsWith('v%5E1.1')) {
+    // Decode if URL-encoded
+    try {
+      return decodeURIComponent(trimmed);
+    } catch {
+      return trimmed;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Exchange authorization code for tokens using eBay API
+ */
+async function exchangeCodeForTokens(
+  code: string,
+  clientId: string,
+  clientSecret: string,
+  redirectUri: string,
+  environment: 'sandbox' | 'production'
+): Promise<{ refreshToken: string; accessToken: string; expiresIn: number } | null> {
+  const tokenUrl =
+    environment === 'production'
+      ? 'https://api.ebay.com/identity/v1/oauth2/token'
+      : 'https://api.sandbox.ebay.com/identity/v1/oauth2/token';
+
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+  try {
+    const response = await axios.post(
+      tokenUrl,
+      new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: redirectUri,
+      }).toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${credentials}`,
+        },
+      }
+    );
+
+    return {
+      refreshToken: response.data.refresh_token,
+      accessToken: response.data.access_token,
+      expiresIn: response.data.expires_in,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMsg = error.response?.data?.error_description || error.message;
+      throw new Error(errorMsg);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Validate tokens by getting user info from eBay API
+ */
+async function validateTokens(
+  accessToken: string,
+  environment: 'sandbox' | 'production'
+): Promise<{ username: string } | null> {
+  const apiUrl =
+    environment === 'production'
+      ? 'https://apiz.ebay.com/commerce/identity/v1/user/'
+      : 'https://apiz.sandbox.ebay.com/commerce/identity/v1/user/';
+
+  try {
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return {
+      username: response.data.username || response.data.userId || 'Unknown',
+    };
+  } catch {
+    return null;
+  }
 }
 
 function showInfo(message: string): void {
@@ -537,11 +657,80 @@ async function stepOAuth(state: SetupState): Promise<boolean> {
     console.log('\n  ' + ui.bold('Steps:'));
     console.log('  1. Sign in to your eBay account in the browser');
     console.log('  2. Grant permissions to your app');
-    console.log('  3. Copy the refresh token from the callback');
-    console.log('  4. Run this setup again and paste the token\n');
+    console.log('  3. You will be redirected - copy the URL or code parameter');
+    console.log('  4. Paste it below to complete the setup\n');
 
-    showKeyboardHints(['Enter: Continue']);
-    await prompts({ type: 'text', name: 'continue', message: 'Press Enter to continue...' });
+    // Ask for the callback URL or code
+    const codeInput = await prompts({
+      type: 'text',
+      name: 'code',
+      message: 'Paste the callback URL or authorization code:',
+      validate: (v: string) => {
+        if (!v.trim()) return 'Please paste the URL or code from the callback';
+        const code = parseAuthorizationCode(v);
+        if (!code) return 'Could not find authorization code. Paste the full URL or the code parameter.';
+        return true;
+      },
+    });
+
+    if (!codeInput.code) {
+      showWarning('OAuth setup cancelled.');
+      return true;
+    }
+
+    const authCode = parseAuthorizationCode(codeInput.code);
+    if (!authCode) {
+      showError('Could not parse authorization code.');
+      return true;
+    }
+
+    // Exchange code for tokens
+    console.log('\n  ' + ui.info('Exchanging authorization code for tokens...'));
+
+    try {
+      const tokens = await exchangeCodeForTokens(
+        authCode,
+        state.config.EBAY_CLIENT_ID,
+        state.config.EBAY_CLIENT_SECRET,
+        state.config.EBAY_REDIRECT_URI,
+        state.environment
+      );
+
+      if (!tokens) {
+        showError('Failed to exchange code for tokens.');
+        return true;
+      }
+
+      showSuccess('Authorization code exchanged successfully!');
+
+      // Save the refresh token
+      state.config.EBAY_USER_REFRESH_TOKEN = tokens.refreshToken;
+
+      // Validate by getting user info
+      console.log('  ' + ui.info('Validating tokens...'));
+
+      const userInfo = await validateTokens(tokens.accessToken, state.environment);
+
+      if (userInfo) {
+        showSuccess(`Connected to eBay account: ${ui.bold(userInfo.username)}`);
+      } else {
+        showSuccess('Tokens obtained successfully!');
+        showWarning('Could not verify user info (this is normal for some sandbox accounts).');
+      }
+
+      console.log('\n  ' + ui.success('✓') + ' OAuth setup complete!');
+      console.log(`  ${ui.dim('Access token expires in:')} ${Math.floor(tokens.expiresIn / 60)} minutes`);
+      console.log(`  ${ui.dim('Refresh token will be saved to .env')}\n`);
+    } catch (error) {
+      showError(`Failed to exchange code: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log('\n  ' + ui.dim('Common issues:'));
+      console.log('  • Authorization code expired (codes are valid for ~5 minutes)');
+      console.log('  • Code was already used (each code can only be used once)');
+      console.log('  • Redirect URI mismatch (must match exactly what is configured in eBay)\n');
+
+      showKeyboardHints(['Enter: Continue']);
+      await prompts({ type: 'text', name: 'continue', message: 'Press Enter to continue...' });
+    }
   } else {
     showWarning("Skipping OAuth. You'll be limited to 1,000 requests/day.");
   }
