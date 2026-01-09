@@ -181,6 +181,22 @@ interface TokenExchangeResult {
   refreshTokenExpiresIn: number;
 }
 
+interface EbayUserInfo {
+  userId: string;
+  username: string;
+  accountType?: string;
+  registrationMarketplaceId?: string;
+  individualAccount?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  };
+  businessAccount?: {
+    name?: string;
+    email?: string;
+  };
+}
+
 /**
  * Exchange authorization code for tokens using eBay API
  * This mirrors the logic in auth/oauth.ts EbayOAuthClient.exchangeCodeForToken()
@@ -253,6 +269,62 @@ async function getAppAccessToken(
   );
 
   return response.data.access_token;
+}
+
+/**
+ * Fetch eBay user info using the Identity API
+ * Uses apiz.ebay.com subdomain as per eBay API requirements
+ */
+async function fetchEbayUserInfo(
+  accessToken: string,
+  environment: 'sandbox' | 'production'
+): Promise<EbayUserInfo> {
+  const identityBaseUrl =
+    environment === 'production' ? 'https://apiz.ebay.com' : 'https://apiz.sandbox.ebay.com';
+
+  const response = await axios.get(`${identityBaseUrl}/commerce/identity/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return response.data;
+}
+
+/**
+ * Display eBay user info in a formatted box
+ */
+function displayUserInfo(userInfo: EbayUserInfo): void {
+  const accountName =
+    userInfo.individualAccount?.firstName && userInfo.individualAccount?.lastName
+      ? `${userInfo.individualAccount.firstName} ${userInfo.individualAccount.lastName}`
+      : userInfo.businessAccount?.name || 'N/A';
+
+  const email =
+    userInfo.individualAccount?.email || userInfo.businessAccount?.email || 'N/A';
+
+  const marketplaceMap: Record<string, string> = {
+    EBAY_US: 'eBay United States',
+    EBAY_GB: 'eBay United Kingdom',
+    EBAY_DE: 'eBay Germany',
+    EBAY_AU: 'eBay Australia',
+    EBAY_CA: 'eBay Canada',
+    EBAY_FR: 'eBay France',
+    EBAY_IT: 'eBay Italy',
+    EBAY_ES: 'eBay Spain',
+  };
+
+  const marketplace = marketplaceMap[userInfo.registrationMarketplaceId || ''] || userInfo.registrationMarketplaceId || 'N/A';
+
+  showBox('eBay Account Verified', [
+    `Username:        ${userInfo.username}`,
+    `Account Name:    ${accountName}`,
+    `Email:           ${email}`,
+    `Account Type:    ${userInfo.accountType || 'N/A'}`,
+    `Marketplace:     ${marketplace}`,
+    `User ID:         ${userInfo.userId?.slice(0, 30)}...`,
+  ]);
 }
 
 function showInfo(message: string): void {
@@ -707,6 +779,22 @@ async function stepOAuth(state: SetupState): Promise<boolean> {
       // Store all user tokens in state.config (will be saved to .env by saveConfig)
       state.config.EBAY_USER_REFRESH_TOKEN = tokens.refreshToken;
       state.config.EBAY_USER_ACCESS_TOKEN = tokens.accessToken;
+
+      // Verify setup by fetching user info
+      console.log('  ' + ui.info('Verifying setup by fetching your eBay account info...'));
+      try {
+        const userInfo = await fetchEbayUserInfo(tokens.accessToken, state.environment);
+        showSuccess('Account verified successfully!');
+        displayUserInfo(userInfo);
+      } catch (userError) {
+        const userErrorMsg = axios.isAxiosError(userError)
+          ? userError.response?.data?.errors?.[0]?.message || userError.message
+          : userError instanceof Error
+            ? userError.message
+            : 'Unknown error';
+        showWarning(`Could not fetch user info: ${userErrorMsg}`);
+        showInfo('OAuth tokens were saved successfully. You can still use the MCP server.');
+      }
 
       // Also get app access token for client credentials flow
       console.log('  ' + ui.info('Getting app access token...'));

@@ -99,6 +99,7 @@ For official eBay API support, please refer to the [eBay Developer Program](http
 - [⚠️ Disclaimer](#️-disclaimer)
 - [Features](#features)
 - [Quick Start](#quick-start)
+- [Visual Setup Guide](#visual-setup-guide)
 - [Configuration](#configuration)
 - [Available Tools](#available-tools)
 - [Usage Examples](#usage-examples)
@@ -154,6 +155,60 @@ npm run setup
 ```
 
 Or configure manually by copying `.env.example` to `.env` and editing your credentials.
+
+---
+
+## Visual Setup Guide
+
+Follow these steps to configure OAuth authentication for higher rate limits (10k-50k requests/day):
+
+### Step 1: Copy Client ID and Client Secret
+
+Navigate to the [eBay Developer Portal](https://developer.ebay.com/my/keys) and copy your **App ID (Client ID)** and **Cert ID (Client Secret)** from either Sandbox or Production environment.
+
+![Step 1 - Copy credentials from eBay Developer Portal](public/screenshot-guides/STEP%20-%201%20-%20COPY%20CLIENT%20ID%20AND%20CLIENT%20SECRET%20TO%20ENV%20FILE.png)
+
+Add these credentials to your `.env` file:
+```bash
+EBAY_CLIENT_ID=your_app_id_here
+EBAY_CLIENT_SECRET=your_cert_id_here
+EBAY_ENVIRONMENT=sandbox  # or "production"
+```
+
+### Step 2: Copy Your Redirect URL (RuName)
+
+In the Developer Portal, go to your application's **User Tokens** settings and copy the **RuName** (eBay Redirect URL). This is required for OAuth authentication.
+
+![Step 2 - Copy RuName from eBay Sign-in Settings](public/screenshot-guides/STEP%20-%202%20-%20COPY%20REDIRECT%20URL.png)
+
+Add the RuName to your `.env` file:
+```bash
+EBAY_REDIRECT_URI=your_runame_here
+```
+
+### Step 3: Run Setup and Complete OAuth Login
+
+Run the setup wizard which will open your browser automatically:
+
+```bash
+npm run setup
+```
+
+Sign in to your eBay account when prompted to authorize the application.
+
+![Step 3 - Sign in to eBay during OAuth flow](public/screenshot-guides/STEP%203%20-%20RUN%20COMMAND%20NPM%20RUN%20SETUP%20AND%20PREFORM%20OAUTH%20LOGIN.png)
+
+### Step 4: Paste the Authorization Code
+
+After granting permissions, you'll be redirected to a URL containing an authorization code. Copy the **code** parameter from the URL and paste it into the setup wizard terminal.
+
+![Step 4 - Paste authorization code into setup wizard](public/screenshot-guides/STEP%20-%204%20-%20PASTE%20INTO%20THE%20SETUP%20WIZARD.png)
+
+The setup wizard will automatically exchange the code for tokens and save your refresh token to the `.env` file.
+
+**Success!** You now have user token authentication with 10k-50k requests/day instead of the default 1k/day.
+
+---
 
 ### 4. Configure MCP Client
 
