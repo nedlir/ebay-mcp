@@ -164,7 +164,7 @@ Or configure manually by copying `.env.example` to `.env` and editing your crede
 
 See the eBay MCP Server in action with Claude Desktop:
 
-https://github.com/YosefHayim/ebay-mcp/raw/main/public/video-tutorial.mp4
+<video src="https://github.com/YosefHayim/ebay-mcp/raw/main/public/video-tutorial.mp4" controls width="100%"></video>
 
 ---
 
