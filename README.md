@@ -99,6 +99,7 @@ For official eBay API support, please refer to the [eBay Developer Program](http
 - [⚠️ Disclaimer](#️-disclaimer)
 - [Features](#features)
 - [Quick Start](#quick-start)
+- [Demo](#demo)
 - [Visual Setup Guide](#visual-setup-guide)
 - [Configuration](#configuration)
 - [Available Tools](#available-tools)
@@ -156,6 +157,14 @@ npm run setup
 ```
 
 Or configure manually by copying `.env.example` to `.env` and editing your credentials.
+
+---
+
+## Demo
+
+See the eBay MCP Server in action with Claude Desktop:
+
+https://github.com/user-attachments/assets/video-tutorial.mp4
 
 ---
 
