@@ -7,6 +7,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { homedir, platform } from 'os';
 import { config } from 'dotenv';
+import { exec } from 'child_process';
 
 config();
 
@@ -93,6 +94,35 @@ function showSuccess(message: string): void {
 
 function showError(message: string): void {
   console.log(`  ${ui.error('✗')} ${message}`);
+}
+
+/**
+ * Open a URL in the default browser (cross-platform)
+ */
+function openBrowser(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const os = platform();
+    let command: string;
+
+    switch (os) {
+      case 'darwin':
+        command = `open "${url}"`;
+        break;
+      case 'win32':
+        command = `start "" "${url}"`;
+        break;
+      default:
+        command = `xdg-open "${url}"`;
+    }
+
+    exec(command, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
 function showWarning(message: string): void {
@@ -495,12 +525,20 @@ async function stepOAuth(state: SetupState): Promise<boolean> {
     console.log(`  ${ui.info(authUrl)}`);
     console.log(ui.dim('  ' + '─'.repeat(56)));
 
+    // Automatically open the URL in the browser
+    console.log('\n  ' + ui.info('Opening browser...'));
+    try {
+      await openBrowser(authUrl);
+      showSuccess('Browser opened successfully!');
+    } catch {
+      showWarning('Could not open browser automatically. Please copy the URL above.');
+    }
+
     console.log('\n  ' + ui.bold('Steps:'));
-    console.log('  1. Copy the URL above and open in browser');
-    console.log('  2. Sign in to your eBay account');
-    console.log('  3. Grant permissions to your app');
-    console.log('  4. Copy the refresh token from the callback');
-    console.log('  5. Run this setup again and paste the token\n');
+    console.log('  1. Sign in to your eBay account in the browser');
+    console.log('  2. Grant permissions to your app');
+    console.log('  3. Copy the refresh token from the callback');
+    console.log('  4. Run this setup again and paste the token\n');
 
     showKeyboardHints(['Enter: Continue']);
     await prompts({ type: 'text', name: 'continue', message: 'Press Enter to continue...' });
