@@ -104,11 +104,11 @@ export async function executeTool(
           : 10;
       const query = (args.query as string | undefined)?.toLowerCase().trim();
       const pageSize = query ? Math.min(Math.max(limit, 50), 200) : limit;
-      const matches: Array<{
+      const matches: {
         product?: { title?: string };
         sku?: string;
         inventoryItemGroupKey?: string;
-      }> = [];
+      }[] = [];
       let offset = 0;
 
       while (matches.length < limit) {
@@ -119,9 +119,7 @@ export async function executeTool(
         }
 
         const filtered = query
-          ? pageItems.filter((item) =>
-              (item.product?.title ?? '').toLowerCase().includes(query)
-            )
+          ? pageItems.filter((item) => (item.product?.title ?? '').toLowerCase().includes(query))
           : pageItems;
 
         matches.push(...filtered);
@@ -250,7 +248,7 @@ export async function executeTool(
         throw new Error('Both accessToken and refreshToken are required');
       }
 
-      await api.setUserTokens(accessToken, refreshToken);
+      api.setUserTokens(accessToken, refreshToken);
 
       return {
         success: true,
@@ -361,7 +359,7 @@ export async function executeTool(
         }
 
         // Set tokens (will use defaults if expiry times not provided)
-        await api.setUserTokens(accessToken, refreshToken);
+        api.setUserTokens(accessToken, refreshToken, accessExpiry, refreshExpiry);
 
         // If autoRefresh is enabled, attempt to get a fresh access token
         // (The OAuth client will handle refresh internally if needed)
@@ -870,15 +868,9 @@ export async function executeTool(
         args.returnAddress as Record<string, unknown> | undefined
       );
     case 'ebay_add_payment_dispute_evidence':
-      return await api.dispute.addEvidence(
-        args.paymentDisputeId as string,
-        args as Record<string, unknown>
-      );
+      return await api.dispute.addEvidence(args.paymentDisputeId as string, args);
     case 'ebay_update_payment_dispute_evidence':
-      return await api.dispute.updateEvidence(
-        args.paymentDisputeId as string,
-        args as Record<string, unknown>
-      );
+      return await api.dispute.updateEvidence(args.paymentDisputeId as string, args);
     case 'ebay_upload_payment_dispute_evidence_file':
       return await api.dispute.uploadEvidenceFile(
         args.paymentDisputeId as string,

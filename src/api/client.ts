@@ -96,7 +96,7 @@ export class EbayApiClient {
 
         return config;
       },
-      (error) => {
+      (error: Error) => {
         apiLogger.error('Request interceptor error', { error: error.message });
         return Promise.reject(error);
       }
@@ -110,13 +110,7 @@ export class EbayApiClient {
         const limit = response.headers['x-ebay-c-ratelimit-limit'];
 
         // Log response details
-        logResponse(
-          response.status,
-          response.statusText,
-          response.data,
-          remaining,
-          limit
-        );
+        logResponse(response.status, response.statusText, response.data, remaining, limit);
 
         return response;
       },
@@ -221,7 +215,9 @@ export class EbayApiClient {
               delayMs: Math.min(delay, 5000),
             });
 
-            await new Promise((resolve) => setTimeout(resolve, Math.min(delay, 5000)));
+            await new Promise<void>((resolve) => {
+              setTimeout(resolve, Math.min(delay, 5000));
+            });
             return await this.httpClient.request(config);
           }
         }
@@ -324,8 +320,13 @@ export class EbayApiClient {
   /**
    * Set user access and refresh tokens
    */
-  async setUserTokens(accessToken: string, refreshToken: string): Promise<void> {
-    await this.authClient.setUserTokens(accessToken, refreshToken);
+  setUserTokens(
+    accessToken: string,
+    refreshToken: string,
+    accessTokenExpiry?: number,
+    refreshTokenExpiry?: number
+  ): void {
+    this.authClient.setUserTokens(accessToken, refreshToken, accessTokenExpiry, refreshTokenExpiry);
   }
 
   /**
@@ -401,7 +402,9 @@ export class EbayApiClient {
     } catch (error) {
       // Handle 401 authentication errors with automatic token refresh
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        apiLogger.warn('Authentication error (401) on full URL request. Attempting to refresh user token...');
+        apiLogger.warn(
+          'Authentication error (401) on full URL request. Attempting to refresh user token...'
+        );
 
         try {
           // Refresh the token

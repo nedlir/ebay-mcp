@@ -96,8 +96,13 @@ export class EbaySellerApi {
   /**
    * Set user access and refresh tokens
    */
-  async setUserTokens(accessToken: string, refreshToken: string): Promise<void> {
-    await this.client.setUserTokens(accessToken, refreshToken);
+  setUserTokens(
+    accessToken: string,
+    refreshToken: string,
+    accessTokenExpiry?: number,
+    refreshTokenExpiry?: number
+  ): void {
+    this.client.setUserTokens(accessToken, refreshToken, accessTokenExpiry, refreshTokenExpiry);
   }
 
   /**

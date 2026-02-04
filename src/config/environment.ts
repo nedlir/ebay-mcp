@@ -262,8 +262,8 @@ export function getAuthUrl(
   scopes?: string[]
 ): string;
 export function getAuthUrl(
-  clientIdOrEnvironment: string | 'production' | 'sandbox',
-  redirectUri?: string | undefined,
+  clientIdOrEnvironment: string,
+  redirectUri?: string,
   environment?: 'production' | 'sandbox',
   locale: LocaleEnum = LocaleEnum.en_US,
   prompt: 'login' | 'consent' = 'login',
@@ -280,8 +280,8 @@ export function getAuthUrl(
   }
 
   // Otherwise, generate the full OAuth authorization URL
-  const clientId = clientIdOrEnvironment as string;
-  const env = environment || 'sandbox';
+  const clientId = clientIdOrEnvironment;
+  const env = environment ?? 'sandbox';
   const scope = getDefaultScopes(env);
 
   if (!(clientId && redirectUri)) {
