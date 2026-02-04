@@ -19,7 +19,7 @@ export class IdentityApi {
   async getUser() {
     const config = this.client.getConfig();
     const identityBaseUrl = getIdentityBaseUrl(config.environment);
-    const fullUrl = `${identityBaseUrl}${this.basePath}/user/`;
+    const fullUrl = `${identityBaseUrl}${this.basePath}/user`;
 
     return await this.client.getWithFullUrl(fullUrl);
   }

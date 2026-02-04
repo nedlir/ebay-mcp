@@ -73,7 +73,19 @@ function getSandboxScopes(): string[] {
  * Get default scopes for the specified environment
  */
 export function getDefaultScopes(environment: 'production' | 'sandbox'): string[] {
-  return environment === 'production' ? getProductionScopes() : getSandboxScopes();
+  if (environment === 'production') {
+    return getProductionScopes();
+  }
+
+  const sandboxScopes = getSandboxScopes();
+  const productionScopes = getProductionScopes();
+  const productionWithoutEdelivery = productionScopes.filter(
+    (scope) => scope !== 'https://api.ebay.com/oauth/scope/sell.edelivery'
+  );
+
+  const mergedScopes = new Set([...sandboxScopes, ...productionWithoutEdelivery]);
+  mergedScopes.add('https://api.ebay.com/oauth/api_scope/sell.edelivery');
+  return Array.from(mergedScopes);
 }
 
 /**
