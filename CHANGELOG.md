@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.3] - 2026-02-04
+
+### Fixed
+
+- **Auth Flow** - Enable Client Credentials flow as fallback authentication method
+- **Search Tool** - Filter results to only include items with valid SKUs for proper `fetch` compatibility
+- **Token Management** - Keep `setUserTokens` async for backward compatibility with `.then()` callers
+- **Token Expiry** - Pass expiry times through `setUserTokens` call chain correctly
+- **Code Style** - Resolve ESLint errors (unused imports, type assertions, Promise handling)
+- **Identity API** - Fix URL path for user endpoint
+
+### Changed
+
+- **HTTP Server** - Initialize API client before tool execution
+- **Setup CLI** - Add setup command entry point with proper error handling
+- **STDIO Server** - Serve icons with proper file:// URLs
+
 ## [1.5.0] - 2025-01-08
 
 ### Added
