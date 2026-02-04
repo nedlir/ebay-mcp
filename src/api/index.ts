@@ -96,13 +96,18 @@ export class EbaySellerApi {
   /**
    * Set user access and refresh tokens
    */
-  setUserTokens(
+  async setUserTokens(
     accessToken: string,
     refreshToken: string,
     accessTokenExpiry?: number,
     refreshTokenExpiry?: number
-  ): void {
-    this.client.setUserTokens(accessToken, refreshToken, accessTokenExpiry, refreshTokenExpiry);
+  ): Promise<void> {
+    await this.client.setUserTokens(
+      accessToken,
+      refreshToken,
+      accessTokenExpiry,
+      refreshTokenExpiry
+    );
   }
 
   /**

@@ -106,8 +106,7 @@ export async function executeTool(
       const pageSize = query ? Math.min(Math.max(limit, 50), 200) : limit;
       const matches: {
         product?: { title?: string };
-        sku?: string;
-        inventoryItemGroupKey?: string;
+        sku: string;
       }[] = [];
       let offset = 0;
 
@@ -118,9 +117,15 @@ export async function executeTool(
           break;
         }
 
+        // Filter to only include items with valid SKUs (required for getInventoryItem calls)
+        const itemsWithSku = pageItems.filter(
+          (item): item is typeof item & { sku: string } =>
+            typeof item.sku === 'string' && item.sku.trim() !== ''
+        );
+
         const filtered = query
-          ? pageItems.filter((item) => (item.product?.title ?? '').toLowerCase().includes(query))
-          : pageItems;
+          ? itemsWithSku.filter((item) => (item.product?.title ?? '').toLowerCase().includes(query))
+          : itemsWithSku;
 
         matches.push(...filtered);
         offset += pageSize;
@@ -135,11 +140,8 @@ export async function executeTool(
         }
       }
 
-      const results = matches.slice(0, limit).map((item, index: number) => ({
-        id:
-          (item as { sku?: string; inventoryItemGroupKey?: string }).sku ??
-          (item as { sku?: string; inventoryItemGroupKey?: string }).inventoryItemGroupKey ??
-          `${item.product?.title ?? 'item'}-${index}`,
+      const results = matches.slice(0, limit).map((item) => ({
+        id: item.sku,
         title: item.product?.title ?? 'No Title',
         // The URL should be a canonical link to the item, which we don't have here.
         // We'll use a placeholder.
@@ -248,7 +250,7 @@ export async function executeTool(
         throw new Error('Both accessToken and refreshToken are required');
       }
 
-      api.setUserTokens(accessToken, refreshToken);
+      await api.setUserTokens(accessToken, refreshToken);
 
       return {
         success: true,
@@ -359,7 +361,7 @@ export async function executeTool(
         }
 
         // Set tokens (will use defaults if expiry times not provided)
-        api.setUserTokens(accessToken, refreshToken, accessExpiry, refreshExpiry);
+        await api.setUserTokens(accessToken, refreshToken, accessExpiry, refreshExpiry);
 
         // If autoRefresh is enabled, attempt to get a fresh access token
         // (The OAuth client will handle refresh internally if needed)
