@@ -113,7 +113,7 @@ For official eBay API support, please refer to the [eBay Developer Program](http
 
 ## Features
 
-- **387 eBay API Tools** - 100% coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
+- **300+ eBay API Tools** - 100% coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
 - **9 AI Clients Supported** - Auto-configuration for Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, and Amazon Q
 - **OAuth 2.0 Support** - Full user token management with automatic refresh
 - **Type Safety** - Built with TypeScript, Zod validation, and OpenAPI-generated types

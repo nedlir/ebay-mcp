@@ -13,7 +13,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { randomUUID } from 'crypto';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -185,7 +185,13 @@ async function createApp(): Promise<express.Application> {
   async function createMcpServer(): Promise<McpServer> {
     const ebayConfig = getEbayConfig();
     const api = new EbaySellerApi(ebayConfig);
-    await api.initialize();
+    try {
+      await api.initialize();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Failed to initialize eBay API client: ${message}`);
+      throw error;
+    }
 
     const server = new McpServer({
       name: 'ebay-mcp',
@@ -430,6 +436,8 @@ async function main() {
 }
 
 // Start server if run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+const entryPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
+const modulePath = resolve(fileURLToPath(import.meta.url));
+if (entryPath && modulePath === entryPath) {
   await main();
 }

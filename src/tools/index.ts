@@ -59,11 +59,7 @@ import {
   updateDestinationSchema,
   updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
-import { type components } from '@/types/sell-apps/listing-management/sellInventoryV1Oas3.js';
-
 export type { ToolDefinition };
-
-type InventoryItem = components['schemas']['InventoryItem'];
 
 /**
  * Get all tool definitions for the MCP server
@@ -103,15 +99,19 @@ export async function executeTool(
       // A more robust implementation might search across different types of content.
       const limit = (args.limit as number) ?? 10;
       const query = (args.query as string | undefined)?.toLowerCase().trim();
-      const response = await api.inventory.getInventoryItems(limit);
+      const fetchLimit = query ? Math.max(limit, 50) : limit;
+      const response = await api.inventory.getInventoryItems(fetchLimit);
       let items = response.inventoryItems ?? [];
       if (query) {
         items = items.filter((item) =>
           (item.product?.title ?? '').toLowerCase().includes(query)
         );
       }
-      const results = items.map((item: InventoryItem, index: number) => ({
-        id: `item-${index}`,
+      const results = items.slice(0, limit).map((item, index: number) => ({
+        id:
+          (item as { sku?: string; inventoryItemGroupKey?: string }).sku ??
+          (item as { sku?: string; inventoryItemGroupKey?: string }).inventoryItemGroupKey ??
+          `${item.product?.title ?? 'item'}-${index}`,
         title: item.product?.title ?? 'No Title',
         // The URL should be a canonical link to the item, which we don't have here.
         // We'll use a placeholder.

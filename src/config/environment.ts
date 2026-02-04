@@ -369,6 +369,16 @@ export const mcpConfig: Implementation = {
   websiteUrl: 'https://github.com/YosefHayim/ebay-mcp',
   icons: [
     {
+      src: iconUrl('16x16'),
+      mimeType: 'image/png',
+      sizes: ['16x16'],
+    },
+    {
+      src: iconUrl('32x32'),
+      mimeType: 'image/png',
+      sizes: ['32x32'],
+    },
+    {
       src: iconUrl('48x48'),
       mimeType: 'image/png',
       sizes: ['48x48'],

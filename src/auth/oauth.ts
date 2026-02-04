@@ -206,7 +206,7 @@ export class EbayOAuthClient {
    */
   async getOrRefreshAppAccessToken(): Promise<string> {
     // Return cached token if still valid
-    if (this.appAccessToken) {
+    if (this.appAccessToken && Date.now() < this.appAccessTokenExpiry) {
       return this.appAccessToken;
     }
 
