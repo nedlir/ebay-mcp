@@ -97,17 +97,47 @@ export async function executeTool(
     case 'search': {
       // For this example, we'll treat the query as a search for inventory items.
       // A more robust implementation might search across different types of content.
-      const limit = (args.limit as number) ?? 10;
+      const requestedLimitRaw = args.limit as number | undefined;
+      const limit =
+        typeof requestedLimitRaw === 'number' && Number.isFinite(requestedLimitRaw)
+          ? Math.max(Math.floor(requestedLimitRaw), 1)
+          : 10;
       const query = (args.query as string | undefined)?.toLowerCase().trim();
-      const fetchLimit = query ? Math.max(limit, 50) : limit;
-      const response = await api.inventory.getInventoryItems(fetchLimit);
-      let items = response.inventoryItems ?? [];
-      if (query) {
-        items = items.filter((item) =>
-          (item.product?.title ?? '').toLowerCase().includes(query)
-        );
+      const pageSize = query ? Math.min(Math.max(limit, 50), 200) : limit;
+      const matches: Array<{
+        product?: { title?: string };
+        sku?: string;
+        inventoryItemGroupKey?: string;
+      }> = [];
+      let offset = 0;
+
+      while (matches.length < limit) {
+        const response = await api.inventory.getInventoryItems(pageSize, offset);
+        const pageItems = response.inventoryItems ?? [];
+        if (pageItems.length === 0) {
+          break;
+        }
+
+        const filtered = query
+          ? pageItems.filter((item) =>
+              (item.product?.title ?? '').toLowerCase().includes(query)
+            )
+          : pageItems;
+
+        matches.push(...filtered);
+        offset += pageSize;
+
+        const total = (response as { total?: number }).total;
+        if (typeof total === 'number' && offset >= total) {
+          break;
+        }
+
+        if (!query || pageItems.length < pageSize) {
+          break;
+        }
       }
-      const results = items.slice(0, limit).map((item, index: number) => ({
+
+      const results = matches.slice(0, limit).map((item, index: number) => ({
         id:
           (item as { sku?: string; inventoryItemGroupKey?: string }).sku ??
           (item as { sku?: string; inventoryItemGroupKey?: string }).inventoryItemGroupKey ??

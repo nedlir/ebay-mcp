@@ -275,7 +275,7 @@ describe('Tools Layer', () => {
 
       const result = await executeTool(mockApi, 'search', { limit: 10 });
 
-      expect(mockApi.inventory.getInventoryItems).toHaveBeenCalledWith(10);
+      expect(mockApi.inventory.getInventoryItems).toHaveBeenCalledWith(10, 0);
       expect(result).toHaveProperty('content');
       expect(Array.isArray((result as any).content)).toBe(true);
     });

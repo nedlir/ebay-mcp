@@ -175,7 +175,6 @@ export function logResponse(
 
   if (rateLimitRemaining && rateLimitTotal) {
     meta.rateLimit = `${rateLimitRemaining}/${rateLimitTotal}`;
-    console.error(`eBay Rate Limit: ${rateLimitRemaining}/${rateLimitTotal}`);
   }
 
   if (data) {
@@ -194,7 +193,6 @@ export function logErrorResponse(
   url: string,
   errorData?: unknown
 ): void {
-  console.error(`Error Response: ${status || 'N/A'} ${statusText || 'No response'}`);
   apiLogger.error(`Error Response: ${status || 'N/A'} ${statusText || 'No response'}`, {
     url,
     error: errorData ? truncateData(errorData) : undefined,

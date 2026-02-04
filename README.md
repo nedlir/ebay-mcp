@@ -11,7 +11,7 @@
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/yosefhayim-ebay-api-mcp-server-badge.png)](https://mseep.ai/app/yosefhayim-ebay-api-mcp-server)
 <a href="https://www.buymeacoffee.com/yosefhayim" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server providing AI assistants with comprehensive access to eBay's Sell APIs. Includes **300+ tools** for inventory management, order fulfillment, marketing campaigns, analytics, developer tools, and more.
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server providing AI assistants with comprehensive access to eBay's Sell APIs. Includes **325 tools** for inventory management, order fulfillment, marketing campaigns, analytics, developer tools, and more.
 
 **API Coverage:** 100% (270 unique eBay API endpoints)
 
@@ -113,7 +113,7 @@ For official eBay API support, please refer to the [eBay Developer Program](http
 
 ## Features
 
-- **300+ eBay API Tools** - 100% coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
+- **325 eBay API Tools** - 100% coverage of eBay Sell APIs across inventory, orders, marketing, analytics, developer tools, and more
 - **9 AI Clients Supported** - Auto-configuration for Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, and Amazon Q
 - **OAuth 2.0 Support** - Full user token management with automatic refresh
 - **Type Safety** - Built with TypeScript, Zod validation, and OpenAPI-generated types
@@ -310,7 +310,7 @@ Monitor your API usage in the [eBay Developer Portal](https://developer.ebay.com
 
 ## Available Tools
 
-The server provides **387 tools** with **100% API coverage** organized into the following categories:
+The server provides **325 tools** with **100% API coverage** organized into the following categories:
 
 - **Account Management** - Policies, programs, subscriptions, sales tax
 - **Inventory Management** - Items, offers, locations, bulk operations, SKU location mapping

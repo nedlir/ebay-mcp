@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
@@ -85,6 +85,7 @@ export function getDefaultScopes(environment: 'production' | 'sandbox'): string[
 
   const mergedScopes = new Set([...sandboxScopes, ...productionWithoutEdelivery]);
   mergedScopes.add('https://api.ebay.com/oauth/api_scope/sell.edelivery');
+  mergedScopes.add('https://api.ebay.com/oauth/scope/sell.edelivery');
   return Array.from(mergedScopes);
 }
 
@@ -359,8 +360,16 @@ export function getOAuthAuthorizationUrl(
   return `${signinDomain}/signin?ru=${ruParam}&sgfl=oauth2_login&AppName=${clientId}`;
 }
 
-const iconUrl = (size: string): string =>
-  new URL(`../../public/icons/${size}.png`, import.meta.url).toString();
+const iconUrl = (size: string): string => {
+  const url = new URL(`../../public/icons/${size}.png`, import.meta.url);
+  const path = fileURLToPath(url);
+  if (!existsSync(path)) {
+    console.warn(
+      `[eBay MCP] Icon not found at ${path}. Ensure public/icons is included in the package.`
+    );
+  }
+  return url.toString();
+};
 
 export const mcpConfig: Implementation = {
   name: 'eBay API Model Context Protocol Server',
