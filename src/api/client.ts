@@ -54,6 +54,23 @@ export class EbayApiClient {
   private rateLimitTracker: RateLimitTracker;
   private config: EbayConfig;
 
+  private getDefaultHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+
+    if (this.config.contentLanguage) {
+      headers['Content-Language'] = this.config.contentLanguage;
+    }
+
+    if (this.config.marketplaceId) {
+      headers['X-EBAY-C-MARKETPLACE-ID'] = this.config.marketplaceId;
+    }
+
+    return headers;
+  }
+
   constructor(config: EbayConfig) {
     this.config = config;
     this.authClient = new EbayOAuthClient(config);
@@ -63,12 +80,7 @@ export class EbayApiClient {
     this.httpClient = axios.create({
       baseURL: this.baseUrl,
       timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...(config.contentLanguage ? { 'Content-Language': config.contentLanguage } : {}),
-        ...(config.marketplaceId ? { 'X-EBAY-C-MARKETPLACE-ID': config.marketplaceId } : {}),
-      },
+      headers: this.getDefaultHeaders(),
     });
 
     // Add request interceptor to inject auth token and check rate limits
@@ -395,14 +407,7 @@ export class EbayApiClient {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          ...(this.config.contentLanguage
-            ? { 'Content-Language': this.config.contentLanguage }
-            : {}),
-          ...(this.config.marketplaceId
-            ? { 'X-EBAY-C-MARKETPLACE-ID': this.config.marketplaceId }
-            : {}),
+          ...this.getDefaultHeaders(),
         },
         timeout: 30000,
       });
@@ -428,14 +433,7 @@ export class EbayApiClient {
             params,
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-              ...(this.config.contentLanguage
-                ? { 'Content-Language': this.config.contentLanguage }
-                : {}),
-              ...(this.config.marketplaceId
-                ? { 'X-EBAY-C-MARKETPLACE-ID': this.config.marketplaceId }
-                : {}),
+              ...this.getDefaultHeaders(),
             },
             timeout: 30000,
           });

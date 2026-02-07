@@ -81,7 +81,7 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 
 #### `EBAY_CONTENT_LANGUAGE`
 
-- **Description:** Preferred `Content-Language` header for localized responses
+- **Description:** Preferred `Content-Language` header for localized request content
 - **Example:** `en-US`, `de-DE`, `fr-FR`
 - **Required:** No (optional default)
 - **Default:** `en-US`

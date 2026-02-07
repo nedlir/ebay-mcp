@@ -754,6 +754,13 @@ function saveConfig(envConfig: Record<string, string>, environment: string): voi
   const envPath = join(PROJECT_ROOT, '.env');
   const now = new Date();
 
+  const marketplaceLine = envConfig.EBAY_MARKETPLACE_ID
+    ? `EBAY_MARKETPLACE_ID=${envConfig.EBAY_MARKETPLACE_ID}`
+    : '# EBAY_MARKETPLACE_ID=EBAY_US';
+  const contentLanguageLine = envConfig.EBAY_CONTENT_LANGUAGE
+    ? `EBAY_CONTENT_LANGUAGE=${envConfig.EBAY_CONTENT_LANGUAGE}`
+    : '# EBAY_CONTENT_LANGUAGE=en-US';
+
   const content = `# eBay MCP Server Configuration
 # Last Updated: ${formatDate(now)}
 # Environment: ${environment}
@@ -762,8 +769,8 @@ EBAY_CLIENT_ID=${envConfig.EBAY_CLIENT_ID || ''}
 EBAY_CLIENT_SECRET=${envConfig.EBAY_CLIENT_SECRET || ''}
 EBAY_REDIRECT_URI=${envConfig.EBAY_REDIRECT_URI || ''}
 EBAY_ENVIRONMENT=${environment}
-EBAY_MARKETPLACE_ID=${envConfig.EBAY_MARKETPLACE_ID || ''}
-EBAY_CONTENT_LANGUAGE=${envConfig.EBAY_CONTENT_LANGUAGE || ''}
+${marketplaceLine}
+${contentLanguageLine}
 
 EBAY_USER_REFRESH_TOKEN=${envConfig.EBAY_USER_REFRESH_TOKEN || ''}
 EBAY_USER_ACCESS_TOKEN=${envConfig.EBAY_USER_ACCESS_TOKEN || ''}

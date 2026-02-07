@@ -198,8 +198,8 @@ EBAY_REDIRECT_URI=${config.EBAY_REDIRECT_URI || 'http://localhost:3000/oauth/cal
 # ═══════════════════════════════════════════════════════════════════
 
 EBAY_ENVIRONMENT=${config.EBAY_ENVIRONMENT || 'sandbox'}
-EBAY_MARKETPLACE_ID=${config.EBAY_MARKETPLACE_ID || ''}
-EBAY_CONTENT_LANGUAGE=${config.EBAY_CONTENT_LANGUAGE || ''}
+EBAY_MARKETPLACE_ID=${config.EBAY_MARKETPLACE_ID || ''}  # Optional: e.g. EBAY_US, EBAY_DE, EBAY_FR
+EBAY_CONTENT_LANGUAGE=${config.EBAY_CONTENT_LANGUAGE || ''}  # Optional: e.g. en-US, de-DE, fr-FR
 
 # ═══════════════════════════════════════════════════════════════════
 # User Tokens (Auto-generated from refresh token)

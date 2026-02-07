@@ -97,25 +97,32 @@ describe('EbayApiClient Unit Tests', () => {
 
   describe('Default marketplace and language headers', () => {
     it('should include EBAY_US and en-US headers by default', async () => {
-      process.env.EBAY_CLIENT_ID = 'test_client_id';
-      process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
-      delete process.env.EBAY_MARKETPLACE_ID;
-      delete process.env.EBAY_CONTENT_LANGUAGE;
+      const originalEnv = process.env;
+      process.env = { ...originalEnv };
 
-      const defaultClient = new EbayApiClient(getEbayConfig());
-      await defaultClient.initialize();
+      try {
+        process.env.EBAY_CLIENT_ID = 'test_client_id';
+        process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
+        delete process.env.EBAY_MARKETPLACE_ID;
+        delete process.env.EBAY_CONTENT_LANGUAGE;
 
-      nock('https://api.sandbox.ebay.com', {
-        reqheaders: {
-          'x-ebay-c-marketplace-id': 'EBAY_US',
-          'content-language': 'en-US',
-        },
-      })
-        .get('/sell/inventory/v1/test')
-        .reply(200, { success: true });
+        const defaultClient = new EbayApiClient(getEbayConfig());
+        await defaultClient.initialize();
 
-      const result = await defaultClient.get('/sell/inventory/v1/test');
-      expect(result).toEqual({ success: true });
+        nock('https://api.sandbox.ebay.com', {
+          reqheaders: {
+            'x-ebay-c-marketplace-id': 'EBAY_US',
+            'content-language': 'en-US',
+          },
+        })
+          .get('/sell/inventory/v1/test')
+          .reply(200, { success: true });
+
+        const result = await defaultClient.get('/sell/inventory/v1/test');
+        expect(result).toEqual({ success: true });
+      } finally {
+        process.env = originalEnv;
+      }
     });
 
     it('should override headers when config provides values', async () => {
