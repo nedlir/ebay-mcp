@@ -997,6 +997,9 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Collect eBay app credentials from the user.
+ */
 async function stepCredentials(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
@@ -1055,6 +1058,9 @@ async function stepCredentials(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Acquire and validate OAuth tokens for the configured credentials.
+ */
 async function stepOAuth(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
@@ -1566,6 +1572,9 @@ async function stepOAuth(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Configure MCP clients with the generated environment variables.
+ */
 async function stepMCPClients(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
@@ -1669,6 +1678,9 @@ async function stepMCPClients(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Finalize setup and display summary information.
+ */
 async function stepComplete(state: SetupState): Promise<void> {
   clearScreen();
   showLogo();
