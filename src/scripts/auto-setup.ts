@@ -204,6 +204,12 @@ function generateMCPServerConfig(): MCPServerConfig {
   if (process.env.EBAY_REDIRECT_URI) {
     config.env.EBAY_REDIRECT_URI = process.env.EBAY_REDIRECT_URI;
   }
+  if (process.env.EBAY_MARKETPLACE_ID) {
+    config.env.EBAY_MARKETPLACE_ID = process.env.EBAY_MARKETPLACE_ID;
+  }
+  if (process.env.EBAY_CONTENT_LANGUAGE) {
+    config.env.EBAY_CONTENT_LANGUAGE = process.env.EBAY_CONTENT_LANGUAGE;
+  }
 
   if (process.env.EBAY_USER_ACCESS_TOKEN) {
     config.env.EBAY_USER_ACCESS_TOKEN = process.env.EBAY_USER_ACCESS_TOKEN;

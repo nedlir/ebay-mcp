@@ -198,6 +198,8 @@ EBAY_REDIRECT_URI=${config.EBAY_REDIRECT_URI || 'http://localhost:3000/oauth/cal
 # ═══════════════════════════════════════════════════════════════════
 
 EBAY_ENVIRONMENT=${config.EBAY_ENVIRONMENT || 'sandbox'}
+EBAY_MARKETPLACE_ID=${config.EBAY_MARKETPLACE_ID || ''}
+EBAY_CONTENT_LANGUAGE=${config.EBAY_CONTENT_LANGUAGE || ''}
 
 # ═══════════════════════════════════════════════════════════════════
 # User Tokens (Auto-generated from refresh token)
@@ -832,6 +834,8 @@ async function runInteractiveSetup(args: CLIArgs) {
     EBAY_CLIENT_SECRET: credentials.EBAY_CLIENT_SECRET,
     EBAY_REDIRECT_URI: credentials.EBAY_REDIRECT_URI,
     EBAY_ENVIRONMENT: environment,
+    EBAY_MARKETPLACE_ID: existingConfig.EBAY_MARKETPLACE_ID || '',
+    EBAY_CONTENT_LANGUAGE: existingConfig.EBAY_CONTENT_LANGUAGE || '',
     EBAY_USER_REFRESH_TOKEN: refreshToken,
     EBAY_USER_ACCESS_TOKEN: '',
     EBAY_APP_ACCESS_TOKEN: '',

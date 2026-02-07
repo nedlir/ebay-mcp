@@ -66,6 +66,8 @@ export class EbayApiClient {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        ...(config.contentLanguage ? { 'Content-Language': config.contentLanguage } : {}),
+        ...(config.marketplaceId ? { 'X-EBAY-C-MARKETPLACE-ID': config.marketplaceId } : {}),
       },
     });
 
@@ -395,6 +397,12 @@ export class EbayApiClient {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          ...(this.config.contentLanguage
+            ? { 'Content-Language': this.config.contentLanguage }
+            : {}),
+          ...(this.config.marketplaceId
+            ? { 'X-EBAY-C-MARKETPLACE-ID': this.config.marketplaceId }
+            : {}),
         },
         timeout: 30000,
       });
@@ -422,6 +430,12 @@ export class EbayApiClient {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
               Accept: 'application/json',
+              ...(this.config.contentLanguage
+                ? { 'Content-Language': this.config.contentLanguage }
+                : {}),
+              ...(this.config.marketplaceId
+                ? { 'X-EBAY-C-MARKETPLACE-ID': this.config.marketplaceId }
+                : {}),
             },
             timeout: 30000,
           });

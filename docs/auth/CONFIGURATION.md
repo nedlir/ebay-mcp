@@ -71,6 +71,20 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Required:** Yes
 - **Recommendation:** Start with `sandbox` for testing, then switch to `production` when ready
 
+#### `EBAY_MARKETPLACE_ID`
+
+- **Description:** Default marketplace ID used for eBay API requests
+- **Example:** `EBAY_US`, `EBAY_DE`, `EBAY_FR`
+- **Required:** No (optional default)
+- **Behavior:** When set, the server adds `X-EBAY-C-MARKETPLACE-ID` to requests. You can still override per-tool.
+
+#### `EBAY_CONTENT_LANGUAGE`
+
+- **Description:** Preferred `Content-Language` header for localized responses
+- **Example:** `en-US`, `de-DE`, `fr-FR`
+- **Required:** No (optional default)
+- **Behavior:** When set, the server adds `Content-Language` to requests. You can still override per-tool.
+
 ### Required: User Refresh Token (For OAuth Flow)
 
 #### `EBAY_USER_REFRESH_TOKEN`
@@ -457,6 +471,8 @@ The assistant will use the `ebay_clear_tokens` tool to:
 EBAY_CLIENT_ID=YourAppId-Prod-1234-5678-90ab-cdef
 EBAY_CLIENT_SECRET=YourAppId-Prod-1234-5678-90ab-cdef-YourSecretKey
 EBAY_ENVIRONMENT=sandbox
+EBAY_MARKETPLACE_ID=EBAY_US
+EBAY_CONTENT_LANGUAGE=en-US
 ```
 
 **Rate Limits:** 1,000 requests/day
@@ -471,6 +487,8 @@ EBAY_CLIENT_ID=YourAppId-Prod-1234-5678-90ab-cdef
 EBAY_CLIENT_SECRET=YourAppId-Prod-1234-5678-90ab-cdef-YourSecretKey
 EBAY_REDIRECT_URI=YourAppId-YourAppId-abc-def-ghi
 EBAY_ENVIRONMENT=sandbox
+EBAY_MARKETPLACE_ID=EBAY_US
+EBAY_CONTENT_LANGUAGE=en-US
 
 # Required: User Refresh Token (obtained through OAuth flow)
 EBAY_USER_REFRESH_TOKEN=v^1.1#r^1#i^1#p^3#I^3#f^0#t^H4sIAAAAAAAAAOVXa2...
@@ -490,6 +508,8 @@ EBAY_CLIENT_ID=YourAppId-Prod-1234-5678-90ab-cdef
 EBAY_CLIENT_SECRET=YourAppId-Prod-1234-5678-90ab-cdef-YourSecretKey
 EBAY_REDIRECT_URI=YourAppId-YourAppId-abc-def-ghi
 EBAY_ENVIRONMENT=production
+EBAY_MARKETPLACE_ID=EBAY_US
+EBAY_CONTENT_LANGUAGE=en-US
 EBAY_USER_REFRESH_TOKEN=v^1.1#r^1#i^1#p^3#I^3#f^0#t^H4sIAAAAAAAAAOVXa2...
 ```
 
