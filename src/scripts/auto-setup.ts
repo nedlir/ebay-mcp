@@ -181,6 +181,8 @@ interface MCPServerConfig {
     EBAY_CLIENT_SECRET: string;
     EBAY_ENVIRONMENT: string;
     EBAY_REDIRECT_URI?: string;
+    EBAY_MARKETPLACE_ID?: string;
+    EBAY_CONTENT_LANGUAGE?: string;
     EBAY_USER_ACCESS_TOKEN?: string;
     EBAY_USER_REFRESH_TOKEN?: string;
     EBAY_APP_ACCESS_TOKEN?: string;

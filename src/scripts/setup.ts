@@ -868,6 +868,7 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   ]);
 
   const marketplaceChoices = [
+    { title: ui.dim('← Go back'), value: '__back__' },
     { title: 'Skip (leave unset)', value: '' },
     ...MARKETPLACE_OPTIONS.map((option) => ({
       title: option.label,
@@ -893,6 +894,9 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   if (marketplaceResponse.marketplaceId === undefined) {
     return 'cancel';
   }
+  if (marketplaceResponse.marketplaceId === '__back__') {
+    return 'back';
+  }
 
   let marketplaceId = marketplaceResponse.marketplaceId as string;
   if (marketplaceId === '__custom__') {
@@ -913,6 +917,7 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   }
 
   const languageChoices = [
+    { title: ui.dim('← Go back'), value: '__back__' },
     { title: 'Skip (leave unset)', value: '' },
     ...CONTENT_LANGUAGE_OPTIONS.map((option) => ({
       title: option.label,
@@ -935,6 +940,9 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
 
   if (languageResponse.contentLanguage === undefined) {
     return 'cancel';
+  }
+  if (languageResponse.contentLanguage === '__back__') {
+    return 'back';
   }
 
   let contentLanguage = languageResponse.contentLanguage as string;
