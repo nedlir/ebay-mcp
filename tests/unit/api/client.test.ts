@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import nock from 'nock';
 import { EbayApiClient } from '@/api/client.js';
+import { getEbayConfig } from '@/config/environment.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import { apiLogger } from '@/utils/logger.js';
 
@@ -91,6 +92,54 @@ describe('EbayApiClient Unit Tests', () => {
       expect(stats).toHaveProperty('current');
       expect(stats).toHaveProperty('max');
       expect(stats).toHaveProperty('windowMs');
+    });
+  });
+
+  describe('Default marketplace and language headers', () => {
+    it('should include EBAY_US and en-US headers by default', async () => {
+      process.env.EBAY_CLIENT_ID = 'test_client_id';
+      process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
+      delete process.env.EBAY_MARKETPLACE_ID;
+      delete process.env.EBAY_CONTENT_LANGUAGE;
+
+      const defaultClient = new EbayApiClient(getEbayConfig());
+      await defaultClient.initialize();
+
+      nock('https://api.sandbox.ebay.com', {
+        reqheaders: {
+          'x-ebay-c-marketplace-id': 'EBAY_US',
+          'content-language': 'en-US',
+        },
+      })
+        .get('/sell/inventory/v1/test')
+        .reply(200, { success: true });
+
+      const result = await defaultClient.get('/sell/inventory/v1/test');
+      expect(result).toEqual({ success: true });
+    });
+
+    it('should override headers when config provides values', async () => {
+      const customClient = new EbayApiClient({
+        clientId: 'test_client_id',
+        clientSecret: 'test_client_secret',
+        environment: 'sandbox',
+        redirectUri: 'https://localhost/callback',
+        marketplaceId: 'EBAY_DE',
+        contentLanguage: 'de-DE',
+      });
+      await customClient.initialize();
+
+      nock('https://api.sandbox.ebay.com', {
+        reqheaders: {
+          'x-ebay-c-marketplace-id': 'EBAY_DE',
+          'content-language': 'de-DE',
+        },
+      })
+        .get('/sell/inventory/v1/test')
+        .reply(200, { success: true });
+
+      const result = await customClient.get('/sell/inventory/v1/test');
+      expect(result).toEqual({ success: true });
     });
   });
 
