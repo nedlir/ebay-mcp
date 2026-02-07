@@ -83,11 +83,7 @@ export class InventoryApi {
     }
 
     try {
-      return await this.client.put<void>(`${this.basePath}/inventory_item/${sku}`, inventoryItem, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      return await this.client.put<void>(`${this.basePath}/inventory_item/${sku}`, inventoryItem);
     } catch (error) {
       throw new Error(
         `Failed to create or replace inventory item: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -126,12 +122,7 @@ export class InventoryApi {
     try {
       return await this.client.post(
         `${this.basePath}/bulk_create_or_replace_inventory_item`,
-        requests,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        requests
       );
     } catch (error) {
       throw new Error(
@@ -216,12 +207,7 @@ export class InventoryApi {
     try {
       return await this.client.put(
         `${this.basePath}/inventory_item/${sku}/product_compatibility`,
-        compatibility,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        compatibility
       );
     } catch (error) {
       throw new Error(
@@ -291,12 +277,7 @@ export class InventoryApi {
     try {
       return await this.client.put(
         `${this.basePath}/inventory_item_group/${inventoryItemGroupKey}`,
-        inventoryItemGroup,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        inventoryItemGroup
       );
     } catch (error) {
       throw new Error(
@@ -553,11 +534,7 @@ export class InventoryApi {
     }
 
     try {
-      return await this.client.post<CreateOfferResponse>(`${this.basePath}/offer`, offer, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      return await this.client.post<CreateOfferResponse>(`${this.basePath}/offer`, offer);
     } catch (error) {
       throw new Error(
         `Failed to create offer: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -579,11 +556,7 @@ export class InventoryApi {
     }
 
     try {
-      return await this.client.put(`${this.basePath}/offer/${offerId}`, offer, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      return await this.client.put(`${this.basePath}/offer/${offerId}`, offer);
     } catch (error) {
       throw new Error(
         `Failed to update offer: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -658,11 +631,7 @@ export class InventoryApi {
     }
 
     try {
-      return await this.client.post(`${this.basePath}/bulk_create_offer`, requests, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      return await this.client.post(`${this.basePath}/bulk_create_offer`, requests);
     } catch (error) {
       throw new Error(
         `Failed to bulk create offers: ${error instanceof Error ? error.message : 'Unknown error'}`

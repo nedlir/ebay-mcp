@@ -873,7 +873,7 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   console.log('  Configure default marketplace and language for API requests.\n');
   showBox('Marketplace Settings', [
     'These are optional defaults used for request headers.',
-    'You can override them per-tool if needed.',
+    'Marketplace can be overridden in many tools; language is global.',
   ]);
 
   const marketplaceChoices = [

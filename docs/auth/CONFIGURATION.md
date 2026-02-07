@@ -77,7 +77,7 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Example:** `EBAY_US`, `EBAY_DE`, `EBAY_FR`
 - **Required:** No (optional default)
 - **Default:** `EBAY_US`
-- **Behavior:** When set, the server adds `X-EBAY-C-MARKETPLACE-ID` to requests. You can still override per-tool.
+- **Behavior:** Sent on all requests; defaults to `EBAY_US` if unset. Many tools accept a `marketplaceId` parameter that overrides this default.
 
 #### `EBAY_CONTENT_LANGUAGE`
 
@@ -85,7 +85,7 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Example:** `en-US`, `de-DE`, `fr-FR`
 - **Required:** No (optional default)
 - **Default:** `en-US`
-- **Behavior:** When set, the server adds `Content-Language` to requests. You can still override per-tool.
+- **Behavior:** Sent on all requests; defaults to `en-US` if unset. Per-tool overrides are not currently exposed.
 
 ### Required: User Refresh Token (For OAuth Flow)
 

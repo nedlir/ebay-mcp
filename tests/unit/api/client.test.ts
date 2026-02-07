@@ -105,6 +105,7 @@ describe('EbayApiClient Unit Tests', () => {
         process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
         delete process.env.EBAY_MARKETPLACE_ID;
         delete process.env.EBAY_CONTENT_LANGUAGE;
+        process.env.EBAY_ENVIRONMENT = 'sandbox';
 
         const defaultClient = new EbayApiClient(getEbayConfig());
         await defaultClient.initialize();
