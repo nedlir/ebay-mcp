@@ -192,6 +192,9 @@ export function validateEnvironmentConfig(): {
   };
 }
 
+/**
+ * Build EbayConfig from environment variables with safe defaults.
+ */
 export function getEbayConfig(): EbayConfig {
   const clientId = process.env.EBAY_CLIENT_ID ?? '';
   const clientSecret = process.env.EBAY_CLIENT_SECRET ?? '';

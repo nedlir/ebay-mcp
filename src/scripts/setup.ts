@@ -750,6 +750,9 @@ function formatDate(date: Date): string {
   return date.toLocaleString('en-US', options);
 }
 
+/**
+ * Persist setup configuration to the project .env file.
+ */
 function saveConfig(envConfig: Record<string, string>, environment: string): void {
   const envPath = join(PROJECT_ROOT, '.env');
   const now = new Date();
@@ -809,6 +812,9 @@ async function stepWelcome(state: SetupState): Promise<StepResult> {
   return response.continue !== false ? 'continue' : 'cancel';
 }
 
+/**
+ * Select the eBay environment for this configuration.
+ */
 async function stepEnvironment(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
@@ -923,6 +929,12 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
     marketplaceId = customMarketplace.customMarketplaceId.trim();
   }
 
+  if (marketplaceId) {
+    state.config.EBAY_MARKETPLACE_ID = marketplaceId;
+  } else {
+    delete state.config.EBAY_MARKETPLACE_ID;
+  }
+
   const languageChoices = [
     { title: ui.dim('← Go back'), value: '__back__' },
     { title: 'Skip (leave unset)', value: '' },
@@ -974,12 +986,6 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
     }
 
     contentLanguage = customLanguage.customContentLanguage.trim();
-  }
-
-  if (marketplaceId) {
-    state.config.EBAY_MARKETPLACE_ID = marketplaceId;
-  } else {
-    delete state.config.EBAY_MARKETPLACE_ID;
   }
 
   if (contentLanguage) {
