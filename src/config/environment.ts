@@ -199,8 +199,8 @@ export function getEbayConfig(): EbayConfig {
   const accessToken = process.env.EBAY_USER_ACCESS_TOKEN ?? '';
   const refreshToken = process.env.EBAY_USER_REFRESH_TOKEN ?? '';
   const appAccessToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
-  const marketplaceId = process.env.EBAY_MARKETPLACE_ID ?? '';
-  const contentLanguage = process.env.EBAY_CONTENT_LANGUAGE ?? '';
+  const marketplaceId = (process.env.EBAY_MARKETPLACE_ID ?? '').trim() || 'EBAY_US';
+  const contentLanguage = (process.env.EBAY_CONTENT_LANGUAGE ?? '').trim() || 'en-US';
 
   // Only require client credentials - tokens can be optional (generated from refresh token)
   if (clientId === '' || clientSecret === '') {
@@ -213,8 +213,8 @@ export function getEbayConfig(): EbayConfig {
     clientId,
     clientSecret,
     redirectUri: process.env.EBAY_REDIRECT_URI,
-    marketplaceId: marketplaceId || undefined,
-    contentLanguage: contentLanguage || undefined,
+    marketplaceId,
+    contentLanguage,
     environment,
     accessToken,
     refreshToken,

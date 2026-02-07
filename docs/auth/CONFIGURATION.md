@@ -76,6 +76,7 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Description:** Default marketplace ID used for eBay API requests
 - **Example:** `EBAY_US`, `EBAY_DE`, `EBAY_FR`
 - **Required:** No (optional default)
+- **Default:** `EBAY_US`
 - **Behavior:** When set, the server adds `X-EBAY-C-MARKETPLACE-ID` to requests. You can still override per-tool.
 
 #### `EBAY_CONTENT_LANGUAGE`
@@ -83,6 +84,7 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Description:** Preferred `Content-Language` header for localized responses
 - **Example:** `en-US`, `de-DE`, `fr-FR`
 - **Required:** No (optional default)
+- **Default:** `en-US`
 - **Behavior:** When set, the server adds `Content-Language` to requests. You can still override per-tool.
 
 ### Required: User Refresh Token (For OAuth Flow)

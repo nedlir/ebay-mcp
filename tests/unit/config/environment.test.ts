@@ -99,6 +99,18 @@ describe('Environment Configuration', () => {
 
       expect(config.redirectUri).toBeUndefined();
     });
+
+    it('should default marketplace and content language to US', () => {
+      process.env.EBAY_CLIENT_ID = 'test_client_id';
+      process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
+      delete process.env.EBAY_MARKETPLACE_ID;
+      delete process.env.EBAY_CONTENT_LANGUAGE;
+
+      const config = getEbayConfig();
+
+      expect(config.marketplaceId).toBe('EBAY_US');
+      expect(config.contentLanguage).toBe('en-US');
+    });
   });
 
   describe('getBaseUrl', () => {

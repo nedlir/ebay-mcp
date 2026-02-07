@@ -870,8 +870,9 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   ];
 
   const currentMarketplace = state.config.EBAY_MARKETPLACE_ID || '';
+  const marketplaceDefault = currentMarketplace || 'EBAY_US';
   const marketplaceInitial = marketplaceChoices.findIndex(
-    (choice) => choice.value === currentMarketplace
+    (choice) => choice.value === marketplaceDefault
   );
 
   const marketplaceResponse = await prompts({
@@ -914,7 +915,8 @@ async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   ];
 
   const currentLanguage = state.config.EBAY_CONTENT_LANGUAGE || '';
-  const languageInitial = languageChoices.findIndex((choice) => choice.value === currentLanguage);
+  const languageDefault = currentLanguage || 'en-US';
+  const languageInitial = languageChoices.findIndex((choice) => choice.value === languageDefault);
 
   const languageResponse = await prompts({
     type: 'select',
