@@ -84,12 +84,7 @@ describe('InventoryApi', () => {
 
       expect(client.put).toHaveBeenCalledWith(
         '/sell/inventory/v1/inventory_item/TEST-SKU',
-        inventoryItem,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        inventoryItem
       );
     });
 
@@ -165,11 +160,7 @@ describe('InventoryApi', () => {
 
       await api.createOffer(offer);
 
-      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/offer', offer, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/offer', offer);
     });
 
     it('should throw error when offer data is missing', async () => {
@@ -318,12 +309,7 @@ describe('InventoryApi', () => {
 
       expect(client.post).toHaveBeenCalledWith(
         '/sell/inventory/v1/bulk_create_or_replace_inventory_item',
-        requests,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        requests
       );
     });
 
@@ -388,11 +374,7 @@ describe('InventoryApi', () => {
 
       await api.updateOffer('OFFER-123', mockOffer);
 
-      expect(client.put).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-123', mockOffer, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      expect(client.put).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-123', mockOffer);
     });
 
     it('should throw error when offerId is missing', async () => {
@@ -413,11 +395,7 @@ describe('InventoryApi', () => {
 
       await api.bulkCreateOffer(requests);
 
-      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/bulk_create_offer', requests, {
-        headers: {
-          'Content-Language': 'en-US',
-        },
-      });
+      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/bulk_create_offer', requests);
     });
 
     it('should throw error when requests are missing', async () => {
@@ -499,12 +477,7 @@ describe('InventoryApi', () => {
 
       expect(client.put).toHaveBeenCalledWith(
         '/sell/inventory/v1/inventory_item/TEST-SKU/product_compatibility',
-        compatibility,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        compatibility
       );
     });
 
@@ -564,12 +537,7 @@ describe('InventoryApi', () => {
 
       expect(client.put).toHaveBeenCalledWith(
         '/sell/inventory/v1/inventory_item_group/GROUP-123',
-        group,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        group
       );
     });
 
@@ -687,12 +655,7 @@ describe('InventoryApi', () => {
 
       expect(client.post).toHaveBeenCalledWith(
         '/sell/inventory/v1/bulk_create_or_replace_inventory_item',
-        requests,
-        {
-          headers: {
-            'Content-Language': 'en-US',
-          },
-        }
+        requests
       );
     });
 

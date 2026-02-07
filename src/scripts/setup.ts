@@ -90,15 +90,24 @@ const LOGO = `
    ${ebay.red('╚══════╝')}${ebay.blue('╚═════╝ ')}${ebay.yellow('╚═╝  ╚═╝')}${ebay.green('   ╚═╝   ')}
 `;
 
+/**
+ * Clear the terminal screen.
+ */
 function clearScreen(): void {
   console.clear();
 }
 
+/**
+ * Render the eBay ASCII logo and heading.
+ */
 function showLogo(): void {
   console.log(LOGO);
   console.log(ui.bold.white('            MCP Server Setup Wizard\n'));
 }
 
+/**
+ * Render a step progress bar with title.
+ */
 function showProgress(step: number, title: string): void {
   const filled = '●'.repeat(step);
   const empty = '○'.repeat(TOTAL_STEPS - step);
@@ -109,25 +118,37 @@ function showProgress(step: number, title: string): void {
   console.log(ui.dim('─'.repeat(60)) + '\n');
 }
 
+/**
+ * Render keyboard hints for the current step.
+ */
 function showKeyboardHints(hints: string[]): void {
   const hintText = hints.map((h) => ui.dim(h)).join('  │  ');
   console.log(`\n  ${hintText}\n`);
 }
 
+/**
+ * Render a tip callout.
+ */
 function showTip(message: string): void {
   console.log(`  ${ebay.yellow('💡 Tip:')} ${ui.dim(message)}\n`);
 }
 
+/**
+ * Render a success line.
+ */
 function showSuccess(message: string): void {
   console.log(`  ${ui.success('✓')} ${message}`);
 }
 
+/**
+ * Render an error line.
+ */
 function showError(message: string): void {
   console.log(`  ${ui.error('✗')} ${message}`);
 }
 
 /**
- * Open a URL in the default browser (cross-platform)
+ * Open a URL in the default browser (cross-platform).
  */
 function openBrowser(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -155,6 +176,9 @@ function openBrowser(url: string): Promise<void> {
   });
 }
 
+/**
+ * Render a warning line.
+ */
 function showWarning(message: string): void {
   console.log(`  ${ui.warning('⚠')} ${message}`);
 }
@@ -417,10 +441,16 @@ function displayUserInfo(userInfo: EbayUserInfo): void {
   ]);
 }
 
+/**
+ * Render an informational line.
+ */
 function showInfo(message: string): void {
   console.log(`  ${ui.info('ℹ')} ${message}`);
 }
 
+/**
+ * Render a spinner and return a stop callback.
+ */
 function showSpinner(message: string): () => void {
   const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   let i = 0;
@@ -438,6 +468,9 @@ function showSpinner(message: string): () => void {
   };
 }
 
+/**
+ * Render a bordered info box.
+ */
 function showBox(title: string, content: string[]): void {
   const width = 60;
   const line = '─'.repeat(width - 2);
@@ -454,6 +487,9 @@ function showBox(title: string, content: string[]): void {
   console.log(`  ${ui.dim('└' + line + '┘')}\n`);
 }
 
+/**
+ * Compute MCP client config paths by OS.
+ */
 function getConfigPaths(): Record<string, { display: string; path: string }> {
   const home = homedir();
   const os = platform();
@@ -505,6 +541,9 @@ function getConfigPaths(): Record<string, { display: string; path: string }> {
   return paths;
 }
 
+/**
+ * Detect installed MCP-compatible clients.
+ */
 function detectLLMClients(): LLMClient[] {
   const paths = getConfigPaths();
   const clients: LLMClient[] = [];
@@ -525,6 +564,9 @@ function detectLLMClients(): LLMClient[] {
   return clients;
 }
 
+/**
+ * Write MCP server config for a detected client.
+ */
 function configureLLMClient(client: LLMClient, projectRoot: string): boolean {
   try {
     const configDir = dirname(client.configPath);
@@ -716,6 +758,9 @@ function updateClaudeDesktopConfig(
   }
 }
 
+/**
+ * Load existing environment variables from the .env file.
+ */
 function loadExistingConfig(): Record<string, string> {
   const envPath = join(PROJECT_ROOT, '.env');
   const envConfig: Record<string, string> = {};
@@ -736,6 +781,9 @@ function loadExistingConfig(): Record<string, string> {
   return envConfig;
 }
 
+/**
+ * Format a date for display in the .env header.
+ */
 function formatDate(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
