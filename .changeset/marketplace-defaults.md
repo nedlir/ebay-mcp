@@ -1,5 +1,5 @@
 ---
-"ebay-mcp": patch
+"ebay-mcp": minor
 ---
 
-Add default marketplace and content language headers with configurable env vars.
+Add configurable marketplace and content language defaults.
