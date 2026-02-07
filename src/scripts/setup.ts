@@ -850,6 +850,9 @@ async function stepEnvironment(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Configure optional marketplace and content-language defaults.
+ */
 async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();

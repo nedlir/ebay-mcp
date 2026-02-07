@@ -54,6 +54,9 @@ export class EbayApiClient {
   private rateLimitTracker: RateLimitTracker;
   private config: EbayConfig;
 
+  /**
+   * Build default request headers based on configured marketplace and language.
+   */
   private getDefaultHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
