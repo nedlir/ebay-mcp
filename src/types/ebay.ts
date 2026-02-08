@@ -9,6 +9,8 @@ export interface EbayConfig {
   clientSecret: string;
   redirectUri?: string;
   locale?: LocaleEnum;
+  marketplaceId?: string;
+  contentLanguage?: string;
   environment: 'production' | 'sandbox';
   accessToken?: string;
   refreshToken?: string;
@@ -62,6 +64,8 @@ export interface StoredTokenData {
   clientSecret: string;
   redirectUri?: string;
   locale?: LocaleEnum;
+  marketplaceId?: string;
+  contentLanguage?: string;
   envAppToken?: string;
   userAccessTokenExpiry?: number; // Unix timestamp in milliseconds
   userRefreshTokenExpiry?: number; // Unix timestamp in milliseconds

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.2] - 2026-02-07
+
+### Added
+
+- **Marketplace Defaults** - Support `EBAY_MARKETPLACE_ID` and `EBAY_CONTENT_LANGUAGE` with sensible defaults
+- **Setup Wizard** - Add marketplace/language step with presets and custom entry
+- **Docs & Tests** - Document new env vars and add unit tests for default headers and overrides
+
+### Changed
+
+- **API Client** - Apply default marketplace/language headers on all requests
+- **Auto-Setup & Diagnostics** - Include marketplace/language values in generated configs and status output
+
 ## [1.6.3] - 2026-02-04
 
 ### Fixed

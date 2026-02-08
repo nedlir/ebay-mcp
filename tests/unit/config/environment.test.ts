@@ -99,6 +99,30 @@ describe('Environment Configuration', () => {
 
       expect(config.redirectUri).toBeUndefined();
     });
+
+    it('should default marketplace and content language to US', () => {
+      process.env.EBAY_CLIENT_ID = 'test_client_id';
+      process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
+      delete process.env.EBAY_MARKETPLACE_ID;
+      delete process.env.EBAY_CONTENT_LANGUAGE;
+
+      const config = getEbayConfig();
+
+      expect(config.marketplaceId).toBe('EBAY_US');
+      expect(config.contentLanguage).toBe('en-US');
+    });
+
+    it('should use marketplace and content language from env when set', () => {
+      process.env.EBAY_CLIENT_ID = 'test_client_id';
+      process.env.EBAY_CLIENT_SECRET = 'test_client_secret';
+      process.env.EBAY_MARKETPLACE_ID = 'EBAY_DE';
+      process.env.EBAY_CONTENT_LANGUAGE = 'de-DE';
+
+      const config = getEbayConfig();
+
+      expect(config.marketplaceId).toBe('EBAY_DE');
+      expect(config.contentLanguage).toBe('de-DE');
+    });
   });
 
   describe('getBaseUrl', () => {
@@ -116,18 +140,20 @@ describe('Environment Configuration', () => {
   describe('getAuthUrl', () => {
     it('should return production auth URL for production environment', () => {
       const url = getAuthUrl('test_client_id', 'https://localhost/callback', 'production');
-      expect(url).toContain('https://signin.ebay.com/signin?ru=');
-      expect(url).toContain('auth2.ebay.com');
-      expect(url).toContain('oauth2%2Fconsents');
-      expect(url).toContain('client_id');
+      const parsed = new URL(url);
+      expect(parsed.origin).toBe('https://auth.ebay.com');
+      expect(parsed.pathname).toBe('/oauth2/authorize');
+      expect(parsed.searchParams.get('client_id')).toBe('test_client_id');
+      expect(parsed.searchParams.get('response_type')).toBe('code');
     });
 
     it('should return sandbox auth URL for sandbox environment', () => {
       const url = getAuthUrl('test_client_id', 'https://localhost/callback', 'sandbox');
-      expect(url).toContain('https://signin.sandbox.ebay.com/signin?ru=');
-      expect(url).toContain('auth2.sandbox.ebay.com');
-      expect(url).toContain('oauth2%2Fconsents');
-      expect(url).toContain('client_id');
+      const parsed = new URL(url);
+      expect(parsed.origin).toBe('https://auth.sandbox.ebay.com');
+      expect(parsed.pathname).toBe('/oauth2/authorize');
+      expect(parsed.searchParams.get('client_id')).toBe('test_client_id');
+      expect(parsed.searchParams.get('response_type')).toBe('code');
     });
   });
 

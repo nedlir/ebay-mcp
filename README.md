@@ -223,6 +223,8 @@ EBAY_CLIENT_ID=your_client_id
 EBAY_CLIENT_SECRET=your_client_secret
 EBAY_ENVIRONMENT=sandbox  # or "production"
 EBAY_REDIRECT_URI=your_runame
+EBAY_MARKETPLACE_ID=EBAY_US  # Default marketplace (overridable by many tools)
+EBAY_CONTENT_LANGUAGE=en-US  # Default request content language (global)
 EBAY_USER_REFRESH_TOKEN=your_refresh_token  # For higher rate limits
 ```
 

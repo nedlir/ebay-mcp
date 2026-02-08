@@ -52,9 +52,9 @@ Optional parameters:
 1. Open the generated OAuth URL in a browser
 2. Log in to your eBay account
 3. Authorize the application
-4. You'll be redirected to a URL like:
+4. You'll be redirected to your RuName's Accept URL with the authorization code:
    ```
-   https://auth2.ebay.com/oauth2/ThirdPartyAuthSucessFailure?isAuthSuccessful=true&code=v%5E1.1%23...&expires_in=299
+   https://your-redirect-uri?code=v%5E1.1%23...&expires_in=299
    ```
 5. Copy the **FULL URL** (including the `code=` parameter)
 

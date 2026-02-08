@@ -77,16 +77,7 @@ export function getDefaultScopes(environment: 'production' | 'sandbox'): string[
     return getProductionScopes();
   }
 
-  const sandboxScopes = getSandboxScopes();
-  const productionScopes = getProductionScopes();
-  const productionWithoutEdelivery = productionScopes.filter(
-    (scope) => scope !== 'https://api.ebay.com/oauth/scope/sell.edelivery'
-  );
-
-  const mergedScopes = new Set([...sandboxScopes, ...productionWithoutEdelivery]);
-  mergedScopes.add('https://api.ebay.com/oauth/api_scope/sell.edelivery');
-  mergedScopes.add('https://api.ebay.com/oauth/scope/sell.edelivery');
-  return Array.from(mergedScopes);
+  return getSandboxScopes();
 }
 
 /**
@@ -192,6 +183,9 @@ export function validateEnvironmentConfig(): {
   };
 }
 
+/**
+ * Build EbayConfig from environment variables with safe defaults.
+ */
 export function getEbayConfig(): EbayConfig {
   const clientId = process.env.EBAY_CLIENT_ID ?? '';
   const clientSecret = process.env.EBAY_CLIENT_SECRET ?? '';
@@ -199,6 +193,8 @@ export function getEbayConfig(): EbayConfig {
   const accessToken = process.env.EBAY_USER_ACCESS_TOKEN ?? '';
   const refreshToken = process.env.EBAY_USER_REFRESH_TOKEN ?? '';
   const appAccessToken = process.env.EBAY_APP_ACCESS_TOKEN ?? '';
+  const marketplaceId = (process.env.EBAY_MARKETPLACE_ID ?? '').trim() || 'EBAY_US';
+  const contentLanguage = (process.env.EBAY_CONTENT_LANGUAGE ?? '').trim() || 'en-US';
 
   // Only require client credentials - tokens can be optional (generated from refresh token)
   if (clientId === '' || clientSecret === '') {
@@ -211,6 +207,8 @@ export function getEbayConfig(): EbayConfig {
     clientId,
     clientSecret,
     redirectUri: process.env.EBAY_REDIRECT_URI,
+    marketplaceId,
+    contentLanguage,
     environment,
     accessToken,
     refreshToken,
@@ -291,27 +289,20 @@ export function getAuthUrl(
     return '';
   }
 
-  // Build consent URL with auth2 endpoint (eBay's OAuth consent endpoint)
-  const consentDomain =
-    env === 'production' ? 'https://auth2.ebay.com' : 'https://auth2.sandbox.ebay.com';
+  const authBase = env === 'production' ? 'https://auth.ebay.com' : 'https://auth.sandbox.ebay.com';
 
-  const consentParams = new URLSearchParams({
+  const scopeList = scopes?.join('%20') || scope.join('%20');
+
+  const authorizeParams = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
     response_type: responseType,
-    scope: scopes?.join(' ') || scope.join(' '),
     prompt,
     locale,
     ...(state ? { state } : {}),
   });
 
-  const consentUrl = `${consentDomain}/oauth2/consents?${consentParams.toString()}`;
-
-  // Build signin URL that redirects to consent
-  const signinDomain =
-    env === 'production' ? 'https://signin.ebay.com' : 'https://signin.sandbox.ebay.com';
-
-  return `${signinDomain}/signin?ru=${encodeURIComponent(consentUrl)}&sgfl=oauth2&AppName=${encodeURIComponent(clientId)}`;
+  return `${authBase}/oauth2/authorize?${authorizeParams.toString()}&scope=${scopeList}`;
 }
 
 /**
@@ -329,43 +320,25 @@ export function getOAuthAuthorizationUrl(
   locale?: string,
   state?: string
 ): string {
-  // Build the authorize URL using auth2 endpoint (correct eBay OAuth endpoint)
-  const authDomain =
-    environment === 'production' ? 'https://auth2.ebay.com' : 'https://auth2.sandbox.ebay.com';
+  const authBase =
+    environment === 'production' ? 'https://auth.ebay.com' : 'https://auth.sandbox.ebay.com';
 
-  const authorizeEndpoint = `${authDomain}/oauth2/authorize`;
+  let scopeList: string;
+  if (scopes && scopes.length > 0) {
+    scopeList = scopes.join('%20');
+  } else {
+    const defaultScopes = getDefaultScopes(environment);
+    scopeList = defaultScopes.join('%20');
+  }
 
-  // Build query parameters for the authorize endpoint
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
+    response_type: 'code',
+    ...(state ? { state } : {}),
   });
 
-  // Add scopes only if provided (optional - eBay handles automatically if not specified)
-  if (scopes && scopes.length > 0) {
-    params.append('scope', scopes.join(' '));
-  } else {
-    // Use default scopes for the environment if no scopes are specified
-    const defaultScopes = getDefaultScopes(environment);
-    params.append('scope', defaultScopes.join(' '));
-  }
-
-  // Always add state parameter (empty if not provided)
-  params.append('state', state || '');
-
-  // Add response_type
-  params.append('response_type', 'code');
-
-  // Add hd parameter (required by eBay)
-  params.append('hd', '');
-
-  // Build the signin URL that redirects to authorize
-  const signinDomain =
-    environment === 'production' ? 'https://signin.ebay.com' : 'https://signin.sandbox.ebay.com';
-
-  const ruParam = encodeURIComponent(`${authorizeEndpoint}?${params.toString()}`);
-
-  return `${signinDomain}/signin?ru=${ruParam}&sgfl=oauth2_login&AppName=${clientId}`;
+  return `${authBase}/oauth2/authorize?${params.toString()}&scope=${scopeList}`;
 }
 
 const iconUrl = (size: string): string => {

@@ -58,22 +58,19 @@ describe('Scope Validation', () => {
       });
     });
 
-    it('should include all production scopes in sandbox (sandbox is superset)', () => {
+    it('should not include production-only scopes in sandbox', () => {
       const sandboxScopes = getDefaultScopes('sandbox');
-      const productionScopes = getDefaultScopes('production');
 
-      // All production scopes should exist in sandbox, except sell.edelivery
-      // which has different URL paths (oauth/scope vs oauth/api_scope)
-      const productionScopesWithoutEdelivery = productionScopes.filter(
-        (scope) => scope !== 'https://api.ebay.com/oauth/scope/sell.edelivery'
-      );
+      const productionOnlyScopes = [
+        'https://api.ebay.com/oauth/api_scope/commerce.message',
+        'https://api.ebay.com/oauth/api_scope/commerce.shipping',
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+        'https://api.ebay.com/oauth/scope/sell.edelivery',
+      ];
 
-      productionScopesWithoutEdelivery.forEach((scope) => {
-        expect(sandboxScopes).toContain(scope);
+      productionOnlyScopes.forEach((scope) => {
+        expect(sandboxScopes).not.toContain(scope);
       });
-
-      // Verify sandbox has its own edelivery scope
-      expect(sandboxScopes).toContain('https://api.ebay.com/oauth/api_scope/sell.edelivery');
     });
   });
 
@@ -118,13 +115,12 @@ describe('Scope Validation', () => {
 
     it('should not warn for common scopes that exist in both environments', () => {
       const commonScopes = [
-        'https://api.ebay.com/oauth/api_scope/commerce.shipping',
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
       ];
 
       const result = validateScopes(commonScopes, 'sandbox');
 
-      // These scopes exist in both environments, so no warnings
       expect(result.warnings.length).toBe(0);
       expect(result.validScopes).toEqual(commonScopes);
     });
@@ -175,50 +171,45 @@ describe('Scope Validation', () => {
     const clientId = 'test_client_id';
     const redirectUri = 'https://localhost/callback';
 
-    it('should generate valid OAuth URL for production', () => {
+    it('should generate direct branded OAuth URL for production', () => {
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'production');
+      const parsed = new URL(url);
 
-      expect(url).toContain('https://signin.ebay.com/signin');
-      expect(url).toContain('ru=');
-      expect(url).toContain(`AppName=${clientId}`);
-      // Decode the ru parameter to check authorize URL contents
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain('https://auth2.ebay.com/oauth2/authorize');
-      expect(decodedRu).toContain(`client_id=${clientId}`);
-      expect(decodedRu).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
-      expect(decodedRu).toContain('response_type=code');
-      expect(decodedRu).toContain('hd=');
+      expect(parsed.origin).toBe('https://auth.ebay.com');
+      expect(parsed.pathname).toBe('/oauth2/authorize');
+      expect(parsed.searchParams.get('client_id')).toBe(clientId);
+      expect(parsed.searchParams.get('redirect_uri')).toBe(redirectUri);
+      expect(parsed.searchParams.get('response_type')).toBe('code');
+      expect(parsed.searchParams.has('scope')).toBe(true);
+      expect(parsed.searchParams.has('hd')).toBe(false);
+      expect(url).not.toContain('signin.ebay.com');
+      expect(url).not.toContain('ru=');
+      expect(url).not.toContain('AppName');
     });
 
-    it('should generate valid OAuth URL for sandbox', () => {
+    it('should generate direct branded OAuth URL for sandbox', () => {
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'sandbox');
+      const parsed = new URL(url);
 
-      expect(url).toContain('https://signin.sandbox.ebay.com/signin');
-      expect(url).toContain('ru=');
-      expect(url).toContain(`AppName=${clientId}`);
-      // Decode the ru parameter to check authorize URL contents
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain('https://auth2.sandbox.ebay.com/oauth2/authorize');
-      expect(decodedRu).toContain(`client_id=${clientId}`);
-      expect(decodedRu).toContain(`redirect_uri=${encodeURIComponent(redirectUri)}`);
-      expect(decodedRu).toContain('response_type=code');
-      expect(decodedRu).toContain('hd=');
+      expect(parsed.origin).toBe('https://auth.sandbox.ebay.com');
+      expect(parsed.pathname).toBe('/oauth2/authorize');
+      expect(parsed.searchParams.get('client_id')).toBe(clientId);
+      expect(parsed.searchParams.get('redirect_uri')).toBe(redirectUri);
+      expect(parsed.searchParams.get('response_type')).toBe('code');
+      expect(parsed.searchParams.has('scope')).toBe(true);
+      expect(parsed.searchParams.has('hd')).toBe(false);
+      expect(url).not.toContain('signin.sandbox.ebay.com');
+      expect(url).not.toContain('ru=');
+      expect(url).not.toContain('AppName');
     });
 
     it('should include default scopes when no scopes provided', () => {
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'production');
+      const parsed = new URL(url);
 
-      // Decode the ru parameter to check scopes
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain('scope=');
-      // Should include at least one default scope
-      expect(decodedRu).toContain('sell.inventory');
+      const scope = parsed.searchParams.get('scope');
+      expect(scope).toBeTruthy();
+      expect(scope).toContain('sell.inventory');
     });
 
     it('should include custom scopes when provided', () => {
@@ -228,14 +219,11 @@ describe('Scope Validation', () => {
       ];
 
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'production', customScopes);
+      const parsed = new URL(url);
 
-      // Decode the ru parameter to check custom scopes
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-
-      customScopes.forEach((scope) => {
-        expect(decodedRu).toContain(encodeURIComponent(scope));
+      const scope = parsed.searchParams.get('scope')!;
+      customScopes.forEach((s) => {
+        expect(scope).toContain(s);
       });
     });
 
@@ -250,37 +238,28 @@ describe('Scope Validation', () => {
         undefined,
         state
       );
+      const parsed = new URL(url);
 
-      // Decode the ru parameter to check state
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain(`state=${state}`);
+      expect(parsed.searchParams.get('state')).toBe(state);
     });
 
-    it('should include empty state parameter when not provided', () => {
+    it('should not include state parameter when not provided', () => {
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'production');
+      const parsed = new URL(url);
 
-      // Decode the ru parameter to check state is present but empty
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain('state=');
+      expect(parsed.searchParams.has('state')).toBe(false);
     });
 
     it('should properly encode special characters in redirect URI', () => {
       const specialRedirectUri = 'https://localhost/callback?param=value&other=test';
 
       const url = getOAuthAuthorizationUrl(clientId, specialRedirectUri, 'production');
+      const parsed = new URL(url);
 
-      // Decode the ru parameter to check redirect_uri encoding
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
-      expect(decodedRu).toContain(encodeURIComponent(specialRedirectUri));
+      expect(parsed.searchParams.get('redirect_uri')).toBe(specialRedirectUri);
     });
 
-    it('should join multiple scopes with space', () => {
+    it('should join multiple scopes with %20 and not percent-encode scope URIs', () => {
       const scopes = [
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -288,15 +267,15 @@ describe('Scope Validation', () => {
 
       const url = getOAuthAuthorizationUrl(clientId, redirectUri, 'production', scopes);
 
-      // Decode the ru parameter to check scopes are joined
-      const ruMatch = /ru=([^&]+)/.exec(url);
-      expect(ruMatch).not.toBeNull();
-      const decodedRu = decodeURIComponent(ruMatch![1]);
+      expect(url).toContain(
+        'scope=https://api.ebay.com/oauth/api_scope/sell.inventory%20https://api.ebay.com/oauth/api_scope/sell.fulfillment'
+      );
+      expect(url).not.toContain('scope=https%3A%2F%2F');
+      expect(url).not.toMatch(/scope=[^&]*\+/);
 
-      // Scopes should be joined and present (URL encoding uses + for spaces)
-      scopes.forEach((scope) => {
-        expect(decodedRu).toContain(encodeURIComponent(scope));
-      });
+      const parsed = new URL(url);
+      const scopeParam = parsed.searchParams.get('scope')!;
+      expect(scopeParam).toBe(scopes.join(' '));
     });
   });
 });

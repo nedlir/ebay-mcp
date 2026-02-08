@@ -165,6 +165,8 @@ function displayConfigurationStatus(envVars: Record<string, string>): void {
     { key: 'EBAY_CLIENT_SECRET', label: 'Client Secret', redact: true },
     { key: 'EBAY_REDIRECT_URI', label: 'Redirect URI', redact: false },
     { key: 'EBAY_ENVIRONMENT', label: 'Environment', redact: false },
+    { key: 'EBAY_MARKETPLACE_ID', label: 'Marketplace ID', redact: false },
+    { key: 'EBAY_CONTENT_LANGUAGE', label: 'Content Language', redact: false },
     { key: 'EBAY_USER_REFRESH_TOKEN', label: 'User Refresh Token', redact: true },
     { key: 'EBAY_USER_ACCESS_TOKEN', label: 'User Access Token', redact: true },
     { key: 'EBAY_APP_ACCESS_TOKEN', label: 'App Access Token', redact: true },

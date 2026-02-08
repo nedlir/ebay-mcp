@@ -180,7 +180,7 @@ export const tokenManagementTools: ToolDefinition[] = [
       'IMPORTANT NOTES:\n' +
       '- Authorization codes expire in ~5 minutes - if you get "invalid grant" error, get a fresh code\n' +
       '- Codes can be URL-encoded (e.g., v%5E1.1%23...) - this tool automatically decodes them\n' +
-      '- Extract the code parameter from the redirect URL: https://auth2.ebay.com/...&code=YOUR_CODE&expires_in=299\n' +
+      '- Extract the code parameter from the redirect URL (your RuName Accept URL): https://your-redirect-uri?code=YOUR_CODE&expires_in=299\n' +
       '- Tokens are saved to .env file and will auto-refresh every 2 hours\n' +
       '- Refresh tokens last 18 months before requiring re-authorization\n\n' +
       'COMMON ERRORS:\n' +

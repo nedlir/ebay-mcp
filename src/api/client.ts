@@ -54,6 +54,26 @@ export class EbayApiClient {
   private rateLimitTracker: RateLimitTracker;
   private config: EbayConfig;
 
+  /**
+   * Build default request headers based on configured marketplace and language.
+   */
+  private getDefaultHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+
+    if (this.config.contentLanguage) {
+      headers['Content-Language'] = this.config.contentLanguage;
+    }
+
+    if (this.config.marketplaceId) {
+      headers['X-EBAY-C-MARKETPLACE-ID'] = this.config.marketplaceId;
+    }
+
+    return headers;
+  }
+
   constructor(config: EbayConfig) {
     this.config = config;
     this.authClient = new EbayOAuthClient(config);
@@ -63,10 +83,7 @@ export class EbayApiClient {
     this.httpClient = axios.create({
       baseURL: this.baseUrl,
       timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
+      headers: this.getDefaultHeaders(),
     });
 
     // Add request interceptor to inject auth token and check rate limits
@@ -393,8 +410,7 @@ export class EbayApiClient {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          ...this.getDefaultHeaders(),
         },
         timeout: 30000,
       });
@@ -420,8 +436,7 @@ export class EbayApiClient {
             params,
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
+              ...this.getDefaultHeaders(),
             },
             timeout: 30000,
           });

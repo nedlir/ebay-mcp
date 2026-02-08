@@ -6,12 +6,12 @@ import { homedir, platform } from 'os';
 
 import axios from 'axios';
 import chalk from 'chalk';
+import { checkForUpdates } from '../utils/version.js';
 import { config } from 'dotenv';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
+import { getOAuthAuthorizationUrl } from '../config/environment.js';
 import prompts from 'prompts';
-import { getDefaultScopes } from '../config/environment.js';
-import { checkForUpdates } from '../utils/version.js';
 
 config({ quiet: true });
 
@@ -21,7 +21,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '../..');
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 type StepResult = 'continue' | 'back' | 'cancel';
 
@@ -59,6 +59,28 @@ const ui = {
   hint: chalk.gray,
 };
 
+const MARKETPLACE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'EBAY_US', label: 'EBAY_US — United States' },
+  { value: 'EBAY_GB', label: 'EBAY_GB — United Kingdom' },
+  { value: 'EBAY_DE', label: 'EBAY_DE — Germany' },
+  { value: 'EBAY_FR', label: 'EBAY_FR — France' },
+  { value: 'EBAY_IT', label: 'EBAY_IT — Italy' },
+  { value: 'EBAY_ES', label: 'EBAY_ES — Spain' },
+  { value: 'EBAY_CA', label: 'EBAY_CA — Canada' },
+  { value: 'EBAY_AU', label: 'EBAY_AU — Australia' },
+];
+
+const CONTENT_LANGUAGE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'en-US', label: 'en-US — English (United States)' },
+  { value: 'en-GB', label: 'en-GB — English (United Kingdom)' },
+  { value: 'de-DE', label: 'de-DE — German (Germany)' },
+  { value: 'fr-FR', label: 'fr-FR — French (France)' },
+  { value: 'it-IT', label: 'it-IT — Italian (Italy)' },
+  { value: 'es-ES', label: 'es-ES — Spanish (Spain)' },
+  { value: 'fr-CA', label: 'fr-CA — French (Canada)' },
+  { value: 'nl-BE', label: 'nl-BE — Dutch (Belgium)' },
+];
+
 const LOGO = `
    ${ebay.red('███████╗')}${ebay.blue('██████╗ ')}${ebay.yellow('█████╗ ')}${ebay.green('██╗   ██╗')}
    ${ebay.red('██╔════╝')}${ebay.blue('██╔══██╗')}${ebay.yellow('██╔══██╗')}${ebay.green('╚██╗ ██╔╝')}
@@ -68,15 +90,24 @@ const LOGO = `
    ${ebay.red('╚══════╝')}${ebay.blue('╚═════╝ ')}${ebay.yellow('╚═╝  ╚═╝')}${ebay.green('   ╚═╝   ')}
 `;
 
+/**
+ * Clear the terminal screen.
+ */
 function clearScreen(): void {
   console.clear();
 }
 
+/**
+ * Render the eBay ASCII logo and heading.
+ */
 function showLogo(): void {
   console.log(LOGO);
-  console.log(ui.bold.white('            MCP Server Setup Wizard\n'));
+  console.log(ui.bold.white('            MCP Server Setup Wizard by Yosef Hayim Sabag\n'));
 }
 
+/**
+ * Render a step progress bar with title.
+ */
 function showProgress(step: number, title: string): void {
   const filled = '●'.repeat(step);
   const empty = '○'.repeat(TOTAL_STEPS - step);
@@ -87,25 +118,37 @@ function showProgress(step: number, title: string): void {
   console.log(ui.dim('─'.repeat(60)) + '\n');
 }
 
+/**
+ * Render keyboard hints for the current step.
+ */
 function showKeyboardHints(hints: string[]): void {
   const hintText = hints.map((h) => ui.dim(h)).join('  │  ');
   console.log(`\n  ${hintText}\n`);
 }
 
+/**
+ * Render a tip callout.
+ */
 function showTip(message: string): void {
   console.log(`  ${ebay.yellow('💡 Tip:')} ${ui.dim(message)}\n`);
 }
 
+/**
+ * Render a success line.
+ */
 function showSuccess(message: string): void {
   console.log(`  ${ui.success('✓')} ${message}`);
 }
 
+/**
+ * Render an error line.
+ */
 function showError(message: string): void {
   console.log(`  ${ui.error('✗')} ${message}`);
 }
 
 /**
- * Open a URL in the default browser (cross-platform)
+ * Open a URL in the default browser (cross-platform).
  */
 function openBrowser(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -133,6 +176,9 @@ function openBrowser(url: string): Promise<void> {
   });
 }
 
+/**
+ * Render a warning line.
+ */
 function showWarning(message: string): void {
   console.log(`  ${ui.warning('⚠')} ${message}`);
 }
@@ -395,10 +441,16 @@ function displayUserInfo(userInfo: EbayUserInfo): void {
   ]);
 }
 
+/**
+ * Render an informational line.
+ */
 function showInfo(message: string): void {
   console.log(`  ${ui.info('ℹ')} ${message}`);
 }
 
+/**
+ * Render a spinner and return a stop callback.
+ */
 function showSpinner(message: string): () => void {
   const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   let i = 0;
@@ -416,6 +468,9 @@ function showSpinner(message: string): () => void {
   };
 }
 
+/**
+ * Render a bordered info box.
+ */
 function showBox(title: string, content: string[]): void {
   const width = 60;
   const line = '─'.repeat(width - 2);
@@ -432,6 +487,9 @@ function showBox(title: string, content: string[]): void {
   console.log(`  ${ui.dim('└' + line + '┘')}\n`);
 }
 
+/**
+ * Compute MCP client config paths by OS.
+ */
 function getConfigPaths(): Record<string, { display: string; path: string }> {
   const home = homedir();
   const os = platform();
@@ -483,6 +541,9 @@ function getConfigPaths(): Record<string, { display: string; path: string }> {
   return paths;
 }
 
+/**
+ * Detect installed MCP-compatible clients.
+ */
 function detectLLMClients(): LLMClient[] {
   const paths = getConfigPaths();
   const clients: LLMClient[] = [];
@@ -503,6 +564,9 @@ function detectLLMClients(): LLMClient[] {
   return clients;
 }
 
+/**
+ * Write MCP server config for a detected client.
+ */
 function configureLLMClient(client: LLMClient, projectRoot: string): boolean {
   try {
     const configDir = dirname(client.configPath);
@@ -641,6 +705,12 @@ function updateClaudeDesktopConfig(
     if (envConfig.EBAY_REDIRECT_URI) {
       envVars.EBAY_REDIRECT_URI = envConfig.EBAY_REDIRECT_URI;
     }
+    if (envConfig.EBAY_MARKETPLACE_ID) {
+      envVars.EBAY_MARKETPLACE_ID = envConfig.EBAY_MARKETPLACE_ID;
+    }
+    if (envConfig.EBAY_CONTENT_LANGUAGE) {
+      envVars.EBAY_CONTENT_LANGUAGE = envConfig.EBAY_CONTENT_LANGUAGE;
+    }
     if (envConfig.EBAY_USER_REFRESH_TOKEN) {
       envVars.EBAY_USER_REFRESH_TOKEN = envConfig.EBAY_USER_REFRESH_TOKEN;
     }
@@ -688,6 +758,9 @@ function updateClaudeDesktopConfig(
   }
 }
 
+/**
+ * Load existing environment variables from the .env file.
+ */
 function loadExistingConfig(): Record<string, string> {
   const envPath = join(PROJECT_ROOT, '.env');
   const envConfig: Record<string, string> = {};
@@ -708,6 +781,9 @@ function loadExistingConfig(): Record<string, string> {
   return envConfig;
 }
 
+/**
+ * Format a date for display in the .env header.
+ */
 function formatDate(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
@@ -722,9 +798,19 @@ function formatDate(date: Date): string {
   return date.toLocaleString('en-US', options);
 }
 
+/**
+ * Persist setup configuration to the project .env file.
+ */
 function saveConfig(envConfig: Record<string, string>, environment: string): void {
   const envPath = join(PROJECT_ROOT, '.env');
   const now = new Date();
+
+  const marketplaceLine = envConfig.EBAY_MARKETPLACE_ID
+    ? `EBAY_MARKETPLACE_ID=${envConfig.EBAY_MARKETPLACE_ID}`
+    : '# EBAY_MARKETPLACE_ID=EBAY_US';
+  const contentLanguageLine = envConfig.EBAY_CONTENT_LANGUAGE
+    ? `EBAY_CONTENT_LANGUAGE=${envConfig.EBAY_CONTENT_LANGUAGE}`
+    : '# EBAY_CONTENT_LANGUAGE=en-US';
 
   const content = `# eBay MCP Server Configuration
 # Last Updated: ${formatDate(now)}
@@ -734,6 +820,8 @@ EBAY_CLIENT_ID=${envConfig.EBAY_CLIENT_ID || ''}
 EBAY_CLIENT_SECRET=${envConfig.EBAY_CLIENT_SECRET || ''}
 EBAY_REDIRECT_URI=${envConfig.EBAY_REDIRECT_URI || ''}
 EBAY_ENVIRONMENT=${environment}
+${marketplaceLine}
+${contentLanguageLine}
 
 EBAY_USER_REFRESH_TOKEN=${envConfig.EBAY_USER_REFRESH_TOKEN || ''}
 EBAY_USER_ACCESS_TOKEN=${envConfig.EBAY_USER_ACCESS_TOKEN || ''}
@@ -749,10 +837,12 @@ async function stepWelcome(state: SetupState): Promise<StepResult> {
 
   console.log(ui.dim('  Welcome to the eBay MCP Server setup wizard!\n'));
   console.log('  This wizard will help you:\n');
-  console.log(`    ${ui.success('1.')} Configure your eBay Developer credentials`);
-  console.log(`    ${ui.success('2.')} Set up OAuth authentication`);
-  console.log(`    ${ui.success('3.')} Configure your MCP client (Claude, Cline, etc.)`);
-  console.log(`    ${ui.success('4.')} Validate your setup\n`);
+  console.log(`    ${ui.success('1.')} Choose environment (sandbox/production)`);
+  console.log(`    ${ui.success('2.')} Set default marketplace and language (optional)`);
+  console.log(`    ${ui.success('3.')} Configure your eBay Developer credentials`);
+  console.log(`    ${ui.success('4.')} Set up OAuth authentication`);
+  console.log(`    ${ui.success('5.')} Configure your MCP client (Claude, Cline, etc.)`);
+  console.log(`    ${ui.success('6.')} Validate your setup\n`);
 
   if (state.hasExistingConfig) {
     showInfo('Existing configuration detected. You can update or keep current values.');
@@ -770,6 +860,9 @@ async function stepWelcome(state: SetupState): Promise<StepResult> {
   return response.continue !== false ? 'continue' : 'cancel';
 }
 
+/**
+ * Select the eBay environment for this configuration.
+ */
 async function stepEnvironment(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
@@ -811,10 +904,154 @@ async function stepEnvironment(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Configure optional marketplace and content-language defaults.
+ */
+async function stepMarketplaceSettings(state: SetupState): Promise<StepResult> {
+  clearScreen();
+  showLogo();
+  showProgress(2, 'Marketplace Settings');
+
+  if (state.isQuickMode) {
+    showInfo('Quick setup enabled. Skipping optional marketplace configuration.');
+    await new Promise((r) => setTimeout(r, 600));
+    return 'continue';
+  }
+
+  console.log('  Configure default marketplace and language for API requests.\n');
+  showBox('Marketplace Settings', [
+    'These are optional defaults used for request headers.',
+    'Marketplace can be overridden in many tools; language is global.',
+  ]);
+
+  const marketplaceChoices = [
+    { title: ui.dim('← Go back'), value: '__back__' },
+    { title: 'Skip (leave unset)', value: '' },
+    ...MARKETPLACE_OPTIONS.map((option) => ({
+      title: option.label,
+      value: option.value,
+    })),
+    { title: 'Other (enter manually)', value: '__custom__' },
+  ];
+
+  const currentMarketplace = state.config.EBAY_MARKETPLACE_ID || '';
+  const marketplaceDefault = currentMarketplace || 'EBAY_US';
+  const marketplaceMatchIndex = marketplaceChoices.findIndex(
+    (choice) => choice.value === marketplaceDefault
+  );
+  const marketplaceInitial =
+    marketplaceMatchIndex >= 0
+      ? marketplaceMatchIndex
+      : marketplaceChoices.findIndex((choice) => choice.value === '__custom__');
+
+  const marketplaceResponse = await prompts({
+    type: 'select',
+    name: 'marketplaceId',
+    message: 'Select your default eBay marketplace:',
+    choices: marketplaceChoices,
+    initial: marketplaceInitial >= 0 ? marketplaceInitial : 0,
+  });
+
+  if (marketplaceResponse.marketplaceId === undefined) {
+    return 'cancel';
+  }
+  if (marketplaceResponse.marketplaceId === '__back__') {
+    return 'back';
+  }
+
+  let marketplaceId = marketplaceResponse.marketplaceId as string;
+  if (marketplaceId === '__custom__') {
+    const customMarketplace = await prompts({
+      type: 'text',
+      name: 'customMarketplaceId',
+      message: 'Enter marketplace ID (e.g., EBAY_US, EBAY_DE):',
+      initial: currentMarketplace || 'EBAY_US',
+      validate: (value: string) =>
+        value.trim().length === 0 ? 'Marketplace ID cannot be empty' : true,
+    });
+
+    if (customMarketplace.customMarketplaceId === undefined) {
+      return 'cancel';
+    }
+
+    marketplaceId = customMarketplace.customMarketplaceId.trim();
+  }
+
+  if (marketplaceId) {
+    state.config.EBAY_MARKETPLACE_ID = marketplaceId;
+  } else {
+    delete state.config.EBAY_MARKETPLACE_ID;
+  }
+
+  const languageChoices = [
+    { title: ui.dim('← Go back'), value: '__back__' },
+    { title: 'Skip (leave unset)', value: '' },
+    ...CONTENT_LANGUAGE_OPTIONS.map((option) => ({
+      title: option.label,
+      value: option.value,
+    })),
+    { title: 'Other (enter manually)', value: '__custom__' },
+  ];
+
+  const currentLanguage = state.config.EBAY_CONTENT_LANGUAGE || '';
+  const languageDefault = currentLanguage || 'en-US';
+  const languageMatchIndex = languageChoices.findIndex(
+    (choice) => choice.value === languageDefault
+  );
+  const languageInitial =
+    languageMatchIndex >= 0
+      ? languageMatchIndex
+      : languageChoices.findIndex((choice) => choice.value === '__custom__');
+
+  const languageResponse = await prompts({
+    type: 'select',
+    name: 'contentLanguage',
+    message: 'Select your preferred Content-Language:',
+    choices: languageChoices,
+    initial: languageInitial >= 0 ? languageInitial : 0,
+  });
+
+  if (languageResponse.contentLanguage === undefined) {
+    return 'cancel';
+  }
+  if (languageResponse.contentLanguage === '__back__') {
+    return 'back';
+  }
+
+  let contentLanguage = languageResponse.contentLanguage as string;
+  if (contentLanguage === '__custom__') {
+    const customLanguage = await prompts({
+      type: 'text',
+      name: 'customContentLanguage',
+      message: 'Enter Content-Language (e.g., en-US, de-DE):',
+      initial: currentLanguage || 'en-US',
+      validate: (value: string) =>
+        value.trim().length === 0 ? 'Content-Language cannot be empty' : true,
+    });
+
+    if (customLanguage.customContentLanguage === undefined) {
+      return 'cancel';
+    }
+
+    contentLanguage = customLanguage.customContentLanguage.trim();
+  }
+
+  if (contentLanguage) {
+    state.config.EBAY_CONTENT_LANGUAGE = contentLanguage;
+  } else {
+    delete state.config.EBAY_CONTENT_LANGUAGE;
+  }
+
+  return 'continue';
+}
+
+/**
+ * Collect eBay app credentials from the user.
+ */
 async function stepCredentials(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
-  showProgress(2, 'eBay Credentials');
+  showProgress(3, 'eBay Credentials');
 
   console.log('  Enter your eBay Developer credentials:\n');
 
@@ -869,10 +1106,13 @@ async function stepCredentials(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Acquire and validate OAuth tokens for the configured credentials.
+ */
 async function stepOAuth(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
-  showProgress(3, 'OAuth Setup');
+  showProgress(4, 'OAuth Setup');
 
   console.log('  Configure user authentication for higher API rate limits:\n');
 
@@ -1084,32 +1324,11 @@ async function stepOAuth(state: SetupState): Promise<StepResult> {
       }
     }
   } else if (tokenChoice.method === 'manual') {
-    // Build the OAuth consent URL (auth2 endpoint)
-    const consentDomain =
-      state.environment === 'production'
-        ? 'https://auth2.ebay.com'
-        : 'https://auth2.sandbox.ebay.com';
-
-    // Get scopes from environment config
-    const scopes = getDefaultScopes(state.environment);
-
-    // Build the consent URL parameters
-    const consentParams = new URLSearchParams({
-      client_id: state.config.EBAY_CLIENT_ID,
-      redirect_uri: state.config.EBAY_REDIRECT_URI,
-      response_type: 'code',
-      scope: scopes.join(' '),
-    });
-
-    const consentUrl = `${consentDomain}/oauth2/consents?${consentParams.toString()}`;
-
-    // Build the signin URL that redirects to consent
-    const signinDomain =
-      state.environment === 'production'
-        ? 'https://signin.ebay.com'
-        : 'https://signin.sandbox.ebay.com';
-
-    const authUrl = `${signinDomain}/signin?ru=${encodeURIComponent(consentUrl)}&sgfl=oauth2&AppName=${encodeURIComponent(state.config.EBAY_CLIENT_ID)}`;
+    const authUrl = getOAuthAuthorizationUrl(
+      state.config.EBAY_CLIENT_ID,
+      state.config.EBAY_REDIRECT_URI,
+      state.environment
+    );
 
     console.log('\n  ' + ui.bold('OAuth Authorization URL:'));
     console.log(ui.dim('  ' + '─'.repeat(56)));
@@ -1380,10 +1599,13 @@ async function stepOAuth(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Configure MCP clients with the generated environment variables.
+ */
 async function stepMCPClients(state: SetupState): Promise<StepResult> {
   clearScreen();
   showLogo();
-  showProgress(4, 'MCP Client Setup');
+  showProgress(5, 'MCP Client Setup');
 
   console.log('  Configure your AI assistant to use the eBay MCP server:\n');
 
@@ -1483,10 +1705,13 @@ async function stepMCPClients(state: SetupState): Promise<StepResult> {
   return 'continue';
 }
 
+/**
+ * Finalize setup and display summary information.
+ */
 async function stepComplete(state: SetupState): Promise<void> {
   clearScreen();
   showLogo();
-  showProgress(5, 'Setup Complete');
+  showProgress(6, 'Setup Complete');
 
   const stopSpinner = showSpinner('Saving configuration...');
   await new Promise((r) => setTimeout(r, 300));
@@ -1498,6 +1723,8 @@ async function stepComplete(state: SetupState): Promise<void> {
 
   showBox('Configuration Summary', [
     `Environment:     ${state.environment}`,
+    `Marketplace ID:  ${state.config.EBAY_MARKETPLACE_ID || 'Not set'}`,
+    `Content-Lang:    ${state.config.EBAY_CONTENT_LANGUAGE || 'Not set'}`,
     `Client ID:       ${state.config.EBAY_CLIENT_ID?.slice(0, 20)}...`,
     `Redirect URI:    ${state.config.EBAY_REDIRECT_URI?.slice(0, 30)}...`,
     `OAuth Token:     ${state.config.EBAY_USER_REFRESH_TOKEN ? '✓ Configured' : '✗ Not set'}`,
@@ -1587,7 +1814,14 @@ async function main(): Promise<void> {
     isQuickMode: args.quick,
   };
 
-  const steps = [stepWelcome, stepEnvironment, stepCredentials, stepOAuth, stepMCPClients];
+  const steps = [
+    stepWelcome,
+    stepEnvironment,
+    stepMarketplaceSettings,
+    stepCredentials,
+    stepOAuth,
+    stepMCPClients,
+  ];
 
   let stepIndex = 0;
   while (stepIndex < steps.length) {
