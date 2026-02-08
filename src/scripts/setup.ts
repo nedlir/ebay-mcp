@@ -6,12 +6,12 @@ import { homedir, platform } from 'os';
 
 import axios from 'axios';
 import chalk from 'chalk';
+import { checkForUpdates } from '../utils/version.js';
 import { config } from 'dotenv';
 import { exec } from 'child_process';
 import { fileURLToPath } from 'url';
+import { getOAuthAuthorizationUrl } from '../config/environment.js';
 import prompts from 'prompts';
-import { getDefaultScopes } from '../config/environment.js';
-import { checkForUpdates } from '../utils/version.js';
 
 config({ quiet: true });
 
@@ -102,7 +102,7 @@ function clearScreen(): void {
  */
 function showLogo(): void {
   console.log(LOGO);
-  console.log(ui.bold.white('            MCP Server Setup Wizard\n'));
+  console.log(ui.bold.white('            MCP Server Setup Wizard by Yosef Hayim Sabag\n'));
 }
 
 /**
@@ -1324,32 +1324,11 @@ async function stepOAuth(state: SetupState): Promise<StepResult> {
       }
     }
   } else if (tokenChoice.method === 'manual') {
-    // Build the OAuth consent URL (auth2 endpoint)
-    const consentDomain =
-      state.environment === 'production'
-        ? 'https://auth2.ebay.com'
-        : 'https://auth2.sandbox.ebay.com';
-
-    // Get scopes from environment config
-    const scopes = getDefaultScopes(state.environment);
-
-    // Build the consent URL parameters
-    const consentParams = new URLSearchParams({
-      client_id: state.config.EBAY_CLIENT_ID,
-      redirect_uri: state.config.EBAY_REDIRECT_URI,
-      response_type: 'code',
-      scope: scopes.join(' '),
-    });
-
-    const consentUrl = `${consentDomain}/oauth2/consents?${consentParams.toString()}`;
-
-    // Build the signin URL that redirects to consent
-    const signinDomain =
-      state.environment === 'production'
-        ? 'https://signin.ebay.com'
-        : 'https://signin.sandbox.ebay.com';
-
-    const authUrl = `${signinDomain}/signin?ru=${encodeURIComponent(consentUrl)}&sgfl=oauth2&AppName=${encodeURIComponent(state.config.EBAY_CLIENT_ID)}`;
+    const authUrl = getOAuthAuthorizationUrl(
+      state.config.EBAY_CLIENT_ID,
+      state.config.EBAY_REDIRECT_URI,
+      state.environment
+    );
 
     console.log('\n  ' + ui.bold('OAuth Authorization URL:'));
     console.log(ui.dim('  ' + '─'.repeat(56)));
