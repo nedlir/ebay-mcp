@@ -3,11 +3,12 @@
 Auto-updated snapshot from the [eBay API Status RSS feed](https://developer.ebay.com/rss/api-status).
 Full list: [developer.ebay.com/support/api-status](https://developer.ebay.com/support/api-status).
 
-*Last updated: 2026-02-09T08:35:50.667Z*
+*Last updated: 2026-02-10T08:36:09.317Z*
 
 | Title | API | Site | Status | Last updated | Link |
 |-------|-----|------|--------|--------------|------|
-| Developer portal | Developer portal | Production | Unresolved | Thu Feb 05 2026 | [Details](https://developer.ebay.com/support/api-status/Production/application-keysets-page-not-showing-production-keyset-and-create-new-keyset-is-not-working) |
+| Trading API | Trading API | Production | Resolved | Mon Feb 09 2026 | [Details](https://developer.ebay.com/support/api-status/Production/resolved-addorder-trading-api-returns-http-500-during-invoice-generation-blocking-invoicing) |
+| Developer portal | Developer portal | Production | Resolved | Thu Feb 05 2026 | [Details](https://developer.ebay.com/support/api-status/Production/application-keysets-page-not-showing-production-keyset-and-create-new-keyset-is-not-working) |
 | Marketing API | Marketing API | Production | Resolved | Wed Jan 28 2026 | [Details](https://developer.ebay.com/support/api-status/Production/internal-server-error-bulkcreateadsbylistingid) |
 | Trading API | Trading API | Production | Resolved | Wed Jan 28 2026 | [Details](https://developer.ebay.com/support/api-status/Production/getitemtransactionsresponse-transactionarray-missing-from-auctioncheckoutcomplete-notifications) |
 | Trading API | Trading API | Production | Resolved | Wed Oct 29 2025 | [Details](https://developer.ebay.com/support/api-status/Production/resolved-trading-api-reviseitem-reviseinventorystatus-enditem-api-calls-returning-seller-not-found-error) |
@@ -21,7 +22,6 @@ Full list: [developer.ebay.com/support/api-status](https://developer.ebay.com/su
 | Sandbox | Sandbox | Sandbox | Resolved | Fri Sep 19 2025 | [Details](https://developer.ebay.com/support/api-status/Sandbox/resolved-sandbox-user-creation-issue) |
 | createShippingFulfillment | createShippingFulfillment | Production | Resolved | Fri Sep 19 2025 | [Details](https://developer.ebay.com/support/api-status/Production/resolved-createshippingfulfillment-api-is-currently-not-working-and-is-returning-400-response) |
 | Buy Feed API | Buy Feed API | Production | Resolved | Fri Sep 05 2025 | [Details](https://developer.ebay.com/support/api-status/Production/resolved-category-hourly-feed-files-are-missing) |
-| View Item Page | View Item Page | Sandbox | Resolved | Mon Aug 25 2025 | [Details](https://developer.ebay.com/support/api-status/Sandbox/resolved-view-item-page-on-sandbox-environment-is-working) |
 
 ---
 
