@@ -23,7 +23,7 @@ function updateEnvFile(updates: Record<string, string>): void {
     for (const [key, value] of Object.entries(updates)) {
       // Match the key with or without value, handling comments
       const regex = new RegExp(`^(#\\s*)?${key}=.*$`, 'gm');
-      const newLine = `${key}=${value}`;
+      const newLine = `${key}="${value}"`;
 
       if (regex.test(envContent)) {
         // Update existing key (uncomment if needed)
