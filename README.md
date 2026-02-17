@@ -595,8 +595,7 @@ The diagnostic tool checks:
 If you're still experiencing issues:
 
 1. Check existing [GitHub Issues](https://github.com/YosefHayim/ebay-mcp/issues)
-2. Review [GitHub Discussions](https://github.com/YosefHayim/ebay-mcp/discussions)
-3. Create a new issue with:
+2. Create a new issue with:
    - Your diagnostic report (`npm run diagnose:export`)
    - Steps to reproduce the problem
    - Error messages or logs
@@ -628,7 +627,6 @@ Check current eBay API health, incidents, and fixes:
 
 ### Support
 
-- [GitHub Discussions](https://github.com/YosefHayim/ebay-mcp/discussions) - Community Q&A and general discussions
 - [Issue Tracker](https://github.com/YosefHayim/ebay-mcp/issues) - Bug reports and feature requests
 - [Bug Report Template](BUG_REPORT.md) - Detailed bug reporting guide
 
